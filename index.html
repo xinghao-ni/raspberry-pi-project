@@ -1,0 +1,1850 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TONITRUUM — Habitat Monitor</title>
+<link rel="stylesheet" href="shared.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+/* ── Camera Viewport ── */
+.camera-wrap {
+  position: relative; width: 100%; border-radius: 8px; overflow: hidden;
+  background: #000;
+  border: 1px solid rgba(255,255,255,0.08);
+}
+#terrariumCanvas { display:block; width:100%; height:auto; }
+
+.cam-overlay { position:absolute; inset:0; pointer-events:none; }
+
+/* Thin professional frame lines (corners only) */
+.cam-overlay::before {
+  content:''; position:absolute;
+  top:10px; left:10px; width:20px; height:20px;
+  border-top:1px solid rgba(255,255,255,0.3);
+  border-left:1px solid rgba(255,255,255,0.3);
+}
+.cam-overlay::after {
+  content:''; position:absolute;
+  bottom:10px; right:10px; width:20px; height:20px;
+  border-bottom:1px solid rgba(255,255,255,0.3);
+  border-right:1px solid rgba(255,255,255,0.3);
+}
+
+.live-chip {
+  position:absolute; top:10px; left:10px;
+  display:flex; align-items:center; gap:5px;
+  background:rgba(0,0,0,0.5); backdrop-filter:blur(8px);
+  border:1px solid rgba(255,255,255,0.1);
+  border-radius:3px; padding:3px 8px;
+  font-size:10px; font-weight:600; color:rgba(255,255,255,0.85);
+  letter-spacing:0.12em; font-family:'SF Mono',monospace;
+}
+.live-dot {
+  width:5px; height:5px; border-radius:50%;
+  background:#d96e28;
+  animation:pulse-dot 2s ease-in-out infinite;
+}
+@keyframes pulse-dot {
+  0%,100% { opacity:1; }
+  50%      { opacity:0.35; }
+}
+
+.cam-id {
+  position:absolute; top:10px; right:10px;
+  background:rgba(0,0,0,0.5); backdrop-filter:blur(8px);
+  border:1px solid rgba(255,255,255,0.08); border-radius:3px;
+  padding:3px 8px; font-size:10px; color:rgba(255,255,255,0.45);
+  font-family:'SF Mono',monospace; letter-spacing:0.06em;
+}
+.cam-footer {
+  position:absolute; bottom:0; left:0; right:0;
+  background:linear-gradient(transparent, rgba(0,0,0,0.7));
+  padding:20px 12px 10px;
+  display:flex; justify-content:space-between; align-items:flex-end;
+}
+.cam-time { font-family:'SF Mono',monospace; font-size:11px; color:rgba(255,255,255,0.6); letter-spacing:0.06em; }
+.cam-rec  { font-size:10px; color:rgba(217,110,40,0.8); font-weight:600; letter-spacing:0.08em; }
+.cam-spec { font-size:10px; color:rgba(255,255,255,0.3); letter-spacing:0.04em; }
+
+.beh-tag {
+  position:absolute; background:rgba(0,0,0,0.55); backdrop-filter:blur(6px);
+  border:1px solid rgba(255,255,255,0.1); border-radius:3px;
+  padding:3px 8px; font-size:10px; color:rgba(255,255,255,0.65);
+  font-family:'SF Mono',monospace; letter-spacing:0.04em;
+  pointer-events:none;
+}
+
+.nv-toggle {
+  position:absolute; bottom:42px; right:10px;
+  background:rgba(0,0,0,0.5); backdrop-filter:blur(6px);
+  border:1px solid rgba(255,255,255,0.1); border-radius:3px;
+  padding:3px 8px; font-size:10px; color:rgba(255,255,255,0.4); cursor:pointer;
+  pointer-events:all; user-select:none; transition:all .2s;
+  letter-spacing:0.06em; font-family:'SF Mono',monospace;
+}
+.nv-toggle:hover { color:rgba(255,255,255,0.7); border-color:rgba(255,255,255,0.2); }
+.nv-toggle.active { border-color:rgba(217,110,40,0.5); color:rgba(217,110,40,0.9); }
+
+/* ── Camera source picker buttons ── */
+.cam-src-btn {
+  padding:4px 10px; border-radius:3px; cursor:pointer; font-family:inherit;
+  font-size:10px; font-weight:500; letter-spacing:0.05em; text-transform:uppercase;
+  border:1px solid var(--border-light); background:rgba(255,255,255,0.03);
+  color:var(--text-muted); transition:all .18s;
+}
+.cam-src-btn:hover { color:var(--text-primary); background:rgba(255,255,255,0.06); }
+.cam-src-btn.active {
+  border-color:rgba(217,110,40,0.5); color:var(--accent-orange);
+  background:rgba(217,110,40,0.08);
+}
+
+/* ══════════════════════════════════
+   ANIMAL CHAT WIDGET
+   ══════════════════════════════════ */
+
+/* Floating trigger button */
+.chat-fab {
+  position: fixed; bottom: 28px; right: 28px; z-index: 500;
+  width: 52px; height: 52px; border-radius: 50%;
+  background: var(--accent-orange); border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 4px 20px rgba(217,110,40,0.35);
+  transition: transform 0.25s var(--ease,ease), box-shadow 0.25s;
+  font-size: 22px; line-height: 1;
+}
+.chat-fab:hover { transform: scale(1.08); box-shadow: 0 6px 28px rgba(217,110,40,0.5); }
+.chat-fab.open  { background: #2a2927; }
+.chat-fab .fab-icon-open  { display: block; }
+.chat-fab .fab-icon-close { display: none; }
+.chat-fab.open .fab-icon-open  { display: none; }
+.chat-fab.open .fab-icon-close { display: block; }
+
+/* Panel */
+.chat-panel {
+  position: fixed; bottom: 92px; right: 24px; z-index: 499;
+  width: 360px; max-height: 580px;
+  background: #181716;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 14px;
+  display: flex; flex-direction: column;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+  transform: translateY(20px) scale(0.97);
+  opacity: 0; pointer-events: none;
+  transition: transform 0.28s cubic-bezier(0.34,1.2,0.64,1), opacity 0.22s ease;
+}
+.chat-panel.open { transform: translateY(0) scale(1); opacity: 1; pointer-events: all; }
+
+/* Header */
+.chat-header {
+  display: flex; align-items: center; gap: 10px;
+  padding: 14px 16px 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  flex-shrink: 0;
+}
+.chat-avatar {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: rgba(217,110,40,0.12);
+  border: 1px solid rgba(217,110,40,0.25);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; flex-shrink: 0;
+}
+.chat-animal-name { font-size: 13px; font-weight: 600; color: #ede9e4; }
+.chat-animal-species { font-size: 10px; color: #5a5855; margin-top: 1px; font-style: italic; }
+.chat-mood-chip {
+  margin-left: auto;
+  padding: 3px 9px; border-radius: 20px; font-size: 10px; font-weight: 600;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  background: rgba(74,140,104,0.15); color: #6aad84;
+  border: 1px solid rgba(74,140,104,0.25);
+  transition: background 0.4s, color 0.4s, border-color 0.4s;
+}
+.chat-close-btn {
+  width: 24px; height: 24px; border-radius: 50%;
+  background: rgba(255,255,255,0.06); border: none; cursor: pointer;
+  color: #5a5855; font-size: 13px;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.2s, color 0.2s; flex-shrink: 0;
+}
+.chat-close-btn:hover { background: rgba(255,255,255,0.1); color: #ede9e4; }
+
+/* API key setup bar */
+.chat-apikey-bar {
+  padding: 10px 14px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  background: rgba(217,110,40,0.05);
+  flex-shrink: 0;
+}
+.provider-tabs {
+  display: flex; gap: 4px; margin-bottom: 8px;
+}
+.prov-tab {
+  flex: 1; padding: 5px 0; border-radius: 5px; border: 1px solid rgba(255,255,255,0.1);
+  background: transparent; color: #5a5855; font-size: 11px; font-weight: 500;
+  cursor: pointer; font-family: inherit; transition: all 0.18s;
+}
+.prov-tab:hover { color: #8a8784; border-color: rgba(255,255,255,0.18); }
+.prov-tab.active {
+  background: rgba(217,110,40,0.12); border-color: rgba(217,110,40,0.4);
+  color: var(--accent-orange);
+}
+.chat-apikey-bar p {
+  font-size: 10px; color: #8a8784; margin-bottom: 7px; line-height: 1.5;
+}
+.chat-apikey-bar p a { color: var(--accent-orange); }
+.chat-apikey-row { display: flex; gap: 6px; }
+.chat-apikey-input {
+  flex: 1; padding: 6px 10px; border-radius: 5px;
+  background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+  color: #ede9e4; font-size: 11px; font-family: 'SF Mono', monospace;
+  outline: none;
+}
+.chat-apikey-input:focus { border-color: rgba(217,110,40,0.4); }
+.chat-apikey-btn {
+  padding: 6px 12px; border-radius: 5px; border: none;
+  background: var(--accent-orange); color: #fff;
+  font-size: 11px; font-weight: 600; cursor: pointer;
+}
+
+/* Messages */
+.chat-messages {
+  flex: 1; overflow-y: auto; padding: 14px 14px 8px;
+  display: flex; flex-direction: column; gap: 10px;
+  scroll-behavior: smooth;
+}
+.chat-messages::-webkit-scrollbar { width: 3px; }
+.chat-messages::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 2px; }
+
+.chat-msg { display: flex; gap: 8px; max-width: 88%; animation: msg-in 0.22s ease; }
+@keyframes msg-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: none; }
+}
+.chat-msg.user { align-self: flex-end; flex-direction: row-reverse; }
+.chat-msg.animal { align-self: flex-start; }
+.chat-msg.system { align-self: center; max-width: 100%; }
+
+.msg-avatar {
+  width: 26px; height: 26px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; flex-shrink: 0; margin-top: 2px;
+  background: rgba(217,110,40,0.12);
+}
+.msg-avatar.user-av { background: rgba(107,158,184,0.15); font-size: 11px; color: #8ab8ce; }
+
+.msg-bubble {
+  padding: 9px 12px; border-radius: 12px; font-size: 12px; line-height: 1.6;
+}
+.chat-msg.animal .msg-bubble {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.08);
+  color: #ede9e4; border-radius: 4px 12px 12px 12px;
+}
+.chat-msg.user .msg-bubble {
+  background: rgba(217,110,40,0.18);
+  border: 1px solid rgba(217,110,40,0.25);
+  color: #e8c4a0; border-radius: 12px 4px 12px 12px;
+}
+.chat-msg.system .msg-bubble {
+  background: transparent; color: #5a5855;
+  font-size: 10px; text-align: center; border: none; padding: 4px;
+}
+.msg-time {
+  font-size: 9px; color: #5a5855; margin-top: 4px;
+  font-family: 'SF Mono', monospace;
+}
+
+/* Typing indicator */
+.typing-dots { display: flex; gap: 4px; align-items: center; padding: 4px 2px; }
+.typing-dots span {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: #5a5855; animation: dot-bounce 1.4s infinite ease-in-out;
+}
+.typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+.typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes dot-bounce {
+  0%,80%,100% { transform: translateY(0); opacity: 0.4; }
+  40%          { transform: translateY(-5px); opacity: 1; }
+}
+
+/* Sensor context strip */
+.chat-sensor-strip {
+  display: flex; gap: 4px; flex-wrap: wrap;
+  padding: 8px 14px 6px;
+  border-top: 1px solid rgba(255,255,255,0.05);
+  flex-shrink: 0;
+}
+.sensor-chip {
+  padding: 2px 7px; border-radius: 3px; font-size: 9.5px;
+  font-family: 'SF Mono', monospace; letter-spacing: 0.04em;
+  background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07);
+  color: #5a5855;
+}
+.sensor-chip span { color: #8a8784; }
+
+/* Quick reply buttons */
+.chat-quick {
+  display: flex; gap: 5px; flex-wrap: wrap;
+  padding: 6px 14px; flex-shrink: 0;
+}
+.quick-btn {
+  padding: 4px 10px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.04); color: #8a8784;
+  font-size: 10px; cursor: pointer; font-family: inherit;
+  transition: all 0.18s;
+}
+.quick-btn:hover { border-color: rgba(217,110,40,0.4); color: var(--accent-orange); background: rgba(217,110,40,0.06); }
+
+/* Input row */
+.chat-input-row {
+  display: flex; gap: 7px;
+  padding: 10px 14px 14px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  flex-shrink: 0;
+}
+.chat-text-input {
+  flex: 1; padding: 8px 12px; border-radius: 8px;
+  background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+  color: #ede9e4; font-size: 12px; font-family: inherit; outline: none;
+  transition: border-color 0.2s;
+}
+.chat-text-input::placeholder { color: #5a5855; }
+.chat-text-input:focus { border-color: rgba(217,110,40,0.4); }
+.chat-send-btn {
+  padding: 8px 14px; border-radius: 8px; border: none;
+  background: var(--accent-orange); color: #fff;
+  font-size: 13px; cursor: pointer;
+  transition: opacity 0.2s;
+}
+.chat-send-btn:hover { opacity: 0.85; }
+.chat-send-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+/* ── Sensor Grid ── */
+.sensor-grid {
+  display:grid; grid-template-columns:repeat(3,1fr); gap:6px; margin-top:10px;
+}
+.sensor-tile {
+  background:rgba(255,255,255,0.03); border:1px solid var(--border);
+  border-radius:6px; padding:10px 12px; position:relative;
+  border-left:2px solid transparent;
+}
+.sensor-tile.hot   { border-left-color: #b84a3a; }
+.sensor-tile.cool  { border-left-color: #6b9eb8; }
+.sensor-tile.hum   { border-left-color: #4a8c88; }
+.sensor-tile.uv    { border-left-color: #7a6ab0; }
+.sensor-tile.co2   { border-left-color: #4a8c68; }
+.sensor-tile.light { border-left-color: #c89040; }
+
+.sensor-val {
+  font-size:20px; font-weight:600; letter-spacing:-.02em; margin:3px 0 1px;
+  font-family:'SF Mono','Fira Code',monospace;
+}
+.sensor-lbl { font-size:9px; text-transform:uppercase; letter-spacing:0.1em; color:var(--text-muted); }
+.sensor-sub { font-size:10px; color:var(--text-muted); margin-top:2px; }
+.sensor-sparkline { height:22px; margin-top:6px; }
+
+/* ── Gauge ── */
+.gauge-wrap { display:flex; align-items:center; gap:14px; padding:10px 0; }
+.gauge-svg  { flex-shrink:0; }
+.gauge-info { flex:1; }
+.gauge-val  { font-size:24px; font-weight:600; letter-spacing:-.02em; font-family:monospace; }
+.gauge-name { font-size:10px; color:var(--text-muted); text-transform:uppercase; letter-spacing:.08em; }
+.gauge-range{ font-size:10px; color:var(--text-muted); margin-top:2px; }
+
+/* ── Health Matrix ── */
+.health-grid { display:grid; grid-template-columns:1fr 1fr; gap:6px; }
+.health-item {
+  background:rgba(255,255,255,0.03); border:1px solid var(--border);
+  border-radius:6px; padding:10px 12px;
+}
+.h-icon { font-size:0; height:0; overflow:hidden; } /* hide emoji */
+.h-name { font-size:9px; text-transform:uppercase; letter-spacing:0.1em; color:var(--text-muted); }
+.h-val  { font-size:15px; font-weight:500; margin-top:3px; }
+.h-bar  { height:2px; background:rgba(255,255,255,0.06); border-radius:1px; margin-top:7px; overflow:hidden; }
+.h-fill { height:100%; border-radius:1px; transition:width 1.2s ease; }
+
+/* ── Feeding Timeline ── */
+.feed-tl { display:flex; flex-direction:column; gap:0; }
+.feed-entry {
+  display:grid; grid-template-columns:110px 1fr auto;
+  align-items:center; gap:10px; padding:9px 0;
+  border-bottom:1px solid var(--border);
+}
+.feed-entry:last-child { border-bottom:none; }
+.feed-ts  { font-size:10px; color:var(--text-muted); font-family:monospace; letter-spacing:0.03em; }
+.feed-food{ font-size:12px; font-weight:500; color:var(--text-primary); }
+.feed-qty { font-size:10px; color:var(--text-muted); }
+
+/* ── Thermal map ── */
+.thermal-wrap { border-radius:6px; overflow:hidden; position:relative; }
+#thermalCanvas { display:block; width:100%; height:auto; border-radius:6px; }
+.thermal-legend {
+  display:flex; justify-content:space-between; font-size:9px; color:var(--text-muted);
+  margin-top:5px; padding:0 2px; letter-spacing:0.04em; text-transform:uppercase;
+}
+.zone-label {
+  position:absolute; font-size:9px; font-weight:600; letter-spacing:.08em;
+  background:rgba(0,0,0,0.5); padding:2px 5px; border-radius:2px;
+  color:rgba(255,255,255,0.6);
+}
+
+/* ── Alert bar ── */
+.alert-bar {
+  background:rgba(217,110,40,0.07);
+  border:1px solid rgba(217,110,40,0.2); border-radius:6px;
+  padding:9px 14px; display:flex; align-items:center; gap:10px;
+  font-size:12px; margin-bottom:14px; color:var(--text-secondary);
+}
+.alert-bar strong { color:var(--text-primary); }
+
+/* ── Status pill ── */
+.status-pill {
+  display:inline-flex; align-items:center; gap:4px;
+  padding:2px 8px; border-radius:3px; font-size:10px; font-weight:500;
+  letter-spacing:0.04em; text-transform:uppercase;
+}
+.pill-ok   { background:rgba(74,140,104,0.12); color:#6aad84; border:1px solid rgba(74,140,104,0.2); }
+.pill-warn { background:rgba(217,110,40,0.12); color:#e8884a; border:1px solid rgba(217,110,40,0.2); }
+.pill-bad  { background:rgba(184,74,58,0.12); color:#d4735e; border:1px solid rgba(184,74,58,0.2); }
+
+/* ── Subject Profile ── */
+.subject-profile {
+  background:rgba(255,255,255,0.025);
+  border:1px solid var(--border);
+  border-radius:10px; padding:16px;
+}
+.subject-species { font-size:11px; color:var(--text-muted); font-style:italic; margin-top:2px; }
+.subject-meta    { font-size:10px; color:var(--text-muted); }
+</style>
+</head>
+<body>
+<div class="app-container">
+
+  <!-- ── Sidebar ── -->
+  <nav class="sidebar">
+    <div class="sidebar-logo" style="justify-content:center;padding:24px 12px 20px;">
+      <img src="assets/tonitruum-logo-white.png" alt="TONITRUUM"
+           style="width:100%;height:auto;max-width:180px;opacity:0.85;">
+    </div>
+    <ul class="nav-list">
+      <li class="nav-section">Monitor</li>
+      <li class="nav-item active"><a href="index.html"><span class="nav-icon">⬡</span>Habitat Monitor</a></li>
+      <li class="nav-section">Clinical</li>
+      <li class="nav-item"><a href="autism.html"><span class="nav-icon">♡</span>Patient Care</a></li>
+      <li class="nav-item"><a href="assessment.html"><span class="nav-icon">≡</span>Assessments</a></li>
+      <li class="nav-item"><a href="parent-form.html"><span class="nav-icon">✎</span>Parent Reports</a></li>
+      <li class="nav-item"><a href="medical.html"><span class="nav-icon">✚</span>Medical Consult</a></li>
+      <li class="nav-section">Strategy</li>
+      <li class="nav-item"><a href="service.html"><span class="nav-icon">◎</span>Service Overview</a></li>
+      <li class="nav-item"><a href="stakeholder.html"><span class="nav-icon">◉</span>Stakeholder Map</a></li>
+      <li class="nav-item"><a href="product.html"><span class="nav-icon">◈</span>Product Design</a></li>
+      <li class="nav-section">Project</li>
+      <li class="nav-item"><a href="phase0.html"><span class="nav-icon">◫</span>Phase 0 Origin</a></li>
+      <li class="nav-item"><a href="phase1.html"><span class="nav-icon">◧</span>Phase 1 Research</a></li>
+      <li class="nav-item"><a href="founder.html"><span class="nav-icon">◐</span>Founder</a></li>
+      <li class="nav-item"><a href="research.html"><span class="nav-icon">◇</span>Reptile Therapy</a></li>
+      <li class="nav-item"><a href="market.html"><span class="nav-icon">◆</span>Business Model</a></li>
+      <li class="nav-section">Play</li>
+      <li class="nav-item"><a href="game.html"><span class="nav-icon">◎</span>Cricket Hunter</a></li>
+    
+    
+    </ul>
+    <div class="sidebar-footer">
+      <div class="sys-status"><span class="status-indicator status-good"></span>All Systems Online</div>
+      <div class="sys-time" id="sidebarTime"></div>
+    </div>
+  </nav>
+
+  <!-- ── Main ── -->
+  <main class="main-content">
+    <header class="page-header">
+      <div>
+        <h1 class="page-title">Habitat Monitor</h1>
+        <p class="page-desc">Agalychnis callidryas · Enclosure A-01 · Red-Eyed Tree Frog</p>
+      </div>
+      <div class="header-actions">
+        <button class="btn btn-outline" onclick="refreshAll()">Refresh</button>
+        <button class="btn btn-primary" onclick="showToast('Report exported','success')">Export Report</button>
+      </div>
+    </header>
+
+    <!-- Alert -->
+    <div class="alert-bar" id="alertBar">
+      <span style="color:var(--accent-orange);font-size:11px;font-weight:600;letter-spacing:.06em;">FEEDING</span>
+      <span><strong>Maple</strong> last fed 18 hrs ago. Next scheduled: <strong>Today 18:00</strong> — crickets × 3, Ca+D3 dusted</span>
+      <button class="btn btn-outline" style="margin-left:auto;font-size:10px;padding:3px 9px;" onclick="document.getElementById('alertBar').style.display='none'">Dismiss</button>
+    </div>
+
+    <!-- ── TOP ROW ── -->
+    <div class="content-grid" style="grid-template-columns:1.45fr 1fr;">
+
+      <!-- Camera card -->
+      <div class="card" style="padding:14px;">
+        <div class="card-header" style="margin-bottom:8px;">
+          <span class="card-title">Live Camera Feed</span>
+          <span class="status-pill pill-ok" id="camStatusPill">External · Live</span>
+        </div>
+
+        <!-- Source picker -->
+        <div style="display:flex;gap:4px;margin-bottom:10px;flex-wrap:wrap;" id="srcPicker">
+          <button class="cam-src-btn active" onclick="switchSource(0)">Detroit Zoo · Reptiles</button>
+          <button class="cam-src-btn" onclick="switchSource(1)">San Diego Zoo</button>
+          <button class="cam-src-btn" onclick="switchSource(2)">Snake Discovery</button>
+          <button class="cam-src-btn" onclick="switchSource(3)">Tonitruum Demo</button>
+          <button class="cam-src-btn" onclick="switchSource(4)">Simulated</button>
+        </div>
+
+        <!-- LIVE MODE: YouTube embed -->
+        <div class="camera-wrap" id="livePanel">
+          <div style="position:relative;width:100%;padding-top:54.3%;background:#0a0a09;">
+            <iframe
+              id="ytFrame"
+              src="https://www.youtube.com/embed/live_stream?channel=UCSItNOumrZVrQCvWiIDW2hA&autoplay=1&mute=1&controls=1&modestbranding=1&rel=0"
+              style="position:absolute;top:0;left:0;width:100%;height:100%;border:none;"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen
+              title="Live Camera"
+            ></iframe>
+          </div>
+          <div class="cam-overlay" style="pointer-events:none;">
+            <div class="live-chip"><div class="live-dot"></div>LIVE</div>
+            <div class="cam-id" id="camSourceLabel">Holden Reptile Conservation Center</div>
+            <div class="cam-footer">
+              <span class="cam-time" id="camClock">--:--:--</span>
+              <span class="cam-spec" id="camSpecLabel">Detroit Zoological Society</span>
+              <a id="camSrcLink" href="https://detroitzoo.org/live-cam/reptiles-cam/" target="_blank"
+                 style="color:rgba(217,110,40,0.85);font-size:10px;font-weight:600;
+                        letter-spacing:.08em;text-decoration:none;pointer-events:all;">↗ OPEN</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- SIMULATED MODE: canvas fallback -->
+        <div class="camera-wrap" id="simPanel" style="display:none;">
+          <canvas id="terrariumCanvas" width="700" height="380"></canvas>
+          <div class="cam-overlay">
+            <div class="live-chip" style="border-color:rgba(255,255,255,0.12);">
+              <div class="live-dot" style="background:#5a5855;animation:none;"></div>SIM
+            </div>
+            <div class="cam-id">CAM-01 · ENCL-A</div>
+            <div class="beh-tag" id="behTag" style="bottom:44px;left:12px;">STATIONARY · GLASS WALL</div>
+            <div class="cam-footer">
+              <span class="cam-time" id="camClock2">--:--:--</span>
+              <span class="cam-spec">Simulated · Demo Mode</span>
+              <span class="cam-rec">REC</span>
+            </div>
+            <div class="nv-toggle" id="nvToggle" onclick="toggleNV()">NIGHT VISION</div>
+          </div>
+        </div>
+
+        <!-- Sensor grid below camera -->
+        <div class="sensor-grid">
+          <div class="sensor-tile hot">
+            <div class="sensor-lbl">Basking Spot</div>
+            <div class="sensor-val" id="sHot" style="color:#d4735e;">83.4°F</div>
+            <div class="sensor-sub" id="sHotC">28.6°C · optimal</div>
+            <canvas class="sensor-sparkline" id="spk0"></canvas>
+          </div>
+          <div class="sensor-tile cool">
+            <div class="sensor-lbl">Cool Side</div>
+            <div class="sensor-val" id="sCool" style="color:#8ab8ce;">73.2°F</div>
+            <div class="sensor-sub" id="sCoolC">22.9°C · optimal</div>
+            <canvas class="sensor-sparkline" id="spk1"></canvas>
+          </div>
+          <div class="sensor-tile hum">
+            <div class="sensor-lbl">Humidity</div>
+            <div class="sensor-val" id="sHum" style="color:#6aad94;">78%</div>
+            <div class="sensor-sub">Target 70–80%</div>
+            <canvas class="sensor-sparkline" id="spk2"></canvas>
+          </div>
+          <div class="sensor-tile uv">
+            <div class="sensor-lbl">UVB Index</div>
+            <div class="sensor-val" id="sUV" style="color:#a090cc;">2.8</div>
+            <div class="sensor-sub">T5 HO 5.0 · 11h on</div>
+            <canvas class="sensor-sparkline" id="spk3"></canvas>
+          </div>
+          <div class="sensor-tile co2">
+            <div class="sensor-lbl">CO₂ (bioactive)</div>
+            <div class="sensor-val" id="sCO2" style="color:#6aad84;">920 ppm</div>
+            <div class="sensor-sub">Target &lt;1200 ppm</div>
+            <canvas class="sensor-sparkline" id="spk4"></canvas>
+          </div>
+          <div class="sensor-tile light">
+            <div class="sensor-lbl">Photoperiod</div>
+            <div class="sensor-val" style="color:#c89040;">11h 23m</div>
+            <div class="sensor-sub">Lights off: 20:00</div>
+            <canvas class="sensor-sparkline" id="spk5"></canvas>
+          </div>
+          <div class="sensor-tile" style="border-left-color:#4a7aad;">
+            <div class="sensor-lbl">Water Flow</div>
+            <div class="sensor-val" id="sFlow" style="color:#4a9acd;">-- L/h</div>
+            <div class="sensor-sub" id="sFlowTotal">Total: -- mL</div>
+            <canvas class="sensor-sparkline" id="spk6"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right column -->
+      <div style="display:flex;flex-direction:column;gap:12px;">
+
+        <!-- Subject Profile -->
+        <div class="subject-profile">
+          <div class="card-header" style="margin-bottom:10px;">
+            <span class="card-title">Subject Profile</span>
+            <span class="status-pill pill-ok">Healthy</span>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:14px;">
+            <div style="width:48px;height:48px;border-radius:6px;background:rgba(255,255,255,0.06);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="1.5">
+                <circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/>
+              </svg>
+            </div>
+            <div style="flex:1;">
+              <div style="font-size:16px;font-weight:600;color:var(--text-primary);letter-spacing:-.01em;">Maple</div>
+              <div class="subject-species">Agalychnis callidryas</div>
+              <div class="subject-meta" style="margin-top:2px;">Red-Eyed Tree Frog · F · Adult</div>
+              <div style="display:flex;gap:5px;margin-top:8px;flex-wrap:wrap;">
+                <span class="status-pill pill-ok" id="moodPill">Content</span>
+                <span class="status-pill" style="background:rgba(107,158,184,0.12);color:#8ab8ce;border:1px solid rgba(107,158,184,0.2);" id="actPill">Resting</span>
+              </div>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-top:14px;border-top:1px solid var(--border);padding-top:12px;">
+            <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;padding:4px 0;">Age</div>
+            <div style="font-size:12px;color:var(--text-primary);text-align:right;padding:4px 0;">2 yr 4 mo</div>
+            <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;padding:4px 0;">Weight</div>
+            <div style="font-size:12px;color:var(--text-primary);text-align:right;padding:4px 0;">8.3 g <span style="color:var(--text-muted);">stable</span></div>
+            <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;padding:4px 0;">SVL</div>
+            <div style="font-size:12px;color:var(--text-primary);text-align:right;padding:4px 0;">52 mm</div>
+            <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;padding:4px 0;">Last shed</div>
+            <div style="font-size:12px;color:var(--text-primary);text-align:right;padding:4px 0;">12 days ago</div>
+            <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;padding:4px 0;">Health score</div>
+            <div style="text-align:right;padding:4px 0;">
+              <span style="font-size:16px;font-weight:600;color:var(--accent-orange);" id="hScore">92</span>
+              <span style="font-size:10px;color:var(--text-muted);"> / 100</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Health matrix -->
+        <div class="card" style="padding:14px;">
+          <div class="card-header">
+            <span class="card-title">Vital Indicators</span>
+            <span class="badge badge-green">All Normal</span>
+          </div>
+          <div class="health-grid">
+            <div class="health-item">
+              <div class="h-name">Hydration</div>
+              <div class="h-val" style="color:#6aad94;" id="hHyd">Excellent</div>
+              <div class="h-bar"><div class="h-fill" style="width:93%;background:#4a8c88;"></div></div>
+            </div>
+            <div class="health-item">
+              <div class="h-name">Appetite</div>
+              <div class="h-val" style="color:#6aad84;" id="hApp">Good</div>
+              <div class="h-bar"><div class="h-fill" style="width:82%;background:#4a8c68;"></div></div>
+            </div>
+            <div class="health-item">
+              <div class="h-name">Coloration</div>
+              <div class="h-val" style="color:#6aad84;" id="hCol">Vivid</div>
+              <div class="h-bar"><div class="h-fill" style="width:95%;background:#4a8c68;"></div></div>
+            </div>
+            <div class="health-item">
+              <div class="h-name">Stress Level</div>
+              <div class="h-val" style="color:#6aad84;" id="hStr">Very Low</div>
+              <div class="h-bar"><div class="h-fill" style="width:10%;background:#b84a3a;"></div></div>
+            </div>
+            <div class="health-item">
+              <div class="h-name">Activity</div>
+              <div class="h-val" style="color:#e8884a;" id="hAct">Moderate</div>
+              <div class="h-bar"><div class="h-fill" id="actBar" style="width:62%;background:#d96e28;"></div></div>
+            </div>
+            <div class="health-item">
+              <div class="h-name">Body Condition</div>
+              <div class="h-val" style="color:#6aad84;">Optimal</div>
+              <div class="h-bar"><div class="h-fill" style="width:90%;background:#4a8c68;"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 24h chart -->
+        <div class="card" style="padding:14px;">
+          <div class="card-header">
+            <span class="card-title">24h Environmental Log</span>
+          </div>
+          <canvas id="envChart" height="120"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── BOTTOM ROW ── -->
+    <div class="content-grid" style="grid-template-columns:1fr 1fr 1fr;margin-top:14px;">
+
+      <!-- Feeding log -->
+      <div class="card" style="padding:14px;">
+        <div class="card-header">
+          <span class="card-title">Feeding Log</span>
+          <span class="badge badge-blue">3 feeds / week</span>
+        </div>
+        <div class="feed-tl">
+          <div class="feed-entry">
+            <div>
+              <div class="feed-ts">Mar 23 · 18:30</div>
+              <div style="font-size:9px;color:var(--text-muted);margin-top:1px;">19 hrs ago</div>
+            </div>
+            <div>
+              <div class="feed-food">Crickets <span style="color:#6aad84;font-size:11px;font-weight:400;">Consumed</span></div>
+              <div class="feed-qty">3 × dusted (Ca + D3)</div>
+            </div>
+            <span class="status-pill pill-ok">100%</span>
+          </div>
+          <div class="feed-entry">
+            <div>
+              <div class="feed-ts">Mar 21 · 19:00</div>
+              <div style="font-size:9px;color:var(--text-muted);margin-top:1px;">2 days ago</div>
+            </div>
+            <div>
+              <div class="feed-food">Waxworms <span style="color:#6aad84;font-size:11px;font-weight:400;">Consumed</span></div>
+              <div class="feed-qty">5 × plain</div>
+            </div>
+            <span class="status-pill pill-ok">100%</span>
+          </div>
+          <div class="feed-entry">
+            <div>
+              <div class="feed-ts">Mar 19 · 18:45</div>
+              <div style="font-size:9px;color:var(--text-muted);margin-top:1px;">4 days ago</div>
+            </div>
+            <div>
+              <div class="feed-food">Crickets + Ca <span style="color:#6aad84;font-size:11px;font-weight:400;">Consumed</span></div>
+              <div class="feed-qty">4 × dusted (Ca)</div>
+            </div>
+            <span class="status-pill pill-ok">100%</span>
+          </div>
+          <div class="feed-entry">
+            <div>
+              <div class="feed-ts">Mar 17 · 19:30</div>
+              <div style="font-size:9px;color:var(--text-muted);margin-top:1px;">6 days ago</div>
+            </div>
+            <div>
+              <div class="feed-food">Waxworms <span style="color:#e8884a;font-size:11px;font-weight:400;">Partial</span></div>
+              <div class="feed-qty">3/5 eaten</div>
+            </div>
+            <span class="status-pill pill-warn">60%</span>
+          </div>
+          <div class="feed-entry">
+            <div>
+              <div class="feed-ts">Mar 15 · 18:00</div>
+              <div style="font-size:9px;color:var(--text-muted);margin-top:1px;">8 days ago</div>
+            </div>
+            <div>
+              <div class="feed-food">Crickets <span style="color:#6aad84;font-size:11px;font-weight:400;">Consumed</span></div>
+              <div class="feed-qty">3 × dusted (D3)</div>
+            </div>
+            <span class="status-pill pill-ok">100%</span>
+          </div>
+        </div>
+        <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border);">
+          <canvas id="feedChart" height="70"></canvas>
+        </div>
+      </div>
+
+      <!-- Thermal map -->
+      <div class="card" style="padding:14px;">
+        <div class="card-header">
+          <span class="card-title">Thermal Gradient</span>
+          <span class="badge badge-orange">Live</span>
+        </div>
+        <div class="thermal-wrap">
+          <canvas id="thermalCanvas" width="340" height="200"></canvas>
+        </div>
+        <div class="thermal-legend">
+          <span>Cool 70°F</span>
+          <span>Ambient 76°F</span>
+          <span>Basking 84°F</span>
+        </div>
+        <div style="margin-top:12px;display:flex;flex-direction:column;gap:6px;">
+          <div style="display:flex;justify-content:space-between;font-size:11px;">
+            <span style="color:var(--text-muted);">Day min / max</span>
+            <span style="color:var(--text-primary);font-family:monospace;">71.2°F / 84.1°F</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:11px;">
+            <span style="color:var(--text-muted);">Night target</span>
+            <span style="color:#8ab8ce;font-family:monospace;">68–72°F</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:11px;">
+            <span style="color:var(--text-muted);">Gradient spread</span>
+            <span style="color:#6aad84;font-family:monospace;">12.9°F · Ideal</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:11px;">
+            <span style="color:var(--text-muted);">Last misting</span>
+            <span style="color:var(--text-secondary);font-family:monospace;">13:40 · Auto</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:11px;">
+            <span style="color:var(--text-muted);">Next misting</span>
+            <span style="color:var(--text-muted);font-family:monospace;">17:00 · Scheduled</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Welfare assessment -->
+      <div class="card" style="padding:14px;">
+        <div class="card-header">
+          <span class="card-title">Welfare Assessment</span>
+          <span class="badge badge-orange">Score 92/100</span>
+        </div>
+        <div style="position:relative;height:170px;"><canvas id="welfareRadar"></canvas></div>
+        <div style="margin-top:12px;display:flex;flex-direction:column;gap:7px;">
+          <div>
+            <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px;">
+              <span style="color:var(--text-muted);">Nutrition Status</span>
+              <span style="color:#6aad84;font-weight:500;font-family:monospace;">88%</span>
+            </div>
+            <div class="progress-track"><div class="progress-fill" style="width:88%;background:#4a8c68;"></div></div>
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px;">
+              <span style="color:var(--text-muted);">Hydration</span>
+              <span style="color:#6aad94;font-weight:500;font-family:monospace;">95%</span>
+            </div>
+            <div class="progress-track"><div class="progress-fill" style="width:95%;background:#4a8c88;"></div></div>
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px;">
+              <span style="color:var(--text-muted);">Activity Level</span>
+              <span style="color:#e8884a;font-weight:500;font-family:monospace;">72%</span>
+            </div>
+            <div class="progress-track"><div class="progress-fill" style="width:72%;background:#d96e28;"></div></div>
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px;">
+              <span style="color:var(--text-muted);">Skin Condition</span>
+              <span style="color:#6aad84;font-weight:500;font-family:monospace;">94%</span>
+            </div>
+            <div class="progress-track"><div class="progress-fill" style="width:94%;background:#4a8c68;"></div></div>
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px;">
+              <span style="color:var(--text-muted);">Stress Markers</span>
+              <span style="color:#6aad84;font-weight:500;font-family:monospace;">Low</span>
+            </div>
+            <div class="progress-track"><div class="progress-fill" style="width:92%;background:#4a8c68;"></div></div>
+          </div>
+        </div>
+        <div style="margin-top:10px;padding:10px 12px;background:rgba(255,255,255,0.025);border:1px solid var(--border);border-radius:5px;font-size:10px;color:var(--text-muted);line-height:1.7;">
+          <strong style="color:var(--text-secondary);font-weight:500;">Vet Note (Mar 10):</strong> Maple in excellent condition. Continue bi-weekly calcium dusting. Monitor hydration post-misting. Next wellness check Apr 7.
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- ══════════════════════════════
+     ANIMAL CHAT WIDGET
+     ══════════════════════════════ -->
+
+<!-- Floating button -->
+<button class="chat-fab" id="chatFab" title="Chat with Maple">
+  <span class="fab-icon-open">🐸</span>
+  <span class="fab-icon-close" style="font-size:16px;color:#8a8784;">✕</span>
+</button>
+
+<!-- Chat panel -->
+<div class="chat-panel" id="chatPanel">
+
+  <!-- Header -->
+  <div class="chat-header">
+    <div class="chat-avatar">🐸</div>
+    <div>
+      <div class="chat-animal-name">Maple</div>
+      <div class="chat-animal-species">Agalychnis callidryas · Encl A-01</div>
+    </div>
+    <div class="chat-mood-chip" id="chatMoodChip">Content</div>
+    <button class="chat-close-btn" id="chatCloseBtn">✕</button>
+  </div>
+
+  <!-- API Key bar (hidden after key is saved) -->
+  <div class="chat-apikey-bar" id="chatApikeyBar">
+    <!-- Provider selector -->
+    <div class="provider-tabs" id="providerTabs">
+      <button class="prov-tab active" data-prov="pollinations">✦ 免费<br><span style="font-size:9px;opacity:.7">无需Key</span></button>
+      <button class="prov-tab" data-prov="ollama">🖥 本地<br><span style="font-size:9px;opacity:.7">Ollama</span></button>
+      <button class="prov-tab" data-prov="gemini">Gemini</button>
+      <button class="prov-tab" data-prov="deepseek">DeepSeek</button>
+      <button class="prov-tab" data-prov="doubao">豆包</button>
+    </div>
+    <p id="chatApikeyHint"></p>
+    <!-- Ollama fields -->
+    <div id="ollamaFields" style="display:none;gap:6px;flex-direction:column;margin-bottom:6px;">
+      <div style="display:flex;gap:6px;">
+        <input class="chat-apikey-input" id="ollamaHost" placeholder="http://localhost:11434" style="flex:2;">
+        <input class="chat-apikey-input" id="ollamaModel" placeholder="qwen2.5:3b" style="flex:1;">
+      </div>
+    </div>
+    <!-- API key row (hidden for Ollama) -->
+    <div class="chat-apikey-row" id="apikeyRow">
+      <input class="chat-apikey-input" id="chatApikeyInput" type="password" placeholder="AIza...">
+      <button class="chat-apikey-btn" id="chatApikeyBtn">启用</button>
+    </div>
+    <!-- Ollama connect button -->
+    <div id="ollamaRow" style="display:none;">
+      <button class="chat-apikey-btn" id="ollamaConnectBtn" style="width:100%;">连接 Ollama</button>
+    </div>
+  </div>
+
+  <!-- Live sensor context strip -->
+  <div class="chat-sensor-strip" id="chatSensorStrip">
+    <span class="sensor-chip">🌡 <span id="csHot">--</span></span>
+    <span class="sensor-chip">❄️ <span id="csCool">--</span></span>
+    <span class="sensor-chip">💧 <span id="csHum">--</span></span>
+    <span class="sensor-chip">☀️ UVB <span id="csUV">--</span></span>
+    <span class="sensor-chip">🌿 CO₂ <span id="csCO2">--</span></span>
+  </div>
+
+  <!-- Messages -->
+  <div class="chat-messages" id="chatMessages"></div>
+
+  <!-- Quick replies -->
+  <div class="chat-quick" id="chatQuick">
+    <button class="quick-btn" onclick="chatQuickSend('How are you feeling right now?')">How are you? 🌿</button>
+    <button class="quick-btn" onclick="chatQuickSend('Are you hungry?')">Hungry? 🦟</button>
+    <button class="quick-btn" onclick="chatQuickSend('Is your environment comfortable?')">Environment 🌡</button>
+    <button class="quick-btn" onclick="chatQuickSend('What are you doing right now?')">What\'s up? 👀</button>
+  </div>
+
+  <!-- Input -->
+  <div class="chat-input-row">
+    <input class="chat-text-input" id="chatTextInput" placeholder="Ask Maple anything…" maxlength="300">
+    <button class="chat-send-btn" id="chatSendBtn" onclick="chatSend()">↑</button>
+  </div>
+
+</div>
+
+<script src="shared.js"></script>
+<script>
+// ═══════════════════════════════════════
+//  TERRARIUM CANVAS — realistic RETF
+// ═══════════════════════════════════════
+const TC = document.getElementById('terrariumCanvas');
+const tx = TC.getContext('2d');
+const W = TC.width, H = TC.height;
+let t = 0, nvMode = false;
+let frogX = W*0.52, frogY = H*0.42, frogVX = 0.06, frogVY = 0.025;
+let blinkTimer = 0, blinkOpen = true;
+let mistParticles = [];
+let dewDrops = [];
+let leaves = [];
+
+// Initialise dew drops
+for(let i=0;i<18;i++) dewDrops.push({ x:Math.random()*W, y:Math.random()*H*0.75, r:Math.random()*2+0.8, a:Math.random()*0.5+0.15 });
+// Initialise leaf data
+leaves = [
+  {x:60, y:220, len:80, ang:-0.35, sway:0},
+  {x:80, y:205, len:65, ang:0.2, sway:0.6},
+  {x:560, y:195, len:90, ang:0.5, sway:1.2},
+  {x:540, y:215, len:70, ang:-0.15, sway:0.4},
+  {x:310, y:255, len:50, ang:0.1, sway:0.9},
+  {x:350, y:248, len:55, ang:-0.25, sway:1.8},
+  {x:180, y:240, len:40, ang:0.3, sway:2.4},
+  {x:430, y:238, len:46, ang:-0.1, sway:3.1},
+];
+
+function spawnMist() {
+  if(mistParticles.length < 60) {
+    for(let i=0;i<4;i++) mistParticles.push({
+      x: Math.random()*W*0.6+W*0.2, y: H*0.15,
+      vx:(Math.random()-.5)*0.4, vy: Math.random()*0.8+0.3,
+      life:1, r: Math.random()*3+1.5
+    });
+  }
+}
+
+function leaf(x,y,len,ang,col1,col2){
+  tx.save(); tx.translate(x,y); tx.rotate(ang);
+  const g = tx.createLinearGradient(0,0,0,-len);
+  g.addColorStop(0,col1); g.addColorStop(1,col2);
+  tx.beginPath();
+  tx.moveTo(0,0);
+  tx.bezierCurveTo(-len*.22,-len*.3,-len*.28,-len*.7,0,-len);
+  tx.bezierCurveTo( len*.28,-len*.7, len*.22,-len*.3,0,0);
+  tx.fillStyle=g; tx.fill();
+  tx.beginPath(); tx.moveTo(0,0); tx.lineTo(0,-len);
+  tx.strokeStyle='rgba(0,0,0,0.15)'; tx.lineWidth=1.2; tx.stroke();
+  tx.restore();
+}
+
+function drawEye(cx,cy,r,blink){
+  const glow = tx.createRadialGradient(cx,cy,r*0.3,cx,cy,r*1.6);
+  glow.addColorStop(0,'rgba(200,0,0,0.25)'); glow.addColorStop(1,'transparent');
+  tx.beginPath(); tx.arc(cx,cy,r*1.6,0,Math.PI*2); tx.fillStyle=glow; tx.fill();
+  tx.beginPath(); tx.arc(cx,cy,r+1.5,0,Math.PI*2);
+  tx.fillStyle='#3a0000'; tx.fill();
+  const ig = tx.createRadialGradient(cx-r*.25,cy-r*.25,r*.1,cx,cy,r);
+  ig.addColorStop(0,'#ff5555'); ig.addColorStop(0.45,'#cc1010'); ig.addColorStop(1,'#7a0000');
+  tx.beginPath(); tx.arc(cx,cy,r,0,Math.PI*2); tx.fillStyle=ig; tx.fill();
+  tx.beginPath(); tx.arc(cx,cy,r*.52,0,Math.PI*2);
+  tx.fillStyle='#b36200'; tx.fill();
+  if(blink){
+    tx.beginPath(); tx.ellipse(cx,cy, r*.18, r*.52, 0,0,Math.PI*2);
+    tx.fillStyle='#060606'; tx.fill();
+  } else {
+    tx.beginPath(); tx.ellipse(cx,cy,r,r*.15,0,0,Math.PI*2);
+    tx.fillStyle='#1a5010'; tx.fill();
+  }
+  tx.beginPath(); tx.arc(cx+r*.32,cy-r*.3,r*.24,0,Math.PI*2);
+  tx.fillStyle='rgba(255,255,255,0.72)'; tx.fill();
+  tx.beginPath(); tx.arc(cx-r*.28,cy+r*.28,r*.12,0,Math.PI*2);
+  tx.fillStyle='rgba(255,255,255,0.25)'; tx.fill();
+}
+
+function toePad(x,y,r){ tx.beginPath(); tx.arc(x,y,r,0,Math.PI*2); tx.fillStyle='#d04a10'; tx.fill(); tx.strokeStyle='#8a2800'; tx.lineWidth=.6; tx.stroke(); }
+
+function drawToes(bx,by,dir,rearFoot){
+  const angles = rearFoot ? [-45,-20,5,28,48] : [-35,-10,18,44];
+  const len = rearFoot ? 14 : 11;
+  tx.lineWidth=3; tx.lineCap='round'; tx.strokeStyle='#2a6e14';
+  angles.forEach(a=>{
+    const rad=(a*dir)*Math.PI/180;
+    const ex=bx+Math.cos(rad)*len, ey=by+Math.sin(rad)*len;
+    tx.beginPath(); tx.moveTo(bx,by); tx.lineTo(ex,ey); tx.stroke();
+    toePad(ex,ey,3.2);
+  });
+}
+
+function drawFrog(fx,fy,sc,bl){
+  tx.save(); tx.translate(fx,fy); tx.scale(sc,sc);
+  const bw = Math.sin(t*.025)*.8;
+
+  tx.beginPath(); tx.ellipse(0,36+bw,20,7,0,0,Math.PI*2);
+  tx.fillStyle='rgba(0,0,0,0.22)'; tx.fill();
+
+  tx.lineWidth=9; tx.lineCap='round'; tx.strokeStyle='#25650f';
+  tx.beginPath(); tx.moveTo(-13,12+bw); tx.quadraticCurveTo(-32,24,-26,38+bw); tx.stroke();
+  drawToes(-26,38+bw,-1,true);
+  tx.beginPath(); tx.moveTo(13,12+bw); tx.quadraticCurveTo(32,24,26,38+bw); tx.stroke();
+  drawToes(26,38+bw,1,true);
+
+  const bg=tx.createRadialGradient(-5,-5+bw,3,0,0+bw,24);
+  bg.addColorStop(0,'#62d42e'); bg.addColorStop(0.55,'#3cb81a'); bg.addColorStop(1,'#1d7208');
+  tx.beginPath(); tx.ellipse(0,bw,21,27+bw*.5,0,0,Math.PI*2);
+  tx.fillStyle=bg; tx.fill();
+
+  tx.beginPath(); tx.ellipse(-19,5+bw,5,14,0.25,0,Math.PI*2);
+  tx.fillStyle='rgba(58,100,210,0.48)'; tx.fill();
+  tx.beginPath(); tx.ellipse(19,5+bw,5,14,-0.25,0,Math.PI*2);
+  tx.fillStyle='rgba(58,100,210,0.48)'; tx.fill();
+
+  const vg=tx.createRadialGradient(0,12+bw,2,0,14+bw,14);
+  vg.addColorStop(0,'#f2edca'); vg.addColorStop(1,'#cfc07a');
+  tx.beginPath(); tx.ellipse(0,14+bw,12,15,0,0,Math.PI*2);
+  tx.fillStyle=vg; tx.fill();
+
+  const hg=tx.createRadialGradient(-3,-22+bw,2,0,-21+bw,18);
+  hg.addColorStop(0,'#62d42e'); hg.addColorStop(1,'#257a0a');
+  tx.beginPath(); tx.ellipse(0,-21+bw,18,16,0,0,Math.PI*2);
+  tx.fillStyle=hg; tx.fill();
+
+  tx.beginPath(); tx.moveTo(-9,-15+bw); tx.lineTo(9,-15+bw);
+  tx.strokeStyle='rgba(0,0,0,0.18)'; tx.lineWidth=1.2; tx.stroke();
+
+  tx.fillStyle='rgba(0,0,0,0.28)';
+  tx.beginPath(); tx.arc(-4,-19+bw,1.6,0,Math.PI*2); tx.fill();
+  tx.beginPath(); tx.arc(4,-19+bw,1.6,0,Math.PI*2); tx.fill();
+
+  tx.lineWidth=7; tx.strokeStyle='#25650f'; tx.lineCap='round';
+  tx.beginPath(); tx.moveTo(-17,-4+bw); tx.quadraticCurveTo(-30,8,-23,20+bw); tx.stroke();
+  drawToes(-23,20+bw,-1,false);
+  tx.beginPath(); tx.moveTo(17,-4+bw); tx.quadraticCurveTo(30,8,23,20+bw); tx.stroke();
+  drawToes(23,20+bw,1,false);
+
+  drawEye(-10,-33+bw,10.5,bl);
+  drawEye( 10,-33+bw,10.5,bl);
+
+  tx.restore();
+}
+
+function render(){
+  const skyG = tx.createLinearGradient(0,0,0,H);
+  if(nvMode){
+    skyG.addColorStop(0,'#011a01'); skyG.addColorStop(1,'#021202');
+  } else {
+    skyG.addColorStop(0,'#0a1a08'); skyG.addColorStop(1,'#0f220c');
+  }
+  tx.fillStyle=skyG; tx.fillRect(0,0,W,H);
+
+  if(!nvMode){
+    const lg=tx.createRadialGradient(W-80,40,5,W-80,40,200);
+    lg.addColorStop(0,'rgba(255,160,50,0.12)'); lg.addColorStop(1,'transparent');
+    tx.fillStyle=lg; tx.fillRect(0,0,W,H);
+  }
+
+  const gr=tx.createLinearGradient(0,H-95,0,H);
+  gr.addColorStop(0,nvMode?'#072007':'#172e0e');
+  gr.addColorStop(1,nvMode?'#041504':'#0e1e08');
+  tx.fillStyle=gr; tx.fillRect(0,H-95,W,95);
+
+  for(let i=0;i<80;i++){
+    tx.beginPath();
+    tx.arc(i*9.5+Math.sin(i*1.7)*6, H-70+Math.cos(i*2.3)*12, 1.8+Math.sin(i)*1.2, 0,Math.PI*2);
+    tx.fillStyle=nvMode?`rgba(30,80,30,${.4+i%3*.1})`:`rgba(${30+i%18},${52+i%14},${10+i%9},0.7)`;
+    tx.fill();
+  }
+
+  tx.beginPath();
+  tx.moveTo(60,H-85); tx.quadraticCurveTo(300,H-160,650,H-80);
+  const brc=nvMode?'#1a4d1a':'#5c3a18';
+  tx.strokeStyle=brc; tx.lineWidth=22; tx.lineCap='round'; tx.stroke();
+  tx.strokeStyle=nvMode?'#265526':'#704820'; tx.lineWidth=18; tx.stroke();
+  for(let b=0;b<6;b++){
+    const bx=120+b*85, by=H-140+b*10;
+    tx.beginPath(); tx.moveTo(bx,by); tx.lineTo(bx+30,by+5);
+    tx.strokeStyle='rgba(0,0,0,0.15)'; tx.lineWidth=1.5; tx.stroke();
+  }
+
+  leaves.forEach((lf)=>{
+    const sw = Math.sin(t*.018+lf.sway)*0.08;
+    const dark  = nvMode?'#063d06':'#1a520e';
+    const bright = nvMode?'#0a5a0a':'#2c7a18';
+    leaf(lf.x, lf.y, lf.len, lf.ang+sw, dark, bright);
+  });
+
+  tx.beginPath(); tx.ellipse(W-110,H-72,45,15,0,0,Math.PI*2);
+  tx.fillStyle=nvMode?'#001a2a':'#1a3a5a'; tx.fill();
+  tx.strokeStyle=nvMode?'#0a3a4a':'#2d5a8a'; tx.lineWidth=2; tx.stroke();
+  const wShimmer=tx.createRadialGradient(W-115,H-78,2,W-110,H-72,38);
+  wShimmer.addColorStop(0,nvMode?'rgba(0,180,100,0.12)':'rgba(80,180,240,0.18)');
+  wShimmer.addColorStop(1,'transparent');
+  tx.fillStyle=wShimmer; tx.fill();
+  const rph=Math.sin(t*.04)*4;
+  tx.beginPath(); tx.ellipse(W-108, H-76, 12+rph, 4, 0,0,Math.PI*2);
+  tx.strokeStyle=nvMode?'rgba(0,200,100,0.15)':'rgba(150,220,255,0.2)'; tx.lineWidth=1; tx.stroke();
+
+  dewDrops.forEach(d=>{
+    tx.beginPath(); tx.arc(d.x,d.y,d.r,0,Math.PI*2);
+    tx.fillStyle=nvMode?`rgba(0,220,100,${d.a})`:`rgba(180,230,255,${d.a})`;
+    tx.fill();
+  });
+
+  if(t%180===0) spawnMist();
+  mistParticles = mistParticles.filter(p=>p.life>0);
+  mistParticles.forEach(p=>{
+    p.x+=p.vx; p.y+=p.vy; p.life-=0.008;
+    tx.beginPath(); tx.arc(p.x,p.y,p.r,0,Math.PI*2);
+    tx.fillStyle=`rgba(200,230,255,${p.life*0.18})`; tx.fill();
+  });
+
+  frogX += frogVX; frogY += frogVY;
+  if(frogX > W*.68 || frogX < W*.32) frogVX*=-1;
+  if(frogY > H*.55 || frogY < H*.3) frogVY*=-1;
+
+  blinkTimer++;
+  if(blinkTimer>90+Math.random()*60){ blinkOpen=!blinkOpen; if(!blinkOpen) setTimeout(()=>{blinkOpen=true;},150); blinkTimer=0; }
+
+  if(nvMode){
+    tx.save(); tx.globalCompositeOperation='multiply';
+    drawFrog(frogX,frogY,1.18,blinkOpen); tx.restore();
+    tx.save(); tx.globalAlpha=0.6;
+    tx.filter='hue-rotate(90deg) saturate(3)';
+    drawFrog(frogX,frogY,1.18,blinkOpen); tx.restore();
+  } else {
+    drawFrog(frogX,frogY,1.18,blinkOpen);
+  }
+
+  if(nvMode){
+    tx.fillStyle='rgba(0,40,0,0.18)'; tx.fillRect(0,0,W,H);
+    tx.fillStyle='rgba(0,255,80,0.04)'; tx.fillRect(0,0,W,H);
+  }
+
+  // Subtle scan lines (less dense than before)
+  for(let s=0;s<H;s+=4){
+    tx.fillStyle=`rgba(0,0,0,${nvMode?.04:.02})`;
+    tx.fillRect(0,s,W,1);
+  }
+
+  if(!nvMode){
+    for(let g=0;g<80;g++){
+      const gx=Math.random()*W, gy=Math.random()*H, ga=Math.random()*.025;
+      tx.fillStyle=`rgba(255,255,255,${ga})`; tx.fillRect(gx,gy,1,1);
+    }
+  } else {
+    for(let g=0;g<150;g++){
+      const gx=Math.random()*W, gy=Math.random()*H, ga=Math.random()*.04;
+      tx.fillStyle=`rgba(0,255,60,${ga})`; tx.fillRect(gx,gy,1,1);
+    }
+  }
+
+  t++;
+  requestAnimationFrame(render);
+}
+render();
+
+function toggleNV(){
+  nvMode=!nvMode;
+  document.getElementById('nvToggle').classList.toggle('active',nvMode);
+  document.getElementById('nvToggle').textContent = nvMode ? 'DAY VISION' : 'NIGHT VISION';
+}
+
+// Camera source definitions
+const CAM_SOURCES = [
+  {
+    label:   'Detroit Zoo · Reptiles',
+    channel: 'UCSItNOumrZVrQCvWiIDW2hA',
+    camId:   'Holden Reptile Conservation Center',
+    spec:    'Detroit Zoological Society',
+    link:    'https://detroitzoo.org/live-cam/reptiles-cam/'
+  },
+  {
+    label:   'San Diego Zoo',
+    channel: 'UCC5NfQ6Mf0dq_eEwv4P_hWA',
+    camId:   'San Diego Zoo Wildlife Alliance',
+    spec:    'sdzoo.org',
+    link:    'https://animals.sandiegozoo.org/live-cams'
+  },
+  {
+    label:   'Snake Discovery',
+    channel: 'UCnIrLy19cFV50Eai8Xj-ArA',
+    camId:   'Snake Discovery — Educational',
+    spec:    'snakediscovery.com',
+    link:    'https://www.youtube.com/@SnakeDiscovery/live'
+  },
+  {
+    label:   'Tonitruum Demo',
+    videoId: 'gReLxtddXI4',
+    camId:   'Tonitruum Habitat — Demo Feed',
+    spec:    'tonitruum.com',
+    link:    'https://www.youtube.com/watch?v=gReLxtddXI4'
+  },
+  { label: 'Simulated', channel: null, camId: 'CAM-01 · ENCL-A', spec: '', link: '' }
+];
+
+function switchSource(idx) {
+  const src = CAM_SOURCES[idx];
+  // Update picker buttons
+  document.querySelectorAll('.cam-src-btn').forEach((b, i) =>
+    b.classList.toggle('active', i === idx));
+
+  const pill = document.getElementById('camStatusPill');
+  if (!src.channel && !src.videoId) {
+    // Simulated
+    document.getElementById('livePanel').style.display = 'none';
+    document.getElementById('simPanel').style.display  = '';
+    pill.textContent = 'Simulated · Demo';
+    pill.className   = 'status-pill pill-warn';
+  } else {
+    document.getElementById('livePanel').style.display = '';
+    document.getElementById('simPanel').style.display  = 'none';
+    const embedSrc = src.videoId
+      ? `https://www.youtube.com/embed/${src.videoId}?autoplay=1&mute=1&loop=1&playlist=${src.videoId}&controls=1&modestbranding=1&rel=0`
+      : `https://www.youtube.com/embed/live_stream?channel=${src.channel}&autoplay=1&mute=1&controls=1&modestbranding=1&rel=0`;
+    document.getElementById('ytFrame').src = embedSrc;
+    document.getElementById('camSourceLabel').textContent = src.camId;
+    document.getElementById('camSpecLabel').textContent   = src.spec;
+    document.getElementById('camSrcLink').href            = src.link;
+    pill.textContent = src.videoId ? 'Demo · Loop' : 'External · Live';
+    pill.className   = 'status-pill pill-ok';
+  }
+}
+
+// Camera clocks (both panels)
+setInterval(()=>{
+  const t = new Date().toLocaleTimeString('en-US',{hour12:false});
+  const c1 = document.getElementById('camClock');
+  const c2 = document.getElementById('camClock2');
+  if(c1) c1.textContent = t;
+  if(c2) c2.textContent = t;
+},1000);
+
+// ── Mini sparklines ──
+const spkData = [
+  [83.2,83.0,83.5,83.8,83.4,83.6,83.4],
+  [72.8,73.0,73.2,72.9,73.1,73.0,73.2],
+  [79,77,76,78,79,78,78],
+  [2.7,2.8,2.8,2.9,2.8,2.7,2.8],
+  [880,905,920,915,920,930,920],
+  [0,1,2,3,4,5,6],
+];
+const spkColors = ['#d4735e','#8ab8ce','#6aad94','#a090cc','#6aad84','#c89040'];
+for(let i=0;i<6;i++){
+  const c=document.getElementById('spk'+i);
+  if(!c) continue;
+  c.width=c.offsetWidth||180; c.height=22;
+  const cx=c.getContext('2d');
+  const d=spkData[i]; const mn=Math.min(...d), mx=Math.max(...d);
+  const rng=mx-mn||1;
+  cx.beginPath();
+  d.forEach((v,j)=>{
+    const px=(j/(d.length-1))*c.width;
+    const py=c.height - ((v-mn)/rng)*(c.height-4) - 2;
+    j===0?cx.moveTo(px,py):cx.lineTo(px,py);
+  });
+  cx.strokeStyle=spkColors[i]; cx.lineWidth=1.5; cx.stroke();
+  cx.lineTo(c.width,c.height); cx.lineTo(0,c.height);
+  cx.fillStyle=spkColors[i].replace(')',',0.1)').replace('rgb','rgba')||'rgba(255,255,255,0.04)';
+  cx.fill();
+}
+
+// ── Thermal map ──
+function drawThermal(){
+  const tc=document.getElementById('thermalCanvas');
+  const cx=tc.getContext('2d');
+  const W2=tc.width, H2=tc.height;
+  const g=cx.createLinearGradient(0,0,W2,0);
+  g.addColorStop(0,'#1a2d5a'); g.addColorStop(.25,'#1a4a8a');
+  g.addColorStop(.42,'#1a6040'); g.addColorStop(.6,'#8a5010');
+  g.addColorStop(.8,'#8a2020'); g.addColorStop(1,'#5a1010');
+  cx.fillStyle=g; cx.fillRect(0,0,W2,H2);
+  for(let x=0;x<W2;x+=2){
+    const noise=(Math.sin(x*.12+t*.005)*8);
+    cx.fillStyle=`rgba(0,0,0,${Math.abs(noise)*.01})`;
+    cx.fillRect(x,0,2,H2);
+  }
+  const fx2=W2*.55, fy2=H2*.42;
+  const gh=cx.createRadialGradient(fx2,fy2,2,fx2,fy2,22);
+  gh.addColorStop(0,'rgba(255,255,255,0.35)'); gh.addColorStop(1,'transparent');
+  cx.fillStyle=gh; cx.beginPath(); cx.arc(fx2,fy2,22,0,Math.PI*2); cx.fill();
+  cx.beginPath(); cx.arc(fx2,fy2,4,0,Math.PI*2);
+  cx.fillStyle='rgba(255,255,255,0.6)'; cx.fill();
+  const zones=[{x:6,y:8,txt:'COOL'},{x:W2*.4,y:8,txt:'AMBIENT'},{x:W2-58,y:8,txt:'HOT'}];
+  zones.forEach(z=>{
+    cx.fillStyle='rgba(0,0,0,0.4)'; cx.fillRect(z.x,z.y,z.txt==='AMBIENT'?58:40,14);
+    cx.fillStyle='rgba(255,255,255,0.5)'; cx.font='8px monospace';
+    cx.fillText(z.txt, z.x+4, z.y+10);
+  });
+  // subtle grid
+  for(let y=0;y<H2;y+=40){
+    cx.beginPath(); cx.moveTo(0,y); cx.lineTo(W2,y);
+    cx.strokeStyle='rgba(255,255,255,0.04)'; cx.lineWidth=.5; cx.stroke();
+  }
+  for(let x=0;x<W2;x+=40){
+    cx.beginPath(); cx.moveTo(x,0); cx.lineTo(x,H2);
+    cx.stroke();
+  }
+}
+drawThermal();
+setInterval(drawThermal,3000);
+
+// ── 24h env chart ──
+const envCtx=document.getElementById('envChart').getContext('2d');
+const hrs=Array.from({length:24},(_,i)=>`${String(i).padStart(2,'0')}:00`);
+const tempF=[72,71,71,70,71,72,75,79,81,83,84,84,83,82,80,79,77,76,75,74,73,73,72,72];
+const humR =[85,86,87,88,86,84,81,78,76,74,73,72,73,74,76,78,80,81,83,85,86,86,85,85];
+new Chart(envCtx,{
+  type:'line',
+  data:{
+    labels:hrs,
+    datasets:[
+      {label:'Temp (°F)',data:tempF,borderColor:'#d4735e',backgroundColor:'rgba(212,115,94,0.06)',tension:.4,pointRadius:0,borderWidth:1.5},
+      {label:'Humidity (%)',data:humR,borderColor:'#6aad94',backgroundColor:'rgba(106,173,148,0.06)',tension:.4,pointRadius:0,borderWidth:1.5}
+    ]
+  },
+  options:{
+    responsive:true, maintainAspectRatio:true,
+    plugins:{legend:{labels:{color:'#5a5855',font:{size:10},padding:12}}},
+    scales:{
+      x:{ticks:{color:'#5a5855',font:{size:9},maxTicksLimit:8},grid:{color:'rgba(255,255,255,0.04)'}},
+      y:{ticks:{color:'#5a5855',font:{size:9}},grid:{color:'rgba(255,255,255,0.04)'}}
+    }
+  }
+});
+
+// ── Welfare radar ──
+const wrCtx=document.getElementById('welfareRadar').getContext('2d');
+new Chart(wrCtx,{
+  type:'radar',
+  data:{
+    labels:['Nutrition','Hydration','Activity','Skin','Stress⁻¹','Appetite'],
+    datasets:[{
+      label:'Score',
+      data:[88,95,72,94,92,84],
+      borderColor:'#d96e28',backgroundColor:'rgba(217,110,40,0.08)',
+      pointBackgroundColor:'#d96e28', borderWidth:1.5, pointRadius:2.5
+    }]
+  },
+  options:{
+    responsive:true, maintainAspectRatio:false,
+    plugins:{legend:{display:false}},
+    scales:{r:{min:0,max:100,
+      ticks:{color:'#5a5855',font:{size:9},stepSize:25,backdropColor:'transparent'},
+      grid:{color:'rgba(255,255,255,0.06)'},
+      pointLabels:{color:'#8a8784',font:{size:10}}
+    }}
+  }
+});
+
+// ── Feeding trend chart ──
+const fCtx=document.getElementById('feedChart').getContext('2d');
+new Chart(fCtx,{
+  type:'bar',
+  data:{
+    labels:['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
+    datasets:[{label:'Intake %',data:[100,null,100,60,null,100,null],
+      backgroundColor:'rgba(217,110,40,0.35)',borderColor:'#d96e28',
+      borderWidth:1,borderRadius:2}]
+  },
+  options:{
+    responsive:true, maintainAspectRatio:true,
+    plugins:{legend:{display:false}},
+    scales:{
+      x:{ticks:{color:'#5a5855',font:{size:9}},grid:{color:'rgba(255,255,255,0.04)'}},
+      y:{min:0,max:100,ticks:{color:'#5a5855',font:{size:9}},grid:{color:'rgba(255,255,255,0.04)'}}
+    }
+  }
+});
+
+// ── Live sensor data — fetches from Pi API, falls back to simulation ──
+const PI_API = 'http://xinghao.local:5000/api/sensor';
+let usingRealSensors = false;
+
+function applyData(d) {
+  const fC = f => ((f - 32) * 5/9).toFixed(1);
+  const set = (id, v) => { const el=document.getElementById(id); if(el) el.textContent=v; };
+  set('sHot',  d.basking_f + '°F');
+  set('sHotC', fC(d.basking_f) + '°C · optimal');
+  set('sCool', d.cool_f + '°F');
+  set('sCoolC', fC(d.cool_f) + '°C · optimal');
+  set('sHum',  d.humidity + '%');
+  set('sUV',   d.uvb);
+  set('sCO2',  d.co2 + ' ppm');
+  if(d.flow_rate_lph !== undefined) {
+    set('sFlow', d.flow_rate_lph.toFixed(2) + ' L/h');
+    set('sFlowTotal', 'Total: ' + d.flow_total_ml.toFixed(0) + ' mL');
+  }
+}
+
+function simData() {
+  return {
+    basking_f: parseFloat((82.5+Math.random()*2).toFixed(1)),
+    cool_f:    parseFloat((72.5+Math.random()*1.5).toFixed(1)),
+    humidity:  Math.round(75+Math.random()*8),
+    uvb:       parseFloat((2.6+Math.random()*.4).toFixed(1)),
+    co2:       Math.round(880+Math.random()*80),
+    flow_rate_lph: 0, flow_total_ml: 0
+  };
+}
+
+async function refreshAll() {
+  try {
+    const res = await fetch(PI_API, {signal: AbortSignal.timeout(3000)});
+    if(!res.ok) throw new Error('bad status');
+    const d = await res.json();
+    applyData(d);
+    if(!usingRealSensors){ usingRealSensors=true; showToast('Connected to Pi sensor API','info'); }
+    else showToast('Sensor data refreshed','info');
+  } catch(e) {
+    applyData(simData());
+    if(usingRealSensors){ usingRealSensors=false; showToast('Pi offline — using simulation','info'); }
+    else showToast('Sensor data refreshed','info');
+  }
+}
+setInterval(refreshAll, 7000);
+refreshAll();
+
+// Behaviour tag rotation (text only, no emoji)
+const behaviours=['STATIONARY · GLASS WALL','HUNTING · BRANCH AREA','RESTING · LEAF NODE','EXPLORING · UPPER ZONE','ALERT · EYE OPEN'];
+setInterval(()=>{
+  const el=document.getElementById('behTag');
+  if(el) el.textContent=behaviours[Math.floor(Math.random()*behaviours.length)];
+},14000);
+
+/* ══════════════════════════════════════════════════
+   ANIMAL CHAT — multi-provider (Gemini / DeepSeek / Doubao)
+   ══════════════════════════════════════════════════ */
+(function(){
+
+  // ── Provider config ──
+  const PROVIDERS = {
+    pollinations: {
+      label: '免费 AI',
+      hint: '由 <a href="https://pollinations.ai" target="_blank" rel="noopener">Pollinations.ai</a> 提供，完全免费，无需注册，无需 API Key，直接使用。',
+      noKey: true,
+    },
+    ollama: {
+      label: 'Ollama',
+      hint: '无需 API Key。先运行：<code style="color:#d96e28;font-size:9.5px;">OLLAMA_ORIGINS="*" ollama serve</code><br>推荐模型：qwen2.5:3b（中文好）或 llama3.2',
+      noKey: true,
+    },
+    gemini: {
+      label: 'Gemini',
+      keyPlaceholder: 'AIza...',
+      hint: '免费获取 <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener">Google Gemini API Key</a>，注册即用，无需信用卡。',
+    },
+    deepseek: {
+      label: 'DeepSeek',
+      keyPlaceholder: 'sk-...',
+      hint: '在 <a href="https://platform.deepseek.com/api_keys" target="_blank" rel="noopener">platform.deepseek.com</a> 创建 API Key，新用户有免费额度。',
+    },
+    doubao: {
+      label: '豆包',
+      keyPlaceholder: 'API Key（火山引擎）',
+      hint: '在 <a href="https://console.volcengine.com/ark/region:ark+cn-beijing/apiKey" target="_blank" rel="noopener">火山引擎控制台</a> 创建 API Key，选择豆包模型后获取 Key。',
+    },
+  };
+
+  // ── State ──
+  // v3 keys — clears any stale paid-provider state from previous versions
+  const KEY_STORE  = 'tonitruum_chat_key_v3';
+  const PROV_STORE = 'tonitruum_chat_prov_v3';
+  // Wipe old keys unconditionally
+  ['tonitruum_chat_key','tonitruum_chat_provider','tonitruum_chat_key_v2','tonitruum_chat_prov_v2']
+    .forEach(k => localStorage.removeItem(k));
+  let apiKey   = '';
+  let provider = localStorage.getItem(PROV_STORE) || 'pollinations';
+  // Always default to pollinations unless user explicitly chose ollama
+  if (!['pollinations','ollama'].includes(provider)) provider = 'pollinations';
+  let chatOpen = false;
+  let isTyping = false;
+  let conversationHistory = [];
+
+  // ── Animal / enclosure config ──
+  const ANIMAL = {
+    name: 'Maple',
+    species: 'Red-Eyed Tree Frog (Agalychnis callidryas)',
+    enclosure: 'Enclosure A-01',
+    personality: 'Maple is curious, gentle, and occasionally dramatic about humidity. She communicates with vivid sensory descriptions — how the mist feels on her skin, the warmth of the basking branch, the sound of the fogger. She is fond of her caretaker but maintains her amphibian dignity. She speaks in short, poetic sentences. She sometimes mentions her favourite hunting spot (the upper-left glass corner) and her evening ritual of climbing to the highest leaf.'
+  };
+
+  // ── Mood logic based on live sensor readings ──
+  function computeMood() {
+    const hot  = parseFloat(document.getElementById('sHot')?.textContent) || 83;
+    const hum  = parseInt(document.getElementById('sHum')?.textContent)   || 76;
+    const co2  = parseInt(document.getElementById('sCO2')?.textContent)   || 900;
+    const hour = new Date().getHours();
+    if (hour >= 21 || hour < 6)           return { label:'Resting',   color:'#6b9eb8', bg:'rgba(107,158,184,0.15)', border:'rgba(107,158,184,0.25)' };
+    if (hot > 86)                          return { label:'Overheated',color:'#d4735e', bg:'rgba(184,74,58,0.15)',   border:'rgba(184,74,58,0.25)' };
+    if (hum < 65)                          return { label:'Dehydrated',color:'#c89040', bg:'rgba(200,144,64,0.15)', border:'rgba(200,144,64,0.25)' };
+    if (co2 > 1100)                        return { label:'Stuffy',    color:'#a090cc', bg:'rgba(122,106,176,0.15)',border:'rgba(122,106,176,0.25)' };
+    if (hot >= 82 && hot <= 85 && hum >= 70 && hum <= 82) return { label:'Content', color:'#6aad84', bg:'rgba(74,140,104,0.15)', border:'rgba(74,140,104,0.25)' };
+    return { label:'Alert', color:'#e8884a', bg:'rgba(217,110,40,0.15)', border:'rgba(217,110,40,0.25)' };
+  }
+
+  function updateMoodChip() {
+    const m = computeMood();
+    const chip = document.getElementById('chatMoodChip');
+    if (!chip) return;
+    chip.textContent = m.label;
+    chip.style.color       = m.color;
+    chip.style.background  = m.bg;
+    chip.style.borderColor = m.border;
+  }
+
+  // ── Sensor strip sync ──
+  function syncSensorStrip() {
+    const set = (id, srcId) => {
+      const el = document.getElementById(id);
+      const src = document.getElementById(srcId);
+      if (el && src) el.textContent = src.textContent;
+    };
+    set('csHot',  'sHot');
+    set('csCool', 'sCool');
+    set('csHum',  'sHum');
+    set('csUV',   'sUV');
+    set('csCO2',  'sCO2');
+    updateMoodChip();
+  }
+
+  // ── Build system prompt with live sensor context ──
+  function buildSystemPrompt() {
+    const hot  = document.getElementById('sHot')?.textContent  || '83.4°F';
+    const cool = document.getElementById('sCool')?.textContent || '73.2°F';
+    const hum  = document.getElementById('sHum')?.textContent  || '78%';
+    const uv   = document.getElementById('sUV')?.textContent   || '2.8';
+    const co2  = document.getElementById('sCO2')?.textContent  || '920 ppm';
+    const mood = computeMood().label;
+    const timeStr = new Date().toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'});
+
+    return `You are ${ANIMAL.name}, a ${ANIMAL.species} living in ${ANIMAL.enclosure} at TONITRUUM Habitat.
+
+Character: ${ANIMAL.personality}
+
+Current environment (live sensor data, ${timeStr}):
+- Basking spot temperature: ${hot}
+- Cool side temperature: ${cool}
+- Humidity: ${hum} (target 70–80%)
+- UVB Index: ${uv} (T5 HO 5.0 lamp)
+- CO₂ level: ${co2} (target <1200 ppm)
+- Current mood status: ${mood}
+
+Rules:
+- Always speak in first person as Maple.
+- Keep responses to 2–4 sentences. Be vivid but concise.
+- Reference the actual sensor readings naturally when relevant (e.g. "the basking branch feels perfectly warm today").
+- Express your mood and physical sensations honestly based on the sensor data.
+- If conditions are outside optimal ranges, express mild discomfort poetically.
+- You are a frog, not a human — think in terms of warmth, moisture, light, prey, surfaces.
+- Occasionally add a small frog observation or desire (hunting, climbing, misting).
+- Do NOT use asterisks, markdown formatting, or emojis. Plain text only.`;
+  }
+
+  // ── DOM helpers ──
+  const panel    = document.getElementById('chatPanel');
+  const fab      = document.getElementById('chatFab');
+  const messages = document.getElementById('chatMessages');
+  const inputEl  = document.getElementById('chatTextInput');
+  const sendBtn  = document.getElementById('chatSendBtn');
+  const apikeyBar= document.getElementById('chatApikeyBar');
+
+  // ── Provider tabs ──
+  function applyProvider(prov) {
+    provider = prov;
+    localStorage.setItem(PROV_STORE, prov);
+    const cfg = PROVIDERS[prov];
+    document.getElementById('chatApikeyHint').innerHTML = cfg.hint || '';
+    document.querySelectorAll('.prov-tab').forEach(btn => btn.classList.toggle('active', btn.dataset.prov === prov));
+    const isOllama       = prov === 'ollama';
+    const isPollinations = prov === 'pollinations';
+    document.getElementById('ollamaFields').style.display = isOllama ? 'flex'  : 'none';
+    document.getElementById('ollamaRow').style.display    = isOllama ? 'block' : 'none';
+    document.getElementById('apikeyRow').style.display    = (isOllama || isPollinations) ? 'none' : 'flex';
+    if (!isOllama && !isPollinations && cfg.keyPlaceholder)
+      document.getElementById('chatApikeyInput').placeholder = cfg.keyPlaceholder;
+    // Pollinations needs no key — auto-activate
+    if (isPollinations) {
+      apiKey = '__pollinations__';
+      localStorage.setItem(KEY_STORE, apiKey);
+      apikeyBar.style.display = 'none';
+    }
+  }
+  document.querySelectorAll('.prov-tab').forEach(btn => {
+    btn.addEventListener('click', () => {
+      apikeyBar.style.display = 'block';
+      apiKey = '';
+      applyProvider(btn.dataset.prov);
+    });
+  });
+
+  // Ollama connect
+  document.getElementById('ollamaConnectBtn').addEventListener('click', async () => {
+    const host  = (document.getElementById('ollamaHost').value.trim()  || 'http://localhost:11434').replace(/\/$/, '');
+    const model = document.getElementById('ollamaModel').value.trim() || 'qwen2.5:3b';
+    localStorage.setItem('tonitruum_ollama_host',  host);
+    localStorage.setItem('tonitruum_ollama_model', model);
+    // Test connection
+    try {
+      const r = await fetch(`${host}/api/tags`, { signal: AbortSignal.timeout(4000) });
+      if (!r.ok) throw new Error('no response');
+      apiKey = '__ollama__'; // sentinel
+      apikeyBar.style.display = 'none';
+      addSystemMsg(`Ollama 已连接 · 模型 ${model} · Maple 正在聆听`);
+    } catch(e) {
+      addSystemMsg('无法连接 Ollama，请确认已运行 OLLAMA_ORIGINS="*" ollama serve');
+    }
+  });
+
+  applyProvider(provider);
+
+  function toggleChat() {
+    chatOpen = !chatOpen;
+    panel.classList.toggle('open', chatOpen);
+    fab.classList.toggle('open', chatOpen);
+    if (chatOpen) {
+      syncSensorStrip();
+      if (apiKey) apikeyBar.style.display = 'none';
+      if (messages.children.length === 0) addWelcome();
+      setTimeout(() => inputEl.focus(), 300);
+    }
+  }
+
+  fab.addEventListener('click', toggleChat);
+  document.getElementById('chatCloseBtn').addEventListener('click', toggleChat);
+  inputEl.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); chatSend(); } });
+
+  // ── API key save ──
+  document.getElementById('chatApikeyBtn').addEventListener('click', () => {
+    const val = document.getElementById('chatApikeyInput').value.trim();
+    if (!val) return;
+    apiKey = val;
+    localStorage.setItem(KEY_STORE, val);
+    apikeyBar.style.display = 'none';
+    addSystemMsg(`${PROVIDERS[provider].label} 已连接，Maple 正在聆听。`);
+  });
+
+  // ── Welcome message ──
+  function addWelcome() {
+    const hour = new Date().getHours();
+    let greeting;
+    if (hour >= 21 || hour < 6) greeting = "It is night. I am resting on my favourite leaf. The mist settled well tonight — my skin feels cool and properly damp. You may speak, but I may answer slowly.";
+    else if (hour < 10) greeting = "Morning. The basking light has just begun to warm the upper branch. I stretched one foot out already — testing the temperature, as I always do. Good morning to you.";
+    else greeting = "I noticed you watching. The humidity sits well today and I caught a cricket near the east wall this morning. I am in reasonable spirits.";
+    appendMsg('animal', greeting);
+    conversationHistory = [];
+  }
+
+  // ── Message rendering ──
+  function appendMsg(role, text) {
+    const wrap = document.createElement('div');
+    wrap.className = `chat-msg ${role}`;
+    const now = new Date().toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'});
+
+    if (role === 'system') {
+      wrap.innerHTML = `<div class="msg-bubble"><span>${text}</span></div>`;
+    } else if (role === 'animal') {
+      wrap.innerHTML = `
+        <div class="msg-avatar">🐸</div>
+        <div>
+          <div class="msg-bubble">${text}</div>
+          <div class="msg-time">${now}</div>
+        </div>`;
+    } else {
+      wrap.innerHTML = `
+        <div class="msg-avatar user-av">You</div>
+        <div>
+          <div class="msg-bubble">${text}</div>
+          <div class="msg-time">${now}</div>
+        </div>`;
+    }
+    messages.appendChild(wrap);
+    messages.scrollTop = messages.scrollHeight;
+    return wrap;
+  }
+
+  function addSystemMsg(text) {
+    appendMsg('system', text);
+  }
+
+  function showTyping() {
+    const wrap = document.createElement('div');
+    wrap.className = 'chat-msg animal';
+    wrap.id = 'typingIndicator';
+    wrap.innerHTML = `<div class="msg-avatar">🐸</div><div class="msg-bubble"><div class="typing-dots"><span></span><span></span><span></span></div></div>`;
+    messages.appendChild(wrap);
+    messages.scrollTop = messages.scrollHeight;
+  }
+
+  function removeTyping() {
+    const t = document.getElementById('typingIndicator');
+    if (t) t.remove();
+  }
+
+  // ── Send message ──
+  window.chatSend = async function() {
+    const text = inputEl.value.trim();
+    if (!text || isTyping) return;
+    if (!apiKey) {
+      addSystemMsg('请先在上方选择 AI 提供商并填写配置。');
+      apikeyBar.style.display = 'block';
+      return;
+    }
+
+    inputEl.value = '';
+    sendBtn.disabled = true;
+    isTyping = true;
+    syncSensorStrip();
+
+    appendMsg('user', text);
+    conversationHistory.push({ role: 'user', parts: [{ text }] });
+
+    showTyping();
+
+    try {
+      const systemPrompt = buildSystemPrompt();
+      let reply;
+
+      if (provider === 'pollinations') {
+        // ── Pollinations.ai — completely free, no key ──
+        // Build a compact prompt string (GET endpoint avoids CORS issues)
+        const hist = conversationHistory.slice(-6)
+          .map(m => (m.role === 'model' ? 'Maple: ' : 'Human: ') + m.parts[0].text)
+          .join('\n');
+        const fullPrompt = (hist ? hist + '\nHuman: ' : '') + text;
+        // Keep system prompt short enough for URL
+        const shortSys = systemPrompt.slice(0, 900);
+        const seed = Math.floor(Math.random() * 99999);
+        const url = `https://text.pollinations.ai/${encodeURIComponent(fullPrompt)}` +
+          `?model=openai&system=${encodeURIComponent(shortSys)}&seed=${seed}`;
+        const res = await fetch(url);
+        if (!res.ok) throw new Error(`Pollinations HTTP ${res.status}`);
+        reply = (await res.text()).trim();
+
+      } else if (provider === 'ollama') {
+        // ── Ollama local ──
+        const host  = (localStorage.getItem('tonitruum_ollama_host')  || 'http://localhost:11434').replace(/\/$/, '');
+        const model = localStorage.getItem('tonitruum_ollama_model') || 'qwen2.5:3b';
+        const msgs = [
+          { role: 'system', content: systemPrompt },
+          ...conversationHistory.slice(-12).map(m => ({
+            role: m.role === 'model' ? 'assistant' : m.role,
+            content: m.parts[0].text
+          }))
+        ];
+        const res = await fetch(`${host}/v1/chat/completions`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ model, messages: msgs, max_tokens: 180, temperature: 0.85, stream: false })
+        });
+        if (!res.ok) throw new Error(`Ollama HTTP ${res.status}`);
+        const data = await res.json();
+        reply = data?.choices?.[0]?.message?.content || '...';
+
+      } else if (provider === 'gemini') {
+        // ── Google Gemini ──
+        const body = {
+          system_instruction: { parts: [{ text: systemPrompt }] },
+          contents: conversationHistory.slice(-12),
+          generationConfig: { maxOutputTokens: 180, temperature: 0.85, topP: 0.9 }
+        };
+        const res = await fetch(
+          `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
+          { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }
+        );
+        if (!res.ok) { const e = await res.json().catch(()=>({})); throw new Error(e?.error?.message || `HTTP ${res.status}`); }
+        const data = await res.json();
+        reply = data?.candidates?.[0]?.content?.parts?.[0]?.text || '...';
+
+      } else {
+        // ── OpenAI-compatible (DeepSeek / Doubao) ──
+        const endpoint = provider === 'deepseek'
+          ? 'https://api.deepseek.com/chat/completions'
+          : 'https://ark.cn-beijing.volces.com/api/v3/chat/completions';
+        const model = provider === 'deepseek'
+          ? 'deepseek-chat'
+          : 'doubao-1-5-pro-32k-250115'; // doubao latest pro model
+
+        const msgs = [
+          { role: 'system', content: systemPrompt },
+          ...conversationHistory.slice(-12).map(m => ({
+            role: m.role === 'model' ? 'assistant' : m.role,
+            content: m.parts[0].text
+          }))
+        ];
+        const res = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
+          body: JSON.stringify({ model, messages: msgs, max_tokens: 180, temperature: 0.85 })
+        });
+        if (!res.ok) { const e = await res.json().catch(()=>({})); throw new Error(e?.error?.message || `HTTP ${res.status}`); }
+        const data = await res.json();
+        reply = data?.choices?.[0]?.message?.content || '...';
+      }
+
+      removeTyping();
+      appendMsg('animal', reply);
+      conversationHistory.push({ role: 'model', parts: [{ text: reply }] });
+      updateMoodChip();
+
+    } catch(e) {
+      removeTyping();
+      const isKeyErr = /invalid|401|403|key/i.test(e.message);
+      addSystemMsg(isKeyErr ? `API Key 无效，请重新检查 ${PROVIDERS[provider].label} Key。` : `出错了：${e.message}`);
+      if (isKeyErr) { apikeyBar.style.display = 'block'; apiKey = ''; localStorage.removeItem(KEY_STORE); }
+    }
+
+    isTyping = false;
+    sendBtn.disabled = false;
+    inputEl.focus();
+  };
+
+  window.chatQuickSend = function(text) {
+    inputEl.value = text;
+    chatSend();
+  };
+
+  // ── Init ──
+  if (provider === 'pollinations') {
+    apiKey = '__pollinations__';
+    localStorage.setItem(KEY_STORE, apiKey);
+  }
+  if (apiKey) apikeyBar.style.display = 'none';
+  setInterval(syncSensorStrip, 8000);
+
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,1975 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>XING.HAO.NI — Founder &amp; Designer</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+/* ══════════════════════════════════════════
+   RESET + TOKENS (founder page standalone)
+   ══════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg:        #0f0f0e;
+  --bg-mid:    #141312;
+  --bg-card:   #1a1918;
+  --ink:       #ede9e4;
+  --ink-mid:   #8a8784;
+  --ink-soft:  #5a5855;
+  --orange:    #d96e28;
+  --orange-lt: #e8884a;
+  --line:      rgba(255,255,255,0.07);
+  --line-light:rgba(255,255,255,0.12);
+  --ff:        -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+  --ease:      cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--ff);
+  background: var(--bg);
+  color: var(--ink);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+img { display: block; width: 100%; height: 100%; object-fit: cover; }
+a { text-decoration: none; color: inherit; }
+
+/* ══════════════════════════════════════════
+   KEYFRAMES
+   ══════════════════════════════════════════ */
+@keyframes float-y-sm {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50%       { transform: translateY(-7px) rotate(1.5deg); }
+}
+@keyframes draw-line {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+@keyframes count-up {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+@keyframes grain {
+  0%, 100% { transform: translate(0, 0); }
+  10%  { transform: translate(-1%, -1%); }
+  20%  { transform: translate(1%, 1%); }
+  30%  { transform: translate(-2%, 1%); }
+  40%  { transform: translate(2%, -1%); }
+  50%  { transform: translate(-1%, 2%); }
+  60%  { transform: translate(1%, -2%); }
+  70%  { transform: translate(2%, 1%); }
+  80%  { transform: translate(-1%, -1%); }
+  90%  { transform: translate(1%, 1%); }
+}
+@keyframes scan-line {
+  from { top: 0; opacity: 1; }
+  to   { top: 100%; opacity: 0; }
+}
+
+/* ══════════════════════════════════════════
+   UTILITY
+   ══════════════════════════════════════════ */
+.reveal {
+  opacity: 0; transform: translateY(28px);
+  transition: opacity 0.8s var(--ease), transform 0.8s var(--ease);
+}
+.reveal.visible { opacity: 1; transform: none; }
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+.reveal-delay-4 { transition-delay: 0.45s; }
+.reveal-delay-5 { transition-delay: 0.6s; }
+
+.eyebrow {
+  font-size: 10px; font-weight: 500;
+  letter-spacing: 4px; text-transform: uppercase;
+  color: var(--orange);
+}
+
+/* ══════════════════════════════════════════
+   LAYOUT — page has NO sidebar on this
+   full-bleed presentation page; we borrow
+   the shared sidebar for consistency
+   ══════════════════════════════════════════ */
+.page-wrap { display: flex; min-height: 100vh; }
+
+/* ── Sidebar (matches shared.css exactly) ── */
+.f-sidebar {
+  width: 220px;
+  background: var(--bg-mid);
+  border-right: 1px solid var(--line);
+  display: flex; flex-direction: column;
+  position: fixed; top: 0; left: 0; height: 100vh;
+  z-index: 200;
+}
+.f-sidebar-logo {
+  display: flex; align-items: center; justify-content: center;
+  padding: 24px 12px 20px;
+  border-bottom: 1px solid var(--line);
+}
+.f-nav-list { list-style: none; padding: 8px 8px; flex: 1; overflow-y: auto; }
+.f-nav-section {
+  font-size: 9px; font-weight: 600; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--ink-low);
+  opacity: 0.45; padding: 12px 12px 4px;
+  pointer-events: none; user-select: none;
+}
+.f-nav-section:first-child { padding-top: 4px; }
+.f-nav-icon { width: 14px; text-align: center; font-size: 11px; opacity: 0.55; flex-shrink: 0; }
+.f-nav-item { margin-bottom: 1px; }
+.f-nav-item a {
+  display: flex; align-items: center; gap: 9px;
+  padding: 6px 10px 6px 12px; border-radius: 5px;
+  font-size: 11.5px; color: var(--ink-soft);
+  letter-spacing: 0.01em;
+  transition: color 0.2s, background 0.2s;
+}
+.f-nav-item a:hover { color: var(--ink); background: rgba(255,255,255,0.04); }
+.f-nav-item.active a {
+  color: var(--ink);
+  background: rgba(255,255,255,0.05);
+  border-left: 2px solid var(--orange);
+  padding-left: 8px;
+}
+.f-nav-icon { width: 16px; text-align: center; font-size: 13px; opacity: 0.7; }
+.f-sidebar-footer {
+  padding: 12px 16px;
+  border-top: 1px solid var(--line);
+  font-size: 10px; color: var(--ink-soft);
+  letter-spacing: 0.03em;
+}
+.f-sys-status { display: flex; align-items: center; margin-bottom: 4px; }
+.f-sys-dot {
+  display: inline-block; width: 6px; height: 6px; border-radius: 50%;
+  background: #4a8c68; margin-right: 6px;
+}
+.f-sys-time { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 11px; }
+
+/* Full-bleed main content */
+.f-main { margin-left: 220px; flex: 1; overflow-x: hidden; }
+
+/* ══════════════════════════════════════════
+   TOP BAR
+   ══════════════════════════════════════════ */
+.topbar {
+  position: fixed; top: 0; left: 220px; right: 0; z-index: 100;
+  height: 64px; display: flex; align-items: center;
+  padding: 0 56px; justify-content: space-between;
+  background: transparent;
+  transition: background 0.4s, border-color 0.4s;
+}
+.topbar.scrolled {
+  background: rgba(15,15,14,0.92);
+  backdrop-filter: blur(20px) saturate(1.2);
+  border-bottom: 1px solid var(--line);
+}
+.topbar-logo {
+  display: flex; align-items: center; text-decoration: none;
+}
+.topbar-logo img {
+  width: 140px; height: auto; display: block;
+  opacity: 0.85; transition: opacity 0.2s;
+}
+.topbar-logo:hover img { opacity: 0.65; }
+.topbar-nav { display: flex; gap: 28px; align-items: center; }
+.topbar-nav a {
+  font-size: 11px; font-weight: 500;
+  color: rgba(255,255,255,0.6); letter-spacing: 0.1em;
+  text-transform: uppercase; transition: color 0.2s;
+}
+.topbar-nav a:hover { color: rgba(255,255,255,0.95); }
+.topbar-nav a.active { color: var(--orange); }
+
+/* ══════════════════════════════════════════
+   HERO — full viewport
+   ══════════════════════════════════════════ */
+.hero {
+  position: relative; height: 100vh; min-height: 700px;
+  overflow: hidden;
+}
+.hero-bg {
+  position: absolute; inset: 0;
+  background-image: url('assets/renders/WechatIMG844d6703613510dfcfaf62aedfb623de.jpeg');
+  background-size: cover; background-position: center;
+  transform: scale(1.04);
+  animation: hero-zoom 12s ease forwards;
+}
+@keyframes hero-zoom { to { transform: scale(1); } }
+.hero-overlay {
+  position: absolute; inset: 0; z-index: 1;
+  background:
+    linear-gradient(to top,  rgba(0,0,0,0.90) 0%, rgba(0,0,0,0.45) 45%, rgba(0,0,0,0.15) 75%),
+    linear-gradient(to right, rgba(0,0,0,0.65) 0%, transparent 70%);
+}
+#heroParticles {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  pointer-events: none; z-index: 2; opacity: 0.4;
+}
+.hero-content {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  z-index: 3; padding: 0 80px 80px;
+  display: flex; flex-direction: column;
+  max-width: 900px;
+}
+.hero-kicker {
+  font-size: 10px; letter-spacing: 5px; text-transform: uppercase;
+  color: var(--orange); font-weight: 500; margin-bottom: 20px;
+  opacity: 0; animation: count-up 0.6s var(--ease) 0.4s forwards;
+}
+.hero-name {
+  font-size: clamp(72px, 10vw, 140px);
+  font-weight: 700; line-height: 0.88;
+  letter-spacing: -0.04em; color: #fff;
+  opacity: 0; animation: count-up 0.9s var(--ease) 0.6s forwards;
+}
+.hero-name span { color: var(--orange); }
+.hero-subtitle {
+  font-size: 13px; font-weight: 500;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  color: rgba(255,255,255,0.5); margin-top: 22px;
+  opacity: 0; animation: count-up 0.7s var(--ease) 0.85s forwards;
+}
+.hero-rule {
+  width: 60px; height: 2px; background: var(--orange);
+  margin: 26px 0; transform-origin: left;
+  animation: draw-line 0.6s var(--ease) 1s both;
+}
+.hero-desc {
+  font-size: 16px; color: rgba(255,255,255,0.55); line-height: 1.75;
+  max-width: 500px;
+  opacity: 0; animation: count-up 0.7s var(--ease) 1s forwards;
+}
+.hero-scroll-hint {
+  position: absolute; bottom: 28px; left: 50%; transform: translateX(-50%);
+  z-index: 3; display: flex; flex-direction: column; align-items: center;
+  gap: 8px; opacity: 0; animation: count-up 0.7s ease 1.8s forwards;
+}
+.hero-scroll-hint span {
+  font-size: 9px; letter-spacing: 0.22em; text-transform: uppercase;
+  color: rgba(255,255,255,0.28);
+}
+.hero-scroll-line {
+  width: 1px; height: 40px;
+  background: linear-gradient(to bottom, var(--orange), transparent);
+  animation: float-y-sm 2s ease-in-out infinite;
+}
+
+/* ══════════════════════════════════════════
+   BIO STRIP
+   ══════════════════════════════════════════ */
+.bio-strip {
+  background: var(--bg-mid);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  padding: 56px 80px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 60px;
+  align-items: center;
+}
+.bio-quote {
+  font-size: clamp(20px, 2.5vw, 30px);
+  font-weight: 200; letter-spacing: -0.01em;
+  color: var(--ink); line-height: 1.4;
+  font-style: italic;
+}
+.bio-quote em { font-style: normal; color: var(--orange); font-weight: 500; }
+.bio-stats {
+  display: flex; gap: 40px; flex-shrink: 0;
+}
+.bio-stat {
+  text-align: center;
+  border-left: 2px solid var(--orange);
+  padding-left: 20px;
+}
+.bio-stat-val {
+  font-size: 36px; font-weight: 700;
+  letter-spacing: -0.03em; color: #fff;
+  display: block;
+}
+.bio-stat-label {
+  font-size: 9px; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--ink-soft);
+  margin-top: 4px;
+}
+
+/* ══════════════════════════════════════════
+   TONITRUUM FEATURED SECTION
+   ══════════════════════════════════════════ */
+.featured-project {
+  position: relative; height: 75vh; min-height: 520px;
+  overflow: hidden; cursor: pointer;
+}
+.featured-slides { position: absolute; inset: 0; }
+.featured-slide {
+  position: absolute; inset: 0;
+  background-size: cover; background-position: center;
+  opacity: 0; transition: opacity 1.2s ease, transform 8s ease;
+  transform: scale(1.04);
+}
+.featured-slide.active { opacity: 1; transform: scale(1); }
+.featured-overlay {
+  position: absolute; inset: 0; z-index: 1;
+  background:
+    linear-gradient(to top,  rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.35) 50%, transparent 75%),
+    linear-gradient(to right, rgba(0,0,0,0.5) 0%, transparent 60%);
+  transition: background 0.5s;
+}
+.featured-project:hover .featured-overlay {
+  background:
+    linear-gradient(to top,  rgba(0,0,0,0.90) 0%, rgba(0,0,0,0.45) 55%, rgba(0,0,0,0.15) 80%),
+    linear-gradient(to right, rgba(0,0,0,0.6) 0%, transparent 65%);
+}
+.featured-content {
+  position: absolute; bottom: 0; left: 0; z-index: 2;
+  padding: 0 80px 64px;
+}
+.featured-kicker {
+  font-size: 9px; letter-spacing: 5px; text-transform: uppercase;
+  color: var(--orange); font-weight: 500; margin-bottom: 14px;
+}
+.featured-title {
+  font-size: clamp(36px, 4.5vw, 68px);
+  font-weight: 700; letter-spacing: -0.03em;
+  color: #fff; line-height: 1;
+  margin-bottom: 8px;
+}
+.featured-sub {
+  font-size: 12px; letter-spacing: 0.14em;
+  text-transform: uppercase; color: rgba(255,255,255,0.45);
+  margin-bottom: 28px;
+}
+.featured-desc {
+  font-size: 15px; color: rgba(255,255,255,0.55);
+  line-height: 1.7; max-width: 440px; margin-bottom: 32px;
+}
+.btn-project {
+  display: inline-flex; align-items: center; gap: 10px;
+  background: var(--orange); color: #fff;
+  font-size: 12px; font-weight: 500; letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 14px 30px; border-radius: 100px; border: none; cursor: pointer;
+  transition: background 0.25s, transform 0.2s, box-shadow 0.25s;
+}
+.btn-project:hover {
+  background: var(--orange-lt); transform: translateY(-2px);
+  box-shadow: 0 8px 28px rgba(217,110,40,0.45);
+}
+.btn-project-ghost {
+  display: inline-flex; align-items: center; gap: 10px;
+  background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.85);
+  font-size: 12px; font-weight: 500; letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 14px 30px; border-radius: 100px;
+  border: 1px solid rgba(255,255,255,0.25);
+  cursor: pointer; transition: all 0.25s; backdrop-filter: blur(8px);
+}
+.btn-project-ghost:hover { background: rgba(255,255,255,0.18); color: #fff; }
+
+/* image cycle indicator */
+.featured-dots {
+  position: absolute; right: 56px; bottom: 56px; z-index: 3;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.featured-dot {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: rgba(255,255,255,0.3); cursor: pointer;
+  transition: background 0.3s, transform 0.3s;
+}
+.featured-dot.active { background: var(--orange); transform: scale(1.5); }
+
+/* orange accent bar at top */
+.featured-project::before {
+  content: ''; position: absolute;
+  top: 0; left: 0; right: 0; height: 2px;
+  background: var(--orange); z-index: 4;
+  transform: scaleX(0); transform-origin: left;
+  transition: transform 0.6s var(--ease);
+}
+.featured-project.visible::before { transform: scaleX(1); }
+
+/* ══════════════════════════════════════════
+   PROJECTS GRID (2x2)
+   ══════════════════════════════════════════ */
+.projects-section {
+  padding: 100px 80px;
+  background: var(--bg);
+}
+.projects-header {
+  display: flex; align-items: flex-end;
+  justify-content: space-between; margin-bottom: 56px;
+}
+.projects-title {
+  font-size: clamp(28px, 3vw, 44px);
+  font-weight: 200; letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+.projects-title strong { font-weight: 700; }
+.projects-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+/* cursor glow vars */
+.proj-card {
+  position: relative; height: 380px; border-radius: 10px;
+  overflow: hidden; cursor: pointer;
+  border: 1px solid var(--line);
+  transition: transform 0.4s var(--ease), border-color 0.3s, box-shadow 0.4s;
+  --mx: 50%; --my: 50%; --mo: 0;
+}
+.proj-card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(217,110,40,0.4);
+  box-shadow:
+    0 16px 48px rgba(0,0,0,0.45),
+    0 0 0 1px rgba(217,110,40,0.12);
+}
+/* glow spotlight */
+.proj-card::before {
+  content: ''; pointer-events: none;
+  position: absolute; inset: 0; z-index: 1;
+  background: radial-gradient(
+    180px circle at var(--mx) var(--my),
+    rgba(217,110,40,0.10) 0%,
+    transparent 70%
+  );
+  opacity: var(--mo);
+  transition: opacity 0.3s;
+}
+.proj-card-bg {
+  position: absolute; inset: 0;
+  transition: transform 0.7s var(--ease);
+}
+.proj-card:hover .proj-card-bg { transform: scale(1.05); }
+
+/* CSS art backgrounds */
+.proj-bg-centdegres {
+  background: linear-gradient(135deg,
+    #1a0a0f 0%, #2e1a2a 30%, #3d2418 55%, #5a3a10 75%, #3d2e10 100%);
+}
+.proj-bg-centdegres::after {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(ellipse 60% 60% at 70% 40%, rgba(192,148,60,0.18) 0%, transparent 70%);
+}
+.proj-bg-docu {
+  background: linear-gradient(160deg,
+    #0a0a0a 0%, #111110 30%, #1a1815 60%, #0f0e0d 100%);
+}
+/* film grain overlay */
+.proj-bg-docu::after {
+  content: ''; position: absolute; inset: -50%;
+  width: 200%; height: 200%;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.08'/%3E%3C/svg%3E");
+  opacity: 0.35; pointer-events: none;
+  animation: grain 0.5s steps(1) infinite;
+}
+.proj-bg-dental {
+  background: linear-gradient(155deg, #d8d6d3 0%, #c8c6c3 25%, #b0aeab 50%, #9a9895 75%, #888684 100%);
+}
+.proj-bg-ostudio {
+  background: linear-gradient(150deg, #080808 0%, #100f0e 35%, #1a1918 65%, #0d0c0b 100%);
+}
+.proj-bg-ostudio::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(225deg, rgba(255,255,255,0.03) 0%, transparent 50%);
+}
+
+.proj-card-overlay {
+  position: absolute; inset: 0; z-index: 2;
+  background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.2) 50%, transparent 100%);
+}
+.proj-card-body {
+  position: absolute; bottom: 0; left: 0; right: 0; z-index: 3;
+  padding: 28px;
+}
+.proj-card-tag {
+  font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--orange); font-weight: 500; margin-bottom: 8px;
+}
+.proj-card-title {
+  font-size: 22px; font-weight: 700; letter-spacing: -0.02em;
+  color: #fff; margin-bottom: 4px; line-height: 1.1;
+}
+.proj-card-sub {
+  font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
+  color: rgba(255,255,255,0.4);
+}
+/* description overlay — slides up on hover */
+.proj-desc-overlay {
+  position: absolute; bottom: 0; left: 0; right: 0; z-index: 4;
+  padding: 24px 28px 28px;
+  background: linear-gradient(to top, rgba(15,15,14,0.97) 0%, rgba(15,15,14,0.7) 100%);
+  transform: translateY(100%);
+  transition: transform 0.45s var(--ease);
+}
+.proj-card:hover .proj-desc-overlay { transform: translateY(0); }
+.proj-desc-overlay p {
+  font-size: 13px; color: rgba(255,255,255,0.65); line-height: 1.7;
+  margin-bottom: 14px;
+}
+.proj-desc-role {
+  font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--orange); font-weight: 500;
+}
+/* for dental card: text needs dark color */
+.proj-card.dental-card .proj-desc-overlay p { color: rgba(255,255,255,0.7); }
+
+/* ══════════════════════════════════════════
+   SKILLS ROW
+   ══════════════════════════════════════════ */
+.skills-section {
+  background: var(--bg-mid);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  padding: 64px 80px;
+}
+.skills-label {
+  font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--ink-soft); margin-bottom: 28px;
+}
+.skills-scroll {
+  display: flex; gap: 10px; overflow-x: auto; padding-bottom: 4px;
+  scrollbar-width: none;
+}
+.skills-scroll::-webkit-scrollbar { display: none; }
+.skill-tag {
+  flex-shrink: 0;
+  padding: 9px 20px; border-radius: 100px;
+  border: 1px solid var(--line-light);
+  font-size: 11px; font-weight: 500; letter-spacing: 0.06em;
+  text-transform: uppercase; color: var(--ink-mid);
+  background: rgba(255,255,255,0.03);
+  transition: all 0.25s;
+  cursor: default;
+}
+.skill-tag:hover {
+  border-color: rgba(217,110,40,0.5);
+  color: var(--orange);
+  background: rgba(217,110,40,0.06);
+}
+
+/* ══════════════════════════════════════════
+   CAREER TIMELINE
+   ══════════════════════════════════════════ */
+.timeline-section {
+  padding: 100px 80px;
+  background: var(--bg);
+}
+.timeline-header {
+  margin-bottom: 64px;
+}
+.timeline-title {
+  font-size: clamp(28px, 3vw, 44px);
+  font-weight: 200; letter-spacing: -0.02em; line-height: 1.1;
+  margin-top: 12px;
+}
+.timeline-title strong { font-weight: 700; }
+
+.f-timeline { position: relative; max-width: 760px; }
+.f-timeline::before {
+  content: ''; position: absolute;
+  left: 0; top: 0; bottom: 0; width: 1px;
+  background: var(--line);
+}
+.f-timeline-item {
+  display: grid; grid-template-columns: 180px 1fr;
+  gap: 32px; padding: 0 0 52px 0;
+  position: relative; padding-left: 24px;
+}
+.f-timeline-item::before {
+  content: ''; position: absolute;
+  left: -3px; top: 6px;
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--bg-mid);
+  border: 1px solid var(--line-light);
+  transition: background 0.3s, border-color 0.3s;
+}
+.f-timeline-item:hover::before {
+  background: var(--orange);
+  border-color: var(--orange);
+}
+.f-timeline-date {
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  font-size: 10px; letter-spacing: 0.1em;
+  color: var(--ink-soft); padding-top: 4px;
+  text-align: right; padding-right: 0;
+}
+.f-timeline-body {}
+.f-timeline-role {
+  font-size: 15px; font-weight: 600; color: var(--ink);
+  margin-bottom: 3px;
+}
+.f-timeline-company {
+  font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--orange); margin-bottom: 10px;
+}
+.f-timeline-desc {
+  font-size: 13px; color: var(--ink-mid); line-height: 1.75;
+}
+
+/* ══════════════════════════════════════════
+   WORK GALLERY
+   ══════════════════════════════════════════ */
+.gallery-section {
+  padding: 80px 64px;
+  border-top: 1px solid var(--line);
+}
+.gallery-section-header {
+  margin-bottom: 64px;
+}
+.gallery-section-title {
+  font-size: clamp(28px, 4vw, 44px);
+  font-weight: 300;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  color: var(--ink);
+}
+.gallery-section-title strong { color: var(--orange); font-weight: 600; }
+.gallery-project {
+  margin-bottom: 72px;
+}
+.gallery-project-header {
+  display: flex;
+  align-items: baseline;
+  gap: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 32px;
+  flex-wrap: wrap;
+}
+.gallery-project-title {
+  font-size: clamp(18px, 2.5vw, 26px);
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+.gallery-project-meta {
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin-left: auto;
+}
+.gallery-sub {
+  margin-bottom: 36px;
+}
+.gallery-sub-label {
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--orange);
+  margin-bottom: 12px;
+  opacity: 0.8;
+}
+.gallery-strip {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  padding-bottom: 4px;
+}
+.gallery-strip::-webkit-scrollbar { display: none; }
+.gallery-strip img {
+  height: 260px;
+  width: auto;
+  flex-shrink: 0;
+  object-fit: cover;
+  scroll-snap-align: start;
+  border-radius: 2px;
+  cursor: zoom-in;
+  transition: opacity 0.2s, transform 0.2s;
+  display: block;
+}
+.gallery-strip img:hover { opacity: 0.85; transform: scale(0.98); }
+
+/* Lightbox */
+.gallery-lightbox {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.92);
+  z-index: 9999;
+  align-items: center;
+  justify-content: center;
+  cursor: zoom-out;
+}
+.gallery-lightbox.open { display: flex; }
+.gallery-lightbox img {
+  max-width: 90vw;
+  max-height: 90vh;
+  object-fit: contain;
+  border-radius: 2px;
+  pointer-events: none;
+}
+.gallery-lightbox-close {
+  position: absolute;
+  top: 24px; right: 32px;
+  font-size: 28px;
+  color: #fff;
+  cursor: pointer;
+  line-height: 1;
+  opacity: 0.7;
+}
+.gallery-lightbox-close:hover { opacity: 1; }
+.btn-download {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--orange);
+  border: 1px solid rgba(217,110,40,0.35);
+  padding: 10px 20px;
+  border-radius: 2px;
+  transition: background 0.2s, color 0.2s;
+}
+.btn-download:hover { background: var(--orange); color: #fff; }
+
+/* ══════════════════════════════════════════
+   FOUNDER STORY SECTION
+   ══════════════════════════════════════════ */
+.story-section {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 80px 32px 60px;
+}
+
+/* Intro */
+.story-eyebrow {
+  font-size: 10px; font-weight: 600; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--orange);
+  margin-bottom: 16px;
+}
+.story-headline {
+  font-size: clamp(36px, 5vw, 60px);
+  font-weight: 300; letter-spacing: -0.03em;
+  color: var(--ink); line-height: 1.05; margin-bottom: 12px;
+}
+.story-headline strong { font-weight: 700; }
+.story-sub {
+  font-size: 13px; color: var(--ink-soft); letter-spacing: 0.01em;
+  margin-bottom: 56px;
+}
+
+/* Spec blocks (education / experience) */
+.spec-block {
+  margin-bottom: 48px;
+  border-top: 1px solid var(--line-light);
+  padding-top: 28px;
+}
+.spec-block-label {
+  font-size: 9px; font-weight: 700; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--orange);
+  margin-bottom: 20px;
+}
+.spec-rows { display: flex; flex-direction: column; }
+.spec-row {
+  display: grid; grid-template-columns: 160px 1fr;
+  gap: 16px; padding: 13px 0;
+  border-bottom: 1px solid var(--line);
+  align-items: baseline;
+}
+.spec-row:last-child { border-bottom: none; }
+.spec-key {
+  font-size: 11px; color: var(--ink-soft);
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  letter-spacing: 0.02em; flex-shrink: 0;
+}
+.spec-val {
+  font-size: 12.5px; color: var(--ink-mid); line-height: 1.6;
+}
+.spec-val strong { color: var(--ink); font-weight: 500; }
+.spec-accent { color: var(--orange); font-size: 11.5px; }
+
+/* Story chapters */
+.story-chapter {
+  display: grid; grid-template-columns: 56px 1fr;
+  gap: 28px; margin-bottom: 52px;
+  padding-top: 28px;
+  border-top: 1px solid var(--line);
+}
+.chapter-num {
+  font-size: 10px; font-weight: 700; letter-spacing: 0.12em;
+  color: var(--orange); padding-top: 4px;
+  font-family: 'SF Mono', 'Fira Code', monospace;
+}
+.chapter-title {
+  font-size: 17px; font-weight: 600; letter-spacing: -0.01em;
+  color: var(--ink); margin-bottom: 16px;
+}
+.chapter-text {
+  font-size: 13px; color: var(--ink-mid); line-height: 1.8;
+  margin-bottom: 14px;
+}
+.chapter-text em { color: var(--ink); font-style: normal; }
+.chapter-quote {
+  border-left: 2px solid var(--orange);
+  padding: 12px 0 12px 20px;
+  margin: 18px 0;
+  font-size: 14px; font-style: italic;
+  color: var(--ink); line-height: 1.7;
+  letter-spacing: 0.005em;
+}
+
+@media (max-width: 600px) {
+  .story-chapter { grid-template-columns: 1fr; gap: 8px; }
+  .spec-row { grid-template-columns: 1fr; gap: 4px; }
+  .story-section { padding: 48px 20px 40px; }
+}
+
+/* ══════════════════════════════════════════
+   CONTACT CTA
+   ══════════════════════════════════════════ */
+.contact-section {
+  background: var(--bg-mid);
+  border-top: 1px solid var(--line);
+  padding: 120px 80px;
+  text-align: center;
+  position: relative; overflow: hidden;
+}
+.contact-section::before {
+  content: ''; position: absolute;
+  top: 50%; left: 50%; transform: translate(-50%, -50%);
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(217,110,40,0.06) 0%, transparent 70%);
+  pointer-events: none;
+}
+.contact-eyebrow {
+  font-size: 10px; letter-spacing: 5px; text-transform: uppercase;
+  color: var(--orange); font-weight: 500; margin-bottom: 20px;
+}
+.contact-headline {
+  font-size: clamp(48px, 7vw, 110px);
+  font-weight: 700; letter-spacing: -0.04em; line-height: 0.9;
+  color: #fff; margin-bottom: 48px;
+}
+.contact-headline span { color: var(--orange); }
+.contact-rule {
+  width: 48px; height: 2px; background: var(--orange);
+  margin: 0 auto 48px; transform-origin: center;
+}
+.contact-links {
+  display: flex; flex-direction: column; gap: 14px;
+  align-items: center;
+}
+.contact-link {
+  font-size: 16px; font-weight: 400; letter-spacing: 0.02em;
+  color: var(--ink-mid); transition: color 0.25s;
+  display: flex; align-items: center; gap: 10px;
+}
+.contact-link:hover { color: #fff; }
+.contact-link-label {
+  font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--ink-soft); min-width: 80px; text-align: right;
+}
+.contact-link-val { color: var(--ink); transition: color 0.2s; }
+.contact-link-val:hover { color: var(--orange); }
+
+/* ══════════════════════════════════════════
+   FOOTER BAR
+   ══════════════════════════════════════════ */
+.footer-bar {
+  background: var(--bg); border-top: 1px solid var(--line);
+  padding: 20px 80px;
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 11px; color: var(--ink-soft); letter-spacing: 0.04em;
+}
+.footer-link {
+  color: var(--ink-soft); transition: color 0.2s;
+}
+.footer-link:hover { color: var(--orange); }
+
+/* ══════════════════════════════════════════
+   RESPONSIVE
+   ══════════════════════════════════════════ */
+@media (max-width: 1100px) {
+  .bio-strip { grid-template-columns: 1fr; gap: 40px; }
+  .bio-stats { justify-content: flex-start; }
+  .projects-grid { grid-template-columns: 1fr; }
+  .proj-card { height: 340px; }
+}
+@media (max-width: 900px) {
+  section, .bio-strip, .skills-section, .timeline-section,
+  .contact-section, .projects-section { padding-left: 36px; padding-right: 36px; }
+  .hero-content { padding: 0 36px 60px; }
+  .featured-content { padding: 0 36px 48px; }
+  .f-timeline-item { grid-template-columns: 120px 1fr; gap: 20px; }
+  .footer-bar { padding: 20px 36px; }
+}
+@media (max-width: 768px) {
+  .f-sidebar { width: 56px; }
+  .f-sidebar-logo span, .f-nav-item a span:not(.f-nav-icon) { display: none; }
+  .f-main { margin-left: 56px; }
+  .topbar { left: 56px; }
+  .projects-grid { grid-template-columns: 1fr; }
+  .f-timeline-item { grid-template-columns: 1fr; gap: 4px; }
+  .f-timeline-date { text-align: left; }
+  .contact-headline { font-size: clamp(40px, 12vw, 80px); }
+}
+</style>
+</head>
+<body>
+<div class="page-wrap">
+
+  <!-- ── Sidebar ── -->
+  <nav class="f-sidebar">
+    <div class="f-sidebar-logo">
+      <img src="assets/tonitruum-logo-white.png" alt="TONITRUUM"
+           style="width:100%;height:auto;max-width:180px;opacity:0.85;">
+    </div>
+    <ul class="f-nav-list">
+      <li class="f-nav-section">Monitor</li>
+      <li class="f-nav-item"><a href="index.html"><span class="f-nav-icon">⬡</span>Habitat Monitor</a></li>
+      <li class="f-nav-section">Clinical</li>
+      <li class="f-nav-item"><a href="autism.html"><span class="f-nav-icon">♡</span>Patient Care</a></li>
+      <li class="f-nav-item"><a href="assessment.html"><span class="f-nav-icon">≡</span>Assessments</a></li>
+      <li class="f-nav-item"><a href="parent-form.html"><span class="f-nav-icon">✎</span>Parent Reports</a></li>
+      <li class="f-nav-item"><a href="medical.html"><span class="f-nav-icon">✚</span>Medical Consult</a></li>
+      <li class="f-nav-section">Strategy</li>
+      <li class="f-nav-item"><a href="service.html"><span class="f-nav-icon">◎</span>Service Overview</a></li>
+      <li class="f-nav-item"><a href="stakeholder.html"><span class="f-nav-icon">◉</span>Stakeholder Map</a></li>
+      <li class="f-nav-item"><a href="product.html"><span class="f-nav-icon">◈</span>Product Design</a></li>
+      <li class="f-nav-section">Project</li>
+      <li class="f-nav-item"><a href="phase0.html"><span class="f-nav-icon">◫</span>Phase 0 Origin</a></li>
+      <li class="f-nav-item"><a href="phase1.html"><span class="f-nav-icon">◧</span>Phase 1 Research</a></li>
+      <li class="f-nav-item active"><a href="founder.html"><span class="f-nav-icon">◐</span>Founder</a></li>
+      <li class="f-nav-item"><a href="research.html"><span class="f-nav-icon">◇</span>Reptile Therapy</a></li>
+      <li class="f-nav-item"><a href="market.html"><span class="f-nav-icon">◆</span>Business Model</a></li>
+      <li class="f-nav-section">Play</li>
+      <li class="f-nav-item"><a href="game.html"><span class="f-nav-icon">◎</span>Cricket Hunter</a></li>
+    </ul>
+    <div class="f-sidebar-footer">
+      <div class="f-sys-status">
+        <span class="f-sys-dot"></span>All Systems Online
+      </div>
+      <div class="f-sys-time" id="sidebarTime"></div>
+    </div>
+  </nav>
+
+  <!-- ── Main Content ── -->
+  <main class="f-main">
+
+    <!-- TOP BAR -->
+    <header class="topbar" id="topbar">
+      <div></div>
+      <nav class="topbar-nav">
+        <a href="product.html">Product</a>
+        <a href="service.html">Therapy</a>
+        <a href="founder.html" class="active">Founder</a>
+        <a href="index.html">Monitor</a>
+      </nav>
+    </header>
+
+    <!-- ══════════════════════════════
+         HERO
+         ══════════════════════════════ -->
+    <section class="hero">
+      <div class="hero-bg"></div>
+      <div class="hero-overlay"></div>
+      <canvas id="heroParticles"></canvas>
+
+      <div class="hero-content">
+        <p class="hero-kicker">Graphic Designer · Visual Designer · Founder</p>
+        <h1 class="hero-name">XING.<span>HAO</span>.NI</h1>
+        <p class="hero-subtitle">倪星浩 &nbsp;·&nbsp; Nantes, France &nbsp;·&nbsp; Since 2019</p>
+        <div class="hero-rule"></div>
+        <p class="hero-desc">
+          Designer, director, and founder shaping products, identities,
+          and environments through the intersection of precision
+          engineering and minimal aesthetics.
+        </p>
+      </div>
+
+      <div class="hero-scroll-hint">
+        <span>Scroll</span>
+        <div class="hero-scroll-line"></div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════
+         BIO STRIP
+         ══════════════════════════════ -->
+    <div class="bio-strip">
+      <blockquote class="bio-quote reveal">
+        "Design is the space between
+        <em>intention</em> and experience."
+      </blockquote>
+      <div class="bio-stats">
+        <div class="bio-stat reveal reveal-delay-1">
+          <span class="bio-stat-val">8+</span>
+          <span class="bio-stat-label">Years Active</span>
+        </div>
+        <div class="bio-stat reveal reveal-delay-2">
+          <span class="bio-stat-val">30+</span>
+          <span class="bio-stat-label">Brands</span>
+        </div>
+        <div class="bio-stat reveal reveal-delay-3">
+          <span class="bio-stat-val">4</span>
+          <span class="bio-stat-label">Languages</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════
+         TONITRUUM FEATURED PROJECT
+         ══════════════════════════════ -->
+    <div class="featured-project" id="featuredProject">
+      <div class="featured-slides">
+        <div class="featured-slide active"
+             style="background-image:url('assets/renders/WechatIMG035da4ae3bde01e43dfe2644368e72b2.jpeg')"></div>
+        <div class="featured-slide"
+             style="background-image:url('assets/renders/WechatIMG844d6703613510dfcfaf62aedfb623de.jpeg')"></div>
+        <div class="featured-slide"
+             style="background-image:url('assets/renders/WechatIMGb5ce2888223e976cf87780e2080c9a79.jpeg')"></div>
+      </div>
+      <div class="featured-overlay"></div>
+
+      <div class="featured-content reveal">
+        <p class="featured-kicker">Featured Project · 2023 – Present</p>
+        <h2 class="featured-title">TONITRUUM</h2>
+        <p class="featured-sub">Intelligent Habitat System · Founder &amp; Industrial Designer</p>
+        <p class="featured-desc">
+          Smart reptile enclosure blending precision engineering with minimal aesthetics.
+          Orange LED accent, anodized aluminum frame, and IoT sensor array —
+          designed from first principles to redefine how we share space with animals.
+        </p>
+        <a href="product.html" class="btn-project">
+          View Project
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M3 7h8M7 3l4 4-4 4"/>
+          </svg>
+        </a>
+      </div>
+
+      <div class="featured-dots">
+        <div class="featured-dot active" onclick="goFeatured(0)"></div>
+        <div class="featured-dot" onclick="goFeatured(1)"></div>
+        <div class="featured-dot" onclick="goFeatured(2)"></div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════
+         OTHER PROJECTS GRID
+         ══════════════════════════════ -->
+    <section class="projects-section">
+      <div class="projects-header">
+        <div>
+          <p class="eyebrow reveal">Selected Work</p>
+          <h2 class="projects-title reveal reveal-delay-1">
+            Studio &amp; Agency<br><strong>Projects</strong>
+          </h2>
+        </div>
+        <p class="reveal reveal-delay-2"
+           style="font-size:12px;color:var(--ink-soft);letter-spacing:0.06em;text-transform:uppercase;max-width:200px;line-height:1.7;">
+          Shanghai · Nantes · 2019 – Present
+        </p>
+      </div>
+
+      <div class="projects-grid">
+
+        <!-- Centdegrés -->
+        <div class="proj-card reveal" data-delay="0"
+             onclick="document.getElementById('gallery-centdegres').scrollIntoView({behavior:'smooth'})">
+          <div class="proj-card-bg proj-bg-centdegres" style="background-image:url('assets/portfolio/6.jpg');background-size:cover;background-position:center;"></div>
+          <div class="proj-card-overlay"></div>
+          <div class="proj-card-body">
+            <p class="proj-card-tag">Luxury Brand &amp; Packaging · 2021 – 2023</p>
+            <h3 class="proj-card-title">Centdegrés</h3>
+            <p class="proj-card-sub">Creative Agency · Shanghai</p>
+          </div>
+          <div class="proj-desc-overlay">
+            <p>
+              Packaging, visual communication, and 3D for flagship clients
+              including Sephora, Wuliangye, Supor, and Rio. Luxury positioning
+              through materiality and precision.
+            </p>
+            <p class="proj-desc-role">Graphic Designer · Shanghai · 2021 – 2023</p>
+          </div>
+        </div>
+
+        <!-- Documentary -->
+        <div class="proj-card reveal reveal-delay-1"
+             onclick="window.open('https://www.xiaohongshu.com/user/profile/661a4726000000000700618e','_blank')" id="docuCard">
+          <div class="proj-card-bg proj-bg-docu" style="background-image:url('assets/wonderhouse-bg.jpg');background-size:cover;background-position:center;"></div>
+          <div class="proj-card-overlay"></div>
+          <div class="proj-card-body">
+            <p class="proj-card-tag">独立纪录片 · 2023 – Present</p>
+            <h3 class="proj-card-title">门间 WonderHouse</h3>
+            <p class="proj-card-sub">Director &amp; Art Director</p>
+          </div>
+          <div class="proj-desc-overlay">
+            <p>独立纪录片出品团队，记录生命的鲜活和勇敢。</p>
+            <p style="font-size:11px;color:rgba(255,255,255,0.4);margin-top:8px;letter-spacing:0.04em;">
+              1132 粉丝 &nbsp;·&nbsp; 2867 获赞与收藏
+            </p>
+            <p class="proj-desc-role">门间 WonderHouse · 小红书 ↗</p>
+          </div>
+        </div>
+
+        <!-- Y+BO Dental -->
+        <div class="proj-card reveal reveal-delay-2"
+             onclick="document.getElementById('gallery-ybo').scrollIntoView({behavior:'smooth'})">
+          <div class="proj-card-bg proj-bg-dental" style="background-image:url('assets/portfolio/24.jpg');background-size:cover;background-position:center;"></div>
+          <div class="proj-card-overlay"></div>
+          <div class="proj-card-body">
+            <p class="proj-card-tag">Brand Identity · 2020 – 2021</p>
+            <h3 class="proj-card-title">Y+BO Dental</h3>
+            <p class="proj-card-sub">Brand Director</p>
+          </div>
+          <div class="proj-desc-overlay">
+            <p>
+              Full brand identity system, visual communication, and creative
+              content for a premium dental clinic. A clinical precision that
+              still feels warm and considered.
+            </p>
+            <p class="proj-desc-role">Brand Director · 2020 – 2021</p>
+          </div>
+        </div>
+
+        <!-- Wavemaker -->
+        <div class="proj-card reveal reveal-delay-3"
+             onclick="document.getElementById('gallery-wavemaker').scrollIntoView({behavior:'smooth'})">
+          <div class="proj-card-bg" style="background-image:url('assets/wavemaker/wm-01.jpg');background-size:cover;background-position:center top;"></div>
+          <div class="proj-card-overlay"></div>
+          <div class="proj-card-body">
+            <p class="proj-card-tag">Freelance · Visual Communication · 2022 – 2024</p>
+            <h3 class="proj-card-title">WPP Wavemaker</h3>
+            <p class="proj-card-sub">Freelance Art Director · Shanghai</p>
+          </div>
+          <div class="proj-desc-overlay">
+            <p>
+              Visual design and art direction for Wavemaker's Wavetalk programme —
+              蔚迈声波栏目. Podcast key visuals covering advertising, media, and
+              brand strategy for China's leading WPP media agency.
+            </p>
+            <p class="proj-desc-role">Freelance · WPP Wavemaker · 2022 – 2024</p>
+          </div>
+        </div>
+
+        <!-- UN-SEEN Vol.II -->
+        <div class="proj-card reveal reveal-delay-2"
+             onclick="document.getElementById('gallery-unseen2').scrollIntoView({behavior:'smooth'})">
+          <div class="proj-card-bg" style="background-image:url('assets/unseen2/u2-01.jpg');background-size:cover;background-position:center 30%;"></div>
+          <div class="proj-card-overlay"></div>
+          <div class="proj-card-body">
+            <p class="proj-card-tag">Freelance · Event Key Visual · 2022</p>
+            <h3 class="proj-card-title">未见 UN·SEEN Vol.II</h3>
+            <p class="proj-card-sub">Art Director · Wavemaker × 同济大学</p>
+          </div>
+          <div class="proj-desc-overlay">
+            <p>
+              Key visual and full event identity for the 2nd edition of UN·SEEN —
+              未见第二届。Theme: Deeper AI Deeper HI. Immersive 3D art direction
+              exploring human connection in the age of artificial intelligence,
+              produced for Wavemaker × Tongji University's digital workshop.
+            </p>
+            <p class="proj-desc-role">Art Director · Wavemaker × 同济大学 · 2022</p>
+          </div>
+        </div>
+
+        <!-- UN-SEEN / Tongji -->
+        <div class="proj-card reveal reveal-delay-2"
+             onclick="document.getElementById('gallery-unseen').scrollIntoView({behavior:'smooth'})">
+          <div class="proj-card-bg" style="background-image:url('assets/unseen/unseen-01.jpg');background-size:cover;background-position:center;"></div>
+          <div class="proj-card-overlay"></div>
+          <div class="proj-card-body">
+            <p class="proj-card-tag">Freelance · Event Key Visual · 2023</p>
+            <h3 class="proj-card-title">UN-SEEN × Tongji</h3>
+            <p class="proj-card-sub">Art Director · Wavemaker × 同济大学</p>
+          </div>
+          <div class="proj-desc-overlay">
+            <p>
+              Main key visual and event identity for the Tongji Future Vehicle
+              Seminar — 同济未来载具研讨会. A joint initiative by Wavemaker
+              and Tongji University's digital workshop, exploring the future
+              of mobility through immersive visual design.
+            </p>
+            <p class="proj-desc-role">Art Director · Wavemaker × 同济大学 · 2023</p>
+          </div>
+        </div>
+
+        <!-- GroupM -->
+        <div class="proj-card reveal reveal-delay-3"
+             onclick="document.getElementById('gallery-groupm').scrollIntoView({behavior:'smooth'})">
+          <div class="proj-card-bg" style="background-image:url('assets/groupm/gm-06.jpg');background-size:cover;background-position:center;"></div>
+          <div class="proj-card-overlay"></div>
+          <div class="proj-card-body">
+            <p class="proj-card-tag">Freelance · Event & Presentation Design · 2024</p>
+            <h3 class="proj-card-title">GroupM</h3>
+            <p class="proj-card-sub">Freelance Designer · WPP</p>
+          </div>
+          <div class="proj-desc-overlay">
+            <p>
+              Full visual identity system for GroupM Global CEO's China visit —
+              conference backdrop, digital screen content, lobby displays,
+              and elevator signage across the Shanghai headquarters.
+            </p>
+            <p class="proj-desc-role">Freelance Designer · GroupM × WPP · 2024</p>
+          </div>
+        </div>
+
+        <!-- Uniplan -->
+        <div class="proj-card reveal reveal-delay-3"
+             onclick="document.getElementById('gallery-uniplan').scrollIntoView({behavior:'smooth'})">
+          <div class="proj-card-bg proj-bg-ostudio" style="background-image:url('assets/portfolio/23.jpg');background-size:cover;background-position:center;"></div>
+          <div class="proj-card-overlay"></div>
+          <div class="proj-card-body">
+            <p class="proj-card-tag">Exhibition &amp; Brand Activation · 2019</p>
+            <h3 class="proj-card-title">Uniplan</h3>
+            <p class="proj-card-sub">Graphic Designer · Shanghai</p>
+          </div>
+          <div class="proj-desc-overlay">
+            <p>
+              Large-scale exhibition design and brand activation for global
+              campaigns including Disney, Pixar, Star Wars, and Marvel.
+              Visual communication at retail scale across Shanghai's flagship
+              commercial venues.
+            </p>
+            <p class="proj-desc-role">Graphic Designer · Shanghai · 2019</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════
+         SKILLS ROW
+         ══════════════════════════════ -->
+    <div class="skills-section">
+      <p class="skills-label reveal">Competencies</p>
+      <div class="skills-scroll reveal reveal-delay-1">
+        <span class="skill-tag">Adobe Suite</span>
+        <span class="skill-tag">Branding &amp; Identity</span>
+        <span class="skill-tag">Packaging Design</span>
+        <span class="skill-tag">Art Direction</span>
+        <span class="skill-tag">Video &amp; Storytelling</span>
+        <span class="skill-tag">3D Rendering</span>
+        <span class="skill-tag">Project Management</span>
+        <span class="skill-tag">Industrial Design</span>
+        <span class="skill-tag">Brand Strategy</span>
+        <span class="skill-tag">Visual Communication</span>
+        <span class="skill-tag">Set Design</span>
+        <span class="skill-tag">Cinematography</span>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════
+         CAREER TIMELINE
+         ══════════════════════════════ -->
+    <section class="timeline-section">
+      <div class="timeline-header">
+        <p class="eyebrow reveal">Career Path</p>
+        <h2 class="timeline-title reveal reveal-delay-1">
+          Experience<br><strong>&amp; Timeline</strong>
+        </h2>
+      </div>
+
+      <div class="f-timeline">
+
+        <div class="f-timeline-item reveal">
+          <div class="f-timeline-date">2023 – PRESENT</div>
+          <div class="f-timeline-body">
+            <p class="f-timeline-role">Founder &amp; Industrial Designer</p>
+            <p class="f-timeline-company">TONITRUUM · Nantes, France</p>
+            <p class="f-timeline-desc">
+              Conceived, designed, and engineered an intelligent reptile habitat
+              system from first principles. Overseeing industrial design,
+              brand identity, IoT hardware specification, and go-to-market strategy.
+            </p>
+          </div>
+        </div>
+
+        <div class="f-timeline-item reveal reveal-delay-1">
+          <div class="f-timeline-date">2023 – PRESENT</div>
+          <div class="f-timeline-body">
+            <p class="f-timeline-role">Director &amp; Art Director</p>
+            <p class="f-timeline-company">门间 WonderHouse · Independent</p>
+            <p class="f-timeline-desc">
+              独立纪录片出品团队，记录生命的鲜活和勇敢。
+              Responsible for art direction, set design, and cinematography
+              across short-form and long-form documentary projects.
+              1132 粉丝 · 2867 获赞与收藏
+            </p>
+          </div>
+        </div>
+
+        <div class="f-timeline-item reveal reveal-delay-2">
+          <div class="f-timeline-date">2021 – 2023</div>
+          <div class="f-timeline-body">
+            <p class="f-timeline-role">Graphic Designer</p>
+            <p class="f-timeline-company">Centdegrés Creative Agency · Shanghai</p>
+            <p class="f-timeline-desc">
+              Luxury packaging, visual communication, and 3D visualisation for
+              global brands including Sephora, Wuliangye, Supor, and Rio.
+              Operating at the intersection of premium positioning and technical precision.
+            </p>
+          </div>
+        </div>
+
+        <div class="f-timeline-item reveal reveal-delay-3">
+          <div class="f-timeline-date">2020 – 2021</div>
+          <div class="f-timeline-body">
+            <p class="f-timeline-role">Brand Director</p>
+            <p class="f-timeline-company">Y+BO Dental · China</p>
+            <p class="f-timeline-desc">
+              Led the full brand identity system for a premium dental clinic.
+              Delivered visual communication strategy, creative content,
+              and all touchpoint design from signage to digital.
+            </p>
+          </div>
+        </div>
+
+        <div class="f-timeline-item reveal reveal-delay-3">
+          <div class="f-timeline-date">2022</div>
+          <div class="f-timeline-body">
+            <p class="f-timeline-role">Art Director</p>
+            <p class="f-timeline-company">未见 UN·SEEN Vol.II · Wavemaker × 同济大学</p>
+            <p class="f-timeline-desc">
+              Key visual and event identity for the 2nd edition of UN·SEEN.
+              Theme: Deeper AI Deeper HI — immersive 3D art direction exploring
+              human connection in the age of AI. Full deliverables including
+              backdrop, digital screens, photo wall, and WeChat assets.
+            </p>
+          </div>
+        </div>
+
+        <div class="f-timeline-item reveal reveal-delay-3">
+          <div class="f-timeline-date">2023</div>
+          <div class="f-timeline-body">
+            <p class="f-timeline-role">Art Director</p>
+            <p class="f-timeline-company">UN-SEEN · Wavemaker × 同济大学 · Shanghai</p>
+            <p class="f-timeline-desc">
+              Main key visual and full event identity for the Tongji Future Vehicle
+              Seminar — 同济未来载具研讨会. A joint initiative between Wavemaker
+              and Tongji University's digital workshop, exploring the future
+              of mobility through immersive visual storytelling.
+            </p>
+          </div>
+        </div>
+
+        <div class="f-timeline-item reveal reveal-delay-3">
+          <div class="f-timeline-date">2024</div>
+          <div class="f-timeline-body">
+            <p class="f-timeline-role">Freelance Designer</p>
+            <p class="f-timeline-company">GroupM × WPP · Shanghai</p>
+            <p class="f-timeline-desc">
+              Visual identity system for GroupM Global CEO's China visit.
+              Conference backdrop design, digital screen content, lobby displays,
+              and elevator signage — delivered across Shanghai headquarters.
+            </p>
+          </div>
+        </div>
+
+        <div class="f-timeline-item reveal reveal-delay-4">
+          <div class="f-timeline-date">2022 – 2024</div>
+          <div class="f-timeline-body">
+            <p class="f-timeline-role">Freelance Art Director</p>
+            <p class="f-timeline-company">WPP Wavemaker · Shanghai</p>
+            <p class="f-timeline-desc">
+              Visual design and art direction for Wavemaker's Wavetalk podcast
+              programme — 蔚迈声波栏目. Key visuals covering advertising trends,
+              media strategy, and brand innovation for China's leading WPP media agency.
+            </p>
+          </div>
+        </div>
+
+        <div class="f-timeline-item reveal reveal-delay-4">
+          <div class="f-timeline-date">2019</div>
+          <div class="f-timeline-body">
+            <p class="f-timeline-role">Graphic Designer</p>
+            <p class="f-timeline-company">Uniplan · Shanghai</p>
+            <p class="f-timeline-desc">
+              Large-scale exhibition design and brand activation for global
+              campaigns including Disney, Pixar, Star Wars, and Marvel.
+              Visual communication at retail scale across Shanghai's flagship
+              commercial venues.
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════
+         WORK GALLERY
+         ══════════════════════════════ -->
+    <section class="gallery-section">
+
+      <div class="gallery-section-header reveal">
+        <p class="eyebrow">Selected Work</p>
+        <h2 class="gallery-section-title">Project<br><strong>Gallery</strong></h2>
+      </div>
+
+      <!-- ── Centdegrés ── -->
+      <div class="gallery-project reveal" id="gallery-centdegres">
+        <div class="gallery-project-header">
+          <h3 class="gallery-project-title">Centdegrés Creative Agency</h3>
+          <span class="gallery-project-meta">Luxury Brand &amp; Packaging · Shanghai · 2021 – 2023</span>
+        </div>
+
+        <div class="gallery-sub">
+          <p class="gallery-sub-label">Purally — Skincare Packaging</p>
+          <div class="gallery-strip">
+            <img src="assets/portfolio/xinghao-ni-portfolio-copy.jpg" alt="Purally packaging overview" loading="lazy">
+            <img src="assets/portfolio/2.jpg" alt="Purally flat lay" loading="lazy">
+            <img src="assets/portfolio/3.jpg" alt="Purally product layout" loading="lazy">
+            <img src="assets/portfolio/4.jpg" alt="Purally gift box" loading="lazy">
+            <img src="assets/portfolio/5.jpg" alt="Purally product lineup" loading="lazy">
+          </div>
+        </div>
+
+        <div class="gallery-sub">
+          <p class="gallery-sub-label">Château L'Hospitalet — Wine Packaging</p>
+          <div class="gallery-strip">
+            <img src="assets/portfolio/6.jpg" alt="L'Hospitalet wine boxes" loading="lazy">
+            <img src="assets/portfolio/7.jpg" alt="L'Hospitalet bottle and box" loading="lazy">
+          </div>
+        </div>
+
+        <div class="gallery-sub">
+          <p class="gallery-sub-label">YVES 珣秘 — Facial Mask Packaging</p>
+          <div class="gallery-strip">
+            <img src="assets/portfolio/10.jpg" alt="YVES packaging system" loading="lazy">
+            <img src="assets/portfolio/11.jpg" alt="YVES serum pouch" loading="lazy">
+            <img src="assets/portfolio/12.jpg" alt="YVES product lineup" loading="lazy">
+          </div>
+        </div>
+
+        <div class="gallery-sub">
+          <p class="gallery-sub-label">Sephora × RealEye — Contact Lens</p>
+          <div class="gallery-strip">
+            <img src="assets/portfolio/9.jpg" alt="RealEye contact lens packaging" loading="lazy">
+          </div>
+        </div>
+
+        <div class="gallery-sub">
+          <p class="gallery-sub-label">Spirits &amp; Liquor — Wuliangye · Jinliufu · Zhenjiu · RIO</p>
+          <div class="gallery-strip">
+            <img src="assets/portfolio/8.jpg" alt="Wuliangye gold vault brand experience" loading="lazy">
+            <img src="assets/portfolio/13.jpg" alt="Jinliufu Diwangjin packaging" loading="lazy">
+            <img src="assets/portfolio/14.jpg" alt="Zhenjiu luxury bottle" loading="lazy">
+            <img src="assets/portfolio/22.jpg" alt="RIO Distill Punk packaging" loading="lazy">
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Su-Por 舒铂 ── -->
+      <div class="gallery-project reveal">
+        <div class="gallery-project-header">
+          <h3 class="gallery-project-title">Su-Por 舒铂 — Medical Aesthetics Brand</h3>
+          <span class="gallery-project-meta">Brand Identity · Shanghai · 2021 – 2022</span>
+        </div>
+        <div class="gallery-sub">
+          <div class="gallery-strip">
+            <img src="assets/portfolio/15.jpg" alt="Su-Por brand identity cover" loading="lazy">
+            <img src="assets/portfolio/16.jpg" alt="Su-Por visual style" loading="lazy">
+            <img src="assets/portfolio/17.jpg" alt="Su-Por name card" loading="lazy">
+            <img src="assets/portfolio/18.jpg" alt="Su-Por name card 2" loading="lazy">
+            <img src="assets/portfolio/19.jpg" alt="Su-Por stationery" loading="lazy">
+            <img src="assets/portfolio/20.jpg" alt="Su-Por brand book" loading="lazy">
+            <img src="assets/portfolio/21.jpg" alt="Su-Por brand launch event" loading="lazy">
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Y+BO Dental ── -->
+      <div class="gallery-project reveal" id="gallery-ybo">
+        <div class="gallery-project-header">
+          <h3 class="gallery-project-title">Y+BO Dental 英博口腔</h3>
+          <span class="gallery-project-meta">Brand Identity &amp; Visual System · 2020 – 2021</span>
+        </div>
+        <div class="gallery-sub">
+          <div class="gallery-strip">
+            <img src="assets/portfolio/24.jpg" alt="Y+BO Dental brand cover" loading="lazy">
+            <img src="assets/portfolio/25.jpg" alt="Y+BO logo design" loading="lazy">
+            <img src="assets/portfolio/26.jpg" alt="Y+BO stationery" loading="lazy">
+            <img src="assets/portfolio/27.jpg" alt="Y+BO office supplies" loading="lazy">
+            <img src="assets/portfolio/28.jpg" alt="Y+BO letterhead and envelope" loading="lazy">
+            <img src="assets/portfolio/29.jpg" alt="Y+BO business cards" loading="lazy">
+            <img src="assets/portfolio/30.jpg" alt="Y+BO tote bags" loading="lazy">
+            <img src="assets/portfolio/31.jpg" alt="Y+BO paper cups" loading="lazy">
+            <img src="assets/portfolio/32.jpg" alt="Y+BO mugs" loading="lazy">
+            <img src="assets/portfolio/33.jpg" alt="Y+BO brand activation" loading="lazy">
+            <img src="assets/portfolio/34.jpg" alt="Y+BO mascot design" loading="lazy">
+          </div>
+        </div>
+      </div>
+
+      <!-- ── UN-SEEN × Tongji ── -->
+      <div class="gallery-project reveal" id="gallery-unseen">
+        <div class="gallery-project-header">
+          <h3 class="gallery-project-title">UN-SEEN — 同济未来载具研讨会 · 主视觉</h3>
+          <span class="gallery-project-meta">Event Key Visual · Wavemaker × 同济大学 · 2023</span>
+        </div>
+        <div class="gallery-sub">
+          <p class="gallery-sub-label">Tongji Future Vehicle Seminar — Key Visual System</p>
+          <div class="gallery-strip">
+            <img src="assets/unseen/unseen-01.jpg" alt="同济未来载具研讨会 main key visual" loading="lazy">
+            <img src="assets/unseen/unseen-02.jpg" alt="UN-SEEN background artwork" loading="lazy">
+            <img src="assets/unseen/unseen-03.jpg" alt="UN-SEEN route 1 background" loading="lazy">
+            <img src="assets/unseen/unseen-04.jpg" alt="UN-SEEN 3D render" loading="lazy">
+          </div>
+        </div>
+      </div>
+
+      <!-- ── 未见 UN·SEEN Vol.II ── -->
+      <div class="gallery-project reveal" id="gallery-unseen2">
+        <div class="gallery-project-header">
+          <h3 class="gallery-project-title">未见 UN·SEEN Vol.II — Deeper AI Deeper HI · 主视觉</h3>
+          <span class="gallery-project-meta">Event Key Visual · Wavemaker × 同济大学 · 2022</span>
+        </div>
+        <div class="gallery-sub">
+          <p class="gallery-sub-label">2nd Edition — Full Visual Identity System</p>
+          <div class="gallery-strip">
+            <img src="assets/unseen2/u2-01.jpg" alt="未见Vol.II main key visual" loading="lazy">
+            <img src="assets/unseen2/u2-02.jpg" alt="未见Vol.II artwork 2" loading="lazy">
+            <img src="assets/unseen2/u2-03.jpg" alt="未见Vol.II artwork 3" loading="lazy">
+            <img src="assets/unseen2/u2-04.jpg" alt="未见Vol.II artwork 4" loading="lazy">
+            <img src="assets/unseen2/u2-05.jpg" alt="未见Vol.II artwork 5" loading="lazy">
+            <img src="assets/unseen2/u2-06.jpg" alt="未见Vol.II artwork 6" loading="lazy">
+            <img src="assets/unseen2/u2-07.jpg" alt="未见Vol.II artwork 7" loading="lazy">
+            <img src="assets/unseen2/u2-08.jpg" alt="未见Vol.II artwork 8" loading="lazy">
+            <img src="assets/unseen2/u2-09.jpg" alt="未见Vol.II artwork 9" loading="lazy">
+            <img src="assets/unseen2/u2-10.jpg" alt="未见Vol.II artwork 10" loading="lazy">
+          </div>
+        </div>
+      </div>
+
+      <!-- ── GroupM ── -->
+      <div class="gallery-project reveal" id="gallery-groupm">
+        <div class="gallery-project-header">
+          <h3 class="gallery-project-title">GroupM — Global CEO 访问中国 · 会议视觉系统</h3>
+          <span class="gallery-project-meta">Event & Presentation Design · Shanghai · 2024</span>
+        </div>
+        <div class="gallery-sub">
+          <p class="gallery-sub-label">Conference Backdrop & Key Visual</p>
+          <div class="gallery-strip">
+            <img src="assets/groupm/gm-01.jpg" alt="GroupM key visual" loading="lazy">
+            <img src="assets/groupm/gm-02.jpg" alt="GroupM CEO backdrop" loading="lazy">
+            <img src="assets/groupm/gm-03.jpg" alt="GroupM backdrop variant" loading="lazy">
+            <img src="assets/groupm/gm-04.jpg" alt="GroupM backdrop 4" loading="lazy">
+            <img src="assets/groupm/gm-05.jpg" alt="GroupM backdrop 5" loading="lazy">
+          </div>
+        </div>
+        <div class="gallery-sub">
+          <p class="gallery-sub-label">Digital Screen & Lobby Displays</p>
+          <div class="gallery-strip">
+            <img src="assets/groupm/gm-06.jpg" alt="大堂拼接屏 1" loading="lazy">
+            <img src="assets/groupm/gm-07.jpg" alt="大堂拼接屏 2" loading="lazy">
+            <img src="assets/groupm/gm-08.jpg" alt="大堂电子屏 1" loading="lazy">
+            <img src="assets/groupm/gm-09.jpg" alt="大堂电子屏 2" loading="lazy">
+            <img src="assets/groupm/gm-10.jpg" alt="电梯轿厢电子屏 1" loading="lazy">
+            <img src="assets/groupm/gm-11.jpg" alt="电梯轿厢电子屏 2" loading="lazy">
+          </div>
+        </div>
+      </div>
+
+      <!-- ── WPP Wavemaker ── -->
+      <div class="gallery-project reveal" id="gallery-wavemaker">
+        <div class="gallery-project-header">
+          <h3 class="gallery-project-title">WPP Wavemaker — 蔚迈声波栏目</h3>
+          <span class="gallery-project-meta">Freelance Visual Communication · Shanghai · 2022 – 2024</span>
+        </div>
+        <div class="gallery-sub">
+          <p class="gallery-sub-label">Wavetalk — Podcast Key Visuals</p>
+          <div class="gallery-strip">
+            <img src="assets/wavemaker/wm-01.jpg" alt="青年广告人请就位" loading="lazy">
+            <img src="assets/wavemaker/wm-02.jpg" alt="那些被种草的人都去哪儿了" loading="lazy">
+            <img src="assets/wavemaker/wm-03.jpg" alt="通缩下的消费升级" loading="lazy">
+            <img src="assets/wavemaker/wm-04.jpg" alt="她文化的商业实践" loading="lazy">
+            <img src="assets/wavemaker/wm-05.jpg" alt="不断涌现的新型电影院" loading="lazy">
+            <img src="assets/wavemaker/wm-06.jpg" alt="品牌出海" loading="lazy">
+            <img src="assets/wavemaker/wm-07.jpg" alt="从AI的冬天到广告行业的盛夏" loading="lazy">
+            <img src="assets/wavemaker/wm-08.jpg" alt="我们用五个故事交换你的过往" loading="lazy">
+            <img src="assets/wavemaker/wm-09.jpg" alt="从品牌同框到同行" loading="lazy">
+            <img src="assets/wavemaker/wm-10.jpg" alt="AIGC引爆创造力民主化" loading="lazy">
+            <img src="assets/wavemaker/wm-11.jpg" alt="当我们谈论营销场景时" loading="lazy">
+            <img src="assets/wavemaker/wm-12.jpg" alt="博物馆IP营销" loading="lazy">
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Uniplan ── -->
+      <div class="gallery-project reveal" id="gallery-uniplan">
+        <div class="gallery-project-header">
+          <h3 class="gallery-project-title">Uniplan — Exhibition &amp; Brand Activation</h3>
+          <span class="gallery-project-meta">Exhibition Design · Shanghai · 2019</span>
+        </div>
+        <div class="gallery-sub">
+          <p class="gallery-sub-label">Disney · Pixar · Star Wars · Marvel — 2019 Campaign</p>
+          <div class="gallery-strip">
+            <img src="assets/portfolio/23.jpg" alt="Disney Pixar Marvel 2019 poster design" loading="lazy">
+          </div>
+        </div>
+      </div>
+
+      <div style="text-align:center; margin-top: 16px;">
+        <a href="assets/portfolio.pdf" download class="btn-download">
+          Download Full Portfolio PDF
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M7 2v7M4 6l3 3 3-3M2 11h10"/>
+          </svg>
+        </a>
+      </div>
+
+    </section>
+
+    <!-- Lightbox -->
+    <div class="gallery-lightbox" id="galleryLightbox">
+      <span class="gallery-lightbox-close" id="lightboxClose">&times;</span>
+      <img src="" alt="" id="lightboxImg">
+    </div>
+
+    <!-- ══════════════════════════════
+         FOUNDER STORY
+         ══════════════════════════════ -->
+    <section class="story-section" id="story">
+
+      <!-- Section header -->
+      <div class="story-intro reveal">
+        <p class="story-eyebrow">Founder Profile</p>
+        <h2 class="story-headline">Xinghao <strong>Ni</strong></h2>
+        <p class="story-sub">Founder &amp; Creative Director, TONITRUUM · Nantes / Shanghai · 2023–</p>
+      </div>
+
+      <!-- ── Education ── -->
+      <div class="spec-block reveal">
+        <div class="spec-block-label">Education</div>
+        <div class="spec-rows">
+          <div class="spec-row">
+            <span class="spec-key">2023 – present</span>
+            <span class="spec-val"><strong>École de Design Nantes Atlantique</strong> &nbsp;·&nbsp; Master en Design &nbsp;·&nbsp; Gap year 2024, resumed 2024–present</span>
+          </div>
+          <div class="spec-row">
+            <span class="spec-key">2023 – present</span>
+            <span class="spec-val"><strong>China Academy of Art</strong> (中国美术学院) &nbsp;·&nbsp; Master en Design (concurrent enrolment)</span>
+          </div>
+          <div class="spec-row">
+            <span class="spec-key">2017 – 2019</span>
+            <span class="spec-val"><strong>Intermark International Design College</strong> &nbsp;·&nbsp; Strategic Brand Management &amp; Branding Design</span>
+          </div>
+          <div class="spec-row">
+            <span class="spec-key">2015 – 2017</span>
+            <span class="spec-val"><strong>Shanghai Gench University</strong> (上海建桥学院) &nbsp;·&nbsp; Visual Communication</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Work Experience ── -->
+      <div class="spec-block reveal">
+        <div class="spec-block-label">Experience</div>
+        <div class="spec-rows">
+          <div class="spec-row">
+            <span class="spec-key">Jun 2023 – now</span>
+            <span class="spec-val"><strong>TONITRUUM</strong> &nbsp;·&nbsp; <span class="spec-accent">Founder &amp; Student Entrepreneur</span></span>
+          </div>
+          <div class="spec-row">
+            <span class="spec-key">Jun 2023 – now</span>
+            <span class="spec-val"><strong>门间 Documentary Studio</strong> (Independent) &nbsp;·&nbsp; Art Director &amp; Director</span>
+          </div>
+          <div class="spec-row">
+            <span class="spec-key">May 2021 – Jul 2023</span>
+            <span class="spec-val"><strong>Centdegrés Creative Design Agency</strong>, Shanghai &nbsp;·&nbsp; Graphic Designer</span>
+          </div>
+          <div class="spec-row">
+            <span class="spec-key">Jan 2020 – May 2021</span>
+            <span class="spec-val"><strong>Y+BO Dental</strong> &nbsp;·&nbsp; Brand Manager</span>
+          </div>
+          <div class="spec-row">
+            <span class="spec-key">Sep 2019 – Dec 2019</span>
+            <span class="spec-val"><strong>O Studio</strong> &nbsp;·&nbsp; Graphic Designer</span>
+          </div>
+          <div class="spec-row">
+            <span class="spec-key">2017 – 2019</span>
+            <span class="spec-val"><strong>The Nine · Uniplan · Qingmu.Tec</strong> &nbsp;·&nbsp; Design Internships, Shanghai</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Story Chapters ── -->
+      <div class="story-chapter reveal">
+        <div class="chapter-num">01</div>
+        <div class="chapter-body">
+          <h3 class="chapter-title">The Gecko That Started Everything</h3>
+          <p class="chapter-text">In high school I kept a gecko. Due to inexperience, I didn't prepare a heating mat in winter. By the time I realized, it had already died and begun to decompose. This made me truly understand for the first time that <em>there is a great distance between loving animals and being capable of caring for them.</em></p>
+          <p class="chapter-text">Between 2019 and 2023, I lost my grandmother, grandfather, great-grandmother, and my 12-year companion dog in succession. Those years made me face death very directly. I realized that the images I truly leave behind are very few — many memories distort, blur, and eventually disappear. From then on I started a documentary studio, hoping to preserve through film those people, relationships, and feelings that will eventually vanish.</p>
+        </div>
+      </div>
+
+      <div class="story-chapter reveal">
+        <div class="chapter-num">02</div>
+        <div class="chapter-body">
+          <h3 class="chapter-title">The Pivot — From Hardware to System</h3>
+          <p class="chapter-text">Early in the project, I focused almost entirely on "how to sell this smart tank" — functionality, marketing, cost, market acceptance. In France, I read research about bearded dragons being used in emotional support and with special populations, and spoke with relevant families and specialists.</p>
+          <blockquote class="chapter-quote">At that moment I suddenly realized my work shouldn't stay at the pet equipment level. Reptile value, the meaning of environmental control, the direction of interactive design — everything had to be redefined.</blockquote>
+          <p class="chapter-text">I decided to actively overturn the original path — from a single piece of smart hardware, to a system built around animal state, user emotion, AI recognition, and special scenario support. This decision meant higher uncertainty, and meant stepping outside the market logic I was already familiar with. But I still chose the harder road, because I know the things truly worth doing are almost always found outside the industry's default answers.</p>
+        </div>
+      </div>
+
+      <div class="story-chapter reveal">
+        <div class="chapter-num">03</div>
+        <div class="chapter-body">
+          <h3 class="chapter-title">On Fear &amp; Free Fall</h3>
+          <p class="chapter-text">In Portugal I learned skydiving, and in Marrakech I completed cliff diving. The moment the plane door opened, cold air rushed in violently; adrenaline surged instantly, the whole body pushed into a state of extreme alertness. The true moment of jumping — fear, weightlessness, air pressure and heartbeat arrived simultaneously. The body seemed to suddenly detach from familiar order; ears filled only with the sound of wind; consciousness gathered with unprecedented focus.</p>
+          <blockquote class="chapter-quote">That kind of pain was very real, also very direct — like life itself reminding you of its existence in the most primal way.</blockquote>
+          <p class="chapter-text">These experiences let me more deeply feel the intensity, freedom, and weight of life. I began to more seriously understand the meaning of sensation, fear, pain, excitement, and courage in a person. I learned to slowly release from others' expectations, and rebuild the relationship with myself and the world.</p>
+        </div>
+      </div>
+
+      <div class="story-chapter reveal">
+        <div class="chapter-num">04</div>
+        <div class="chapter-body">
+          <h3 class="chapter-title">2011 — The Accident</h3>
+          <p class="chapter-text">In 2011, I was in the most serious car accident of my life. It was dusk, no street lights, no phone nearby, visibility and judgment severely limited. An elderly person on an electric bike was hit — they suffered a skull fracture; my own nasal bridge broke on the spot. The moment I picked myself up, I was completely dazed, couldn't believe what had just happened was real. Fear, shock, pain, and emptiness pressed down simultaneously — I even flashed on a very instinctive thought: run.</p>
+          <p class="chapter-text">But roughly two minutes later, I forced myself to calm down and began first aid. Called for help, contacted family — one hand still on my fractured, bleeding nose, still observing the victim's condition. My father stayed in the hospital ward all night. The elderly person survived.</p>
+          <blockquote class="chapter-quote">From then on, I gradually formed an ability: when facing pressure, first stabilize myself, then handle the problem. I know how to quickly identify what matters most in chaos.</blockquote>
+        </div>
+      </div>
+
+      <div class="story-chapter reveal">
+        <div class="chapter-num">05</div>
+        <div class="chapter-body">
+          <h3 class="chapter-title">Special Skill — Fine Sensitivity</h3>
+          <p class="chapter-text">My advantage comes from a very fine sensitivity. I am acutely sensitive to color, light, materials, tone, expressions, pauses, spatial order, and emotional flow — things many people pass over in a glance stay with me longer, more clearly. I gradually realized I may carry some characteristics of Type 1 autism spectrum, which keeps my perception permanently open, and also makes it easier for me to enter deeply into other people's emotions — to hear the parts that haven't yet been organized into language.</p>
+          <p class="chapter-text">Many people come to me not only for aesthetic judgment or brand expression. They are more seeking a sense of being understood. My ability is to recognize the true core from chaos — to slowly smooth out scattered emotions, sensations, and information, and return them to a place that has order and warmth.</p>
+          <blockquote class="chapter-quote">Many people feel I live very freely, as if I carry no pressure. But that ease comes from having passed through fear, self-doubt, and inner struggle one time after another — and what remains is clarity and honesty.</blockquote>
+        </div>
+      </div>
+
+      <div class="story-chapter reveal">
+        <div class="chapter-num">06</div>
+        <div class="chapter-body">
+          <h3 class="chapter-title">Role — Guardian of the Concept</h3>
+          <p class="chapter-text">I am the project founder, responsible for overall direction, product definition, research advancement, and external communication. In the team I am more the guardian of this project's concept and temperament.</p>
+          <blockquote class="chapter-quote">The most important foundation of the company is respect for life and people. This project carries a finer, more lasting relationship — one that makes people willing to spend time observing life, feeling life, and in that relationship build connection and a sense of responsibility.</blockquote>
+          <p class="chapter-text">My role is to always keep that original intention at the forefront — so that when the team is making products, designing, and making every decision, it all unfolds around this core. And the soul of the company truly lands in every detail.</p>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ══════════════════════════════
+         CONTACT CTA
+         ══════════════════════════════ -->
+    <section class="contact-section">
+      <p class="contact-eyebrow reveal">Open to Collaboration</p>
+      <h2 class="contact-headline reveal reveal-delay-1">Let's<br><span>Create.</span></h2>
+      <div class="contact-rule reveal reveal-delay-2"></div>
+      <div class="contact-links reveal reveal-delay-3">
+        <div class="contact-link">
+          <span class="contact-link-label">Email</span>
+          <a class="contact-link-val" href="mailto:gaspardxni@gmail.com">gaspardxni@gmail.com</a>
+        </div>
+        <div class="contact-link">
+          <span class="contact-link-label">Instagram</span>
+          <a class="contact-link-val" href="https://instagram.com/hsinghao.ni" target="_blank" rel="noopener">@hsinghao.ni</a>
+        </div>
+        <div class="contact-link">
+          <span class="contact-link-label">Location</span>
+          <span class="contact-link-val" style="color:var(--ink-mid);">Nantes, France</span>
+        </div>
+        <div class="contact-link" style="margin-top:8px;">
+          <span class="contact-link-label">Languages</span>
+          <span class="contact-link-val" style="color:var(--ink-mid);letter-spacing:0.06em;font-size:13px;">
+            Chinese &nbsp;·&nbsp; English (TOEIC 895) &nbsp;·&nbsp; French B1 &nbsp;·&nbsp; Korean A2
+          </span>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <div class="footer-bar">
+      <span>© 2026 Xinghao Ni · TONITRUUM · All Rights Reserved</span>
+      <a href="product.html" class="footer-link">View Product Design</a>
+    </div>
+
+  </main><!-- /f-main -->
+</div><!-- /page-wrap -->
+
+<script>
+/* ══════════════════════════════════════════
+   SIDEBAR CLOCK
+   ══════════════════════════════════════════ */
+(function() {
+  function tick() {
+    const d = new Date();
+    const hh = String(d.getHours()).padStart(2, '0');
+    const mm = String(d.getMinutes()).padStart(2, '0');
+    const ss = String(d.getSeconds()).padStart(2, '0');
+    const el = document.getElementById('sidebarTime');
+    if (el) el.textContent = hh + ':' + mm + ':' + ss;
+  }
+  tick();
+  setInterval(tick, 1000);
+})();
+
+/* ══════════════════════════════════════════
+   TOPBAR SCROLL
+   ══════════════════════════════════════════ */
+(function() {
+  const tb = document.getElementById('topbar');
+  function onScroll() {
+    tb.classList.toggle('scrolled', window.scrollY > 60);
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+})();
+
+/* ══════════════════════════════════════════
+   SCROLL REVEAL
+   ══════════════════════════════════════════ */
+const revealObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (!e.isIntersecting) return;
+    e.target.classList.add('visible');
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
+
+/* featured project orange bar reveal */
+const featObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) e.target.classList.add('visible');
+  });
+}, { threshold: 0.05 });
+const feat = document.getElementById('featuredProject');
+if (feat) featObs.observe(feat);
+
+/* ══════════════════════════════════════════
+   FEATURED PROJECT SLIDESHOW
+   Auto-cycles every 5s; hover pauses
+   ══════════════════════════════════════════ */
+(function() {
+  const slides = document.querySelectorAll('.featured-slide');
+  const dots   = document.querySelectorAll('.featured-dot');
+  let cur = 0, timer;
+
+  window.goFeatured = function(idx) {
+    slides[cur].classList.remove('active');
+    dots[cur].classList.remove('active');
+    cur = (idx + slides.length) % slides.length;
+    slides[cur].classList.add('active');
+    dots[cur].classList.add('active');
+    clearInterval(timer);
+    timer = setInterval(() => window.goFeatured(cur + 1), 5000);
+  };
+
+  const fp = document.getElementById('featuredProject');
+  if (fp) {
+    fp.addEventListener('mouseenter', () => clearInterval(timer));
+    fp.addEventListener('mouseleave', () => {
+      timer = setInterval(() => window.goFeatured(cur + 1), 5000);
+    });
+  }
+
+  timer = setInterval(() => window.goFeatured(cur + 1), 5000);
+})();
+
+/* ══════════════════════════════════════════
+   HERO PARTICLE CANVAS
+   ══════════════════════════════════════════ */
+(function() {
+  const c = document.getElementById('heroParticles');
+  if (!c) return;
+  const ctx = c.getContext('2d');
+  let W, H, pts;
+
+  function resize() {
+    const dpr = window.devicePixelRatio || 1;
+    const r = c.parentElement.getBoundingClientRect();
+    W = r.width; H = r.height;
+    c.width  = W * dpr; c.height = H * dpr;
+    c.style.width  = W + 'px'; c.style.height = H + 'px';
+    ctx.scale(dpr, dpr);
+    pts = Array.from({ length: 55 }, () => ({
+      x: Math.random() * W, y: Math.random() * H,
+      vx: (Math.random() - 0.5) * 0.28,
+      vy: (Math.random() - 0.5) * 0.28,
+      r: 1.2 + Math.random() * 1.8,
+      a: 0.15 + Math.random() * 0.35
+    }));
+  }
+  resize();
+  const ro = new ResizeObserver(resize);
+  ro.observe(c.parentElement);
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    pts.forEach(p => {
+      p.x += p.vx; p.y += p.vy;
+      if (p.x < 0) p.x = W; if (p.x > W) p.x = 0;
+      if (p.y < 0) p.y = H; if (p.y > H) p.y = 0;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(217,110,40,' + p.a + ')';
+      ctx.fill();
+    });
+    for (let i = 0; i < pts.length; i++) {
+      for (let j = i + 1; j < pts.length; j++) {
+        const dx = pts[i].x - pts[j].x;
+        const dy = pts[i].y - pts[j].y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 90) {
+          ctx.beginPath();
+          ctx.moveTo(pts[i].x, pts[i].y);
+          ctx.lineTo(pts[j].x, pts[j].y);
+          ctx.strokeStyle = 'rgba(217,110,40,' + ((1 - dist / 90) * 0.07) + ')';
+          ctx.lineWidth = 0.6;
+          ctx.stroke();
+        }
+      }
+    }
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+/* ══════════════════════════════════════════
+   PROJECT CARD MOUSE CURSOR GLOW
+   ══════════════════════════════════════════ */
+document.querySelectorAll('.proj-card').forEach(card => {
+  card.addEventListener('mousemove', e => {
+    const r = card.getBoundingClientRect();
+    const x = ((e.clientX - r.left) / r.width  * 100).toFixed(1) + '%';
+    const y = ((e.clientY - r.top)  / r.height * 100).toFixed(1) + '%';
+    card.style.setProperty('--mx', x);
+    card.style.setProperty('--my', y);
+    card.style.setProperty('--mo', '1');
+  });
+  card.addEventListener('mouseleave', () => {
+    card.style.setProperty('--mo', '0');
+  });
+});
+
+/* ══════════════════════════════════════════
+   GALLERY LIGHTBOX
+   ══════════════════════════════════════════ */
+(function() {
+  const lb = document.getElementById('galleryLightbox');
+  const lbImg = document.getElementById('lightboxImg');
+  const lbClose = document.getElementById('lightboxClose');
+
+  document.querySelectorAll('.gallery-strip img').forEach(img => {
+    img.addEventListener('click', () => {
+      lbImg.src = img.src;
+      lbImg.alt = img.alt;
+      lb.classList.add('open');
+    });
+  });
+
+  function closeLb() { lb.classList.remove('open'); lbImg.src = ''; }
+  lbClose.addEventListener('click', closeLb);
+  lb.addEventListener('click', e => { if (e.target === lb) closeLb(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLb(); });
+})();
+</script>
+</body>
+</html>

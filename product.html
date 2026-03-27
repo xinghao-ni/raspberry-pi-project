@@ -1,0 +1,1579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TONITRUUM — Intelligent Reptile Habitat</title>
+<style>
+/* ══════════════════════════════════════════
+   RESET + TOKENS
+   ══════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg:        #edecea;
+  --bg-warm:   #e8e5e1;
+  --bg-dark:   #0f0f0e;
+  --bg-mid:    #181715;
+  --ink:       #1a1918;
+  --ink-mid:   #4a4845;
+  --ink-soft:  #8a8784;
+  --orange:    #d96e28;
+  --orange-lt: #e8884a;
+  --silver:    #b0aeab;
+  --calm:      #6b9eb8;       /* autism-calm blue */
+  --calm-lt:   #93bdd4;
+  --line:      rgba(26,25,24,0.10);
+  --ff:        -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+  --fw-thin:   200;
+  --fw-reg:    400;
+  --fw-med:    500;
+  --fw-bold:   700;
+  --ease:      cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--ff);
+  background: var(--bg);
+  color: var(--ink);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+img { display: block; width: 100%; height: 100%; object-fit: cover; }
+a { text-decoration: none; color: inherit; }
+
+/* ══════════════════════════════════════════
+   KEYFRAME LIBRARY
+   ══════════════════════════════════════════ */
+@keyframes float-y {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-14px); }
+}
+@keyframes float-y-sm {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50%       { transform: translateY(-7px) rotate(1.5deg); }
+}
+@keyframes breathe {
+  0%, 100% { transform: scale(1);   opacity: 0.55; }
+  50%       { transform: scale(1.18); opacity: 1; }
+}
+@keyframes breathe-ring {
+  0%, 100% { transform: scale(1); opacity: 0.25; }
+  50%       { transform: scale(1.35); opacity: 0; }
+}
+@keyframes glow-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(217,110,40,0); }
+  50%       { box-shadow: 0 0 40px 10px rgba(217,110,40,0.18); }
+}
+@keyframes calm-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(107,158,184,0); }
+  50%       { box-shadow: 0 0 50px 16px rgba(107,158,184,0.22); }
+}
+@keyframes slide-in-right {
+  from { transform: translateX(60px); opacity: 0; }
+  to   { transform: translateX(0);    opacity: 1; }
+}
+@keyframes draw-line {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+@keyframes spin-slow  { to { transform: rotate(360deg); } }
+@keyframes spin-slow-r{ to { transform: rotate(-360deg); } }
+@keyframes marquee    { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+@keyframes blink      { 0%,100%{opacity:1}50%{opacity:0.2} }
+@keyframes count-up   { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+@keyframes img-reveal {
+  from { clip-path: inset(0 100% 0 0); }
+  to   { clip-path: inset(0 0% 0 0); }
+}
+@keyframes border-run {
+  0%   { stroke-dashoffset: 900; }
+  100% { stroke-dashoffset: 0; }
+}
+
+/* ══════════════════════════════════════════
+   UTILITY
+   ══════════════════════════════════════════ */
+.eyebrow {
+  font-size: 10px; font-weight: var(--fw-med);
+  letter-spacing: 3px; text-transform: uppercase;
+  color: var(--orange);
+}
+.reveal {
+  opacity: 0; transform: translateY(32px);
+  transition: opacity 0.8s var(--ease), transform 0.8s var(--ease);
+}
+.reveal.visible { opacity: 1; transform: none; }
+.reveal-delay-1 { transition-delay: 0.12s; }
+.reveal-delay-2 { transition-delay: 0.24s; }
+.reveal-delay-3 { transition-delay: 0.36s; }
+.reveal-delay-4 { transition-delay: 0.48s; }
+.reveal-delay-5 { transition-delay: 0.60s; }
+
+/* ══════════════════════════════════════════
+   TOP BAR
+   ══════════════════════════════════════════ */
+.topbar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  height: 64px; display: flex; align-items: center;
+  padding: 0 48px; justify-content: space-between;
+  background: transparent;
+  transition: background 0.4s, border-color 0.4s;
+}
+.topbar.scrolled {
+  background: rgba(237,236,234,0.94);
+  backdrop-filter: blur(20px) saturate(1.4);
+  border-bottom: 1px solid var(--line);
+}
+.topbar-logo {
+  display: flex; align-items: center;
+  text-decoration: none;
+}
+.topbar-logo img {
+  width: 140px; height: auto; display: block;
+  /* white logo — visible on dark hero as-is */
+  filter: none; opacity: 0.9;
+  transition: filter 0.4s, opacity 0.2s;
+}
+.topbar.scrolled .topbar-logo img {
+  /* on light scrolled bg: invert to black */
+  filter: invert(1) brightness(0);
+  opacity: 0.75;
+}
+.topbar-logo:hover img { opacity: 0.7; }
+.topbar-nav { display: flex; gap: 28px; align-items: center; }
+.topbar-nav a {
+  font-size: 11px; font-weight: var(--fw-med);
+  color: rgba(255,255,255,0.75); letter-spacing: 0.1em;
+  text-transform: uppercase; transition: color 0.2s;
+}
+.topbar.scrolled .topbar-nav a { color: var(--ink-mid); }
+.topbar-nav a:hover { color: #fff; }
+.topbar.scrolled .topbar-nav a:hover { color: var(--ink); }
+.btn-back {
+  display: inline-flex; align-items: center; gap: 7px;
+  font-size: 11px; font-weight: var(--fw-med);
+  color: rgba(255,255,255,0.7); letter-spacing: 0.06em;
+  padding: 7px 18px; border: 1px solid rgba(255,255,255,0.25);
+  border-radius: 100px; background: rgba(255,255,255,0.08);
+  backdrop-filter: blur(8px); transition: all 0.25s;
+}
+.topbar.scrolled .btn-back {
+  color: var(--ink-mid); border-color: var(--line);
+  background: rgba(255,255,255,0.6);
+}
+.btn-back:hover { background: rgba(255,255,255,0.18); color: #fff; }
+.topbar.scrolled .btn-back:hover { background: rgba(255,255,255,0.9); color: var(--ink); }
+.btn-back svg { width:14px; height:14px; }
+
+/* ══════════════════════════════════════════
+   HERO — full-screen image
+   ══════════════════════════════════════════ */
+.hero {
+  position: relative; height: 100vh; min-height: 700px;
+  overflow: hidden;
+}
+/* slideshow bg */
+.hero-slides {
+  position: absolute; inset: 0;
+}
+.hero-slide {
+  position: absolute; inset: 0;
+  background-size: cover; background-position: center;
+  opacity: 0; transition: opacity 1.4s ease;
+  transform: scale(1.04); transition: opacity 1.4s ease, transform 8s ease;
+}
+.hero-slide.active {
+  opacity: 1; transform: scale(1);
+}
+/* dark gradient: strong on bottom+left, fades right */
+.hero-overlay {
+  position: absolute; inset: 0; z-index: 1;
+  background:
+    linear-gradient(to top,  rgba(0,0,0,0.82) 0%, rgba(0,0,0,0.35) 45%, transparent 75%),
+    linear-gradient(to right, rgba(0,0,0,0.55) 0%, transparent 65%);
+}
+/* content: bottom-left */
+.hero-content {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  z-index: 2; padding: 0 80px 72px;
+  display: flex; flex-direction: column;
+  max-width: 760px;
+}
+.hero-kicker {
+  font-size: 10px; letter-spacing: 5px; text-transform: uppercase;
+  color: var(--orange); font-weight: var(--fw-med); margin-bottom: 18px;
+  opacity: 0; animation: count-up 0.6s var(--ease) 0.4s forwards;
+}
+.hero-title {
+  font-size: clamp(60px, 8.5vw, 128px);
+  font-weight: var(--fw-bold); line-height: 0.9;
+  letter-spacing: -0.04em; color: #fff;
+  opacity: 0; animation: count-up 0.9s var(--ease) 0.6s forwards;
+}
+.hero-tagline {
+  font-size: 12px; font-weight: var(--fw-med);
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: rgba(255,255,255,0.5); margin: 18px 0 0;
+  opacity: 0; animation: count-up 0.7s var(--ease) 0.85s forwards;
+}
+.hero-rule {
+  width: 60px; height: 2px; background: var(--orange);
+  margin: 24px 0; transform-origin: left;
+  animation: draw-line 0.6s var(--ease) 1s both;
+}
+.hero-subtitle {
+  font-size: 16px; color: rgba(255,255,255,0.6); line-height: 1.7;
+  max-width: 480px; margin-bottom: 40px;
+  opacity: 0; animation: count-up 0.7s var(--ease) 0.9s forwards;
+}
+.hero-specs {
+  display: flex; gap: 40px; margin-bottom: 44px;
+  opacity: 0; animation: count-up 0.7s var(--ease) 1.05s forwards;
+}
+.hero-spec-item { border-left: 2px solid var(--orange); padding-left: 14px; }
+.hero-spec-val {
+  font-size: 22px; font-weight: var(--fw-bold);
+  letter-spacing: -0.02em; color: #fff;
+}
+.hero-spec-label { font-size: 11px; color: rgba(255,255,255,0.45); margin-top: 3px; }
+.hero-cta-row {
+  display: flex; gap: 14px; flex-wrap: wrap;
+  opacity: 0; animation: count-up 0.7s var(--ease) 1.2s forwards;
+}
+.btn-primary {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--orange); color: #fff;
+  font-size: 13px; font-weight: var(--fw-med);
+  letter-spacing: 0.04em; padding: 14px 30px;
+  border-radius: 100px; border: none; cursor: pointer;
+  transition: background 0.25s, transform 0.2s, box-shadow 0.25s;
+}
+.btn-primary:hover { background: var(--orange-lt); transform: translateY(-2px); box-shadow: 0 8px 28px rgba(217,110,40,0.45); }
+.btn-primary svg { width:15px; height:15px; }
+.btn-outline {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.85);
+  font-size: 13px; font-weight: var(--fw-med);
+  letter-spacing: 0.04em; padding: 14px 30px;
+  border-radius: 100px; border: 1px solid rgba(255,255,255,0.25);
+  cursor: pointer; transition: all 0.25s; backdrop-filter: blur(8px);
+}
+.btn-outline:hover { background: rgba(255,255,255,0.18); color: #fff; border-color: rgba(255,255,255,0.5); }
+/* slide indicator dots */
+.hero-dots {
+  position: absolute; right: 48px; bottom: 48px; z-index: 3;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.hero-dot {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: rgba(255,255,255,0.35); cursor: pointer;
+  transition: background 0.3s, transform 0.3s;
+}
+.hero-dot.active { background: var(--orange); transform: scale(1.5); }
+/* scroll hint */
+.hero-scroll-hint {
+  position: absolute; bottom: 32px; left: 50%; transform: translateX(-50%);
+  z-index: 3; display: flex; flex-direction: column; align-items: center;
+  gap: 8px; opacity: 0; animation: count-up 0.7s ease 1.8s forwards;
+}
+.hero-scroll-hint span {
+  font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase;
+  color: rgba(255,255,255,0.3);
+}
+.hero-scroll-line {
+  width: 1px; height: 40px;
+  background: linear-gradient(to bottom, var(--orange), transparent);
+  animation: float-y-sm 2s ease-in-out infinite;
+}
+/* particle canvas stays */
+#heroParticles {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  pointer-events: none; z-index: 2; opacity: 0.35;
+}
+
+/* ══════════════════════════════════════════
+   MARQUEE
+   ══════════════════════════════════════════ */
+.marquee-bar {
+  background: var(--ink); color: rgba(255,255,255,0.45);
+  height: 44px; overflow: hidden;
+  display: flex; align-items: center;
+}
+.marquee-track {
+  display: flex; white-space: nowrap;
+  animation: marquee 32s linear infinite;
+  font-size: 10px; font-weight: var(--fw-med);
+  letter-spacing: 0.14em; text-transform: uppercase;
+}
+.marquee-item { padding: 0 38px; border-right: 1px solid rgba(255,255,255,0.06); }
+.marquee-item span { color: var(--orange); }
+
+/* ══════════════════════════════════════════
+   SECTION BASE
+   ══════════════════════════════════════════ */
+section { padding: 120px 80px; }
+.sec-header { margin-bottom: 80px; }
+.sec-title {
+  font-size: clamp(34px, 4vw, 58px);
+  font-weight: var(--fw-thin); letter-spacing: -0.03em;
+  line-height: 1.1; margin-top: 16px;
+}
+.sec-title strong { font-weight: var(--fw-bold); }
+.sec-lead {
+  font-size: 16px; color: var(--ink-mid); line-height: 1.75;
+  max-width: 540px; margin-top: 20px;
+}
+.sec-rule {
+  height: 2px; width: 48px; background: var(--orange);
+  margin: 22px 0; transform-origin: left;
+  transform: scaleX(0);
+  transition: transform 0.6s var(--ease);
+}
+.sec-rule.visible { transform: scaleX(1); }
+
+/* ══════════════════════════════════════════
+   FORM FOLLOWS FUNCTION
+   ══════════════════════════════════════════ */
+.fff-section {
+  background: var(--bg-dark); color: #fff;
+  padding: 100px 80px;
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 80px; align-items: center;
+}
+.fff-quote {
+  font-size: clamp(36px, 4.5vw, 64px);
+  font-weight: var(--fw-thin); line-height: 1.1;
+  letter-spacing: -0.03em;
+}
+.fff-quote em { font-style: normal; font-weight: var(--fw-bold); color: var(--orange); }
+.fff-body {
+  font-size: 15px; line-height: 1.85;
+  color: rgba(255,255,255,0.45); margin-top: 28px;
+}
+.fff-right-img {
+  aspect-ratio: 16/11; border-radius: 6px; overflow: hidden;
+  position: relative;
+}
+.fff-right-img::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(217,110,40,0.07) 0%, transparent 60%);
+}
+/* subtle parallax shimmer overlay */
+.fff-right-img .shimmer {
+  position: absolute; inset: 0; z-index: 2;
+  background: linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.04) 50%, transparent 60%);
+  background-size: 200% 100%;
+  animation: shimmer-move 4s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes shimmer-move {
+  0%  { background-position: 200% 0; }
+  100%{ background-position: -200% 0; }
+}
+
+/* ══════════════════════════════════════════
+   FEATURES
+   ══════════════════════════════════════════ */
+.features-section { padding: 0; }
+.feature-row {
+  display: grid; grid-template-columns: 1fr 1fr;
+  min-height: 520px; border-top: 1px solid var(--line);
+  overflow: hidden;
+}
+.feature-row.reverse { direction: rtl; }
+.feature-row.reverse > * { direction: ltr; }
+
+.feature-img {
+  position: relative; overflow: hidden; background: #e4e2df;
+}
+.feature-img img {
+  transform: scale(1.06);
+  transition: transform 0.8s var(--ease);
+}
+.feature-img.in-view img { transform: scale(1); }
+/* tilt layer */
+.feature-img-tilt {
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(217,110,40,0.06) 0%, transparent 50%);
+  opacity: 0; transition: opacity 0.4s;
+}
+.feature-img:hover .feature-img-tilt { opacity: 1; }
+/* animated scan line on hover */
+.feature-img::after {
+  content: ''; position: absolute; left: 0; right: 0; height: 2px;
+  background: linear-gradient(to right, transparent, rgba(217,110,40,0.5), transparent);
+  top: -2px; transition: top 0s; pointer-events: none;
+}
+.feature-img:hover::after {
+  animation: scan-line 1.8s ease-in-out forwards;
+}
+@keyframes scan-line {
+  from { top: 0; opacity: 1; }
+  to   { top: 100%; opacity: 0; }
+}
+
+.feature-body {
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 70px 80px;
+}
+.feature-num {
+  font-size: 11px; font-weight: var(--fw-med);
+  letter-spacing: 0.2em; color: var(--silver); margin-bottom: 18px;
+}
+.feature-title {
+  font-size: clamp(24px, 2.8vw, 38px);
+  font-weight: var(--fw-thin); letter-spacing: -0.02em;
+  line-height: 1.15; color: var(--ink); margin-bottom: 10px;
+}
+.feature-title strong { font-weight: var(--fw-bold); }
+.feature-sub {
+  font-size: 12px; color: var(--orange);
+  letter-spacing: 0.08em; text-transform: uppercase;
+  margin-bottom: 24px; font-weight: var(--fw-med);
+}
+.feature-desc {
+  font-size: 15px; color: var(--ink-mid); line-height: 1.8;
+  max-width: 400px;
+}
+.feature-tag {
+  display: inline-flex; align-items: center; gap: 6px;
+  margin-top: 28px; padding: 7px 14px;
+  background: rgba(217,110,40,0.08); border: 1px solid rgba(217,110,40,0.18);
+  border-radius: 100px; font-size: 11px; font-weight: var(--fw-med);
+  color: var(--orange); letter-spacing: 0.05em; width: fit-content;
+  transition: background 0.25s, transform 0.2s;
+}
+.feature-tag:hover { background: rgba(217,110,40,0.15); transform: translateX(4px); }
+
+/* ══════════════════════════════════════════
+   GALLERY STRIP
+   ══════════════════════════════════════════ */
+.gallery-strip {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  height: 360px; border-top: 1px solid var(--line);
+}
+.gallery-cell {
+  position: relative; overflow: hidden; cursor: zoom-in;
+}
+.gallery-cell + .gallery-cell { border-left: 1px solid var(--line); }
+.gallery-cell img { transition: transform 0.7s var(--ease); }
+.gallery-cell:hover img { transform: scale(1.08); }
+.gallery-cell::before {
+  content: ''; position: absolute; inset: 0; z-index: 1;
+  background: linear-gradient(to top, rgba(26,25,24,0.18) 0%, transparent 50%);
+  opacity: 0; transition: opacity 0.3s; pointer-events: none;
+}
+.gallery-cell:hover::before { opacity: 1; }
+
+/* ══════════════════════════════════════════
+   AUTISM-INFORMED DESIGN SECTION
+   ══════════════════════════════════════════ */
+.autism-section {
+  background: var(--bg-dark);
+  padding: 120px 80px;
+  position: relative; overflow: hidden;
+}
+/* background canvas */
+#calmCanvas {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  pointer-events: none; z-index: 0;
+}
+.autism-section > * { position: relative; z-index: 1; }
+.autism-header { margin-bottom: 72px; }
+.autism-eyebrow {
+  font-size: 10px; letter-spacing: 4px; text-transform: uppercase;
+  color: var(--calm-lt); font-weight: var(--fw-med); margin-bottom: 16px;
+}
+.autism-title {
+  font-size: clamp(34px, 4vw, 56px);
+  font-weight: var(--fw-thin); letter-spacing: -0.03em;
+  color: #fff; line-height: 1.1;
+}
+.autism-title strong { font-weight: var(--fw-bold); color: var(--calm-lt); }
+.autism-lead {
+  font-size: 16px; color: rgba(255,255,255,0.45);
+  line-height: 1.8; max-width: 580px; margin-top: 20px;
+}
+/* breathe orb */
+.autism-orb-row {
+  display: flex; justify-content: center;
+  margin: 60px 0 72px;
+}
+.breathe-orb {
+  position: relative; width: 140px; height: 140px;
+  display: flex; align-items: center; justify-content: center;
+}
+.breathe-orb .ring {
+  position: absolute; border-radius: 50%;
+  border: 1px solid rgba(107,158,184,0.3);
+  animation: breathe-ring 4s ease-in-out infinite;
+}
+.breathe-orb .ring:nth-child(1) { width: 140px; height: 140px; animation-delay: 0s; }
+.breathe-orb .ring:nth-child(2) { width: 110px; height: 110px; animation-delay: 0.6s; }
+.breathe-orb .ring:nth-child(3) { width: 80px; height: 80px; animation-delay: 1.2s; }
+.breathe-orb .core {
+  width: 52px; height: 52px; border-radius: 50%;
+  background: radial-gradient(circle, var(--calm-lt), var(--calm));
+  animation: breathe 4s ease-in-out infinite;
+  animation: calm-pulse 4s ease-in-out infinite;
+  box-shadow: 0 0 30px rgba(107,158,184,0.5);
+}
+.breathe-label {
+  text-align: center; font-size: 11px; font-weight: var(--fw-med);
+  letter-spacing: 0.1em; color: rgba(255,255,255,0.35);
+  text-transform: uppercase; margin-top: 16px;
+}
+
+/* grid of autism design cards */
+.autism-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.05);
+}
+.autism-card {
+  background: var(--bg-mid); padding: 44px 36px;
+  position: relative; overflow: hidden;
+  transition: background 0.3s;
+}
+.autism-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(to right, var(--calm), transparent);
+  opacity: 0; transition: opacity 0.3s;
+}
+.autism-card:hover::before { opacity: 1; }
+.autism-card:hover { background: #1a1917; }
+.autism-card-icon {
+  width: 40px; height: 40px; border-radius: 8px;
+  background: rgba(107,158,184,0.1);
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 24px;
+}
+.autism-card-icon svg { width: 20px; height: 20px; stroke: var(--calm-lt); fill: none; stroke-width: 1.5; }
+.autism-card-title {
+  font-size: 16px; font-weight: var(--fw-bold);
+  color: #fff; margin-bottom: 10px;
+}
+.autism-card-desc {
+  font-size: 13px; color: rgba(255,255,255,0.4); line-height: 1.75;
+}
+.autism-card-tag {
+  display: inline-flex; align-items: center; gap: 6px;
+  margin-top: 20px; padding: 5px 12px;
+  background: rgba(107,158,184,0.1); border: 1px solid rgba(107,158,184,0.2);
+  border-radius: 100px; font-size: 10px; font-weight: var(--fw-med);
+  color: var(--calm-lt); letter-spacing: 0.05em;
+}
+/* sensory bar visual */
+.sensory-bar {
+  margin-top: 16px; height: 4px; border-radius: 2px;
+  background: rgba(255,255,255,0.06); overflow: hidden;
+}
+.sensory-fill {
+  height: 100%; border-radius: 2px;
+  background: linear-gradient(to right, var(--calm), var(--calm-lt));
+  width: 0; transition: width 1.2s var(--ease);
+}
+.sensory-fill.visible { width: var(--fill-w, 80%); }
+
+/* ══════════════════════════════════════════
+   MATERIALS
+   ══════════════════════════════════════════ */
+.materials-section {
+  background: var(--ink); color: #fff; padding: 100px 80px;
+}
+.materials-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px;
+  background: rgba(255,255,255,0.06); margin-top: 64px;
+  border: 1px solid rgba(255,255,255,0.06);
+}
+.mat-card {
+  background: var(--bg-dark); padding: 48px 40px;
+  position: relative; overflow: hidden; transition: background 0.3s;
+}
+.mat-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(to right, var(--orange), transparent);
+  opacity: 0; transition: opacity 0.3s;
+}
+.mat-card:hover::before { opacity: 1; }
+.mat-card:hover { background: #181715; }
+.mat-icon {
+  width: 44px; height: 44px; border-radius: 8px;
+  background: rgba(255,255,255,0.05);
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 28px; font-size: 22px;
+}
+.mat-name { font-size: 18px; font-weight: var(--fw-bold); color: #fff; margin-bottom: 16px; }
+.mat-desc { font-size: 14px; color: rgba(255,255,255,0.4); line-height: 1.75; }
+
+/* ══════════════════════════════════════════
+   AIRFLOW
+   ══════════════════════════════════════════ */
+.airflow-section { background: #f4f3f0; padding: 100px 80px; }
+.airflow-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 80px; align-items: center; margin-top: 64px;
+}
+#airCanvas {
+  width: 100%; aspect-ratio: 4/3;
+  border-radius: 10px; display: block;
+}
+.airflow-steps { display: flex; flex-direction: column; }
+.air-step {
+  display: flex; gap: 20px; padding: 20px 0;
+  border-bottom: 1px solid var(--line); align-items: flex-start;
+  transition: background 0.2s;
+}
+.air-step:last-child { border-bottom: none; }
+.air-step-num {
+  width: 30px; height: 30px; border-radius: 50%;
+  background: var(--orange); color: #fff; font-size: 11px;
+  font-weight: var(--fw-bold); display: flex; align-items: center;
+  justify-content: center; flex-shrink: 0; margin-top: 2px;
+  transition: transform 0.2s var(--ease-spring);
+}
+.air-step:hover .air-step-num { transform: scale(1.15); }
+.air-step-title { font-size: 14px; font-weight: var(--fw-bold); color: var(--ink); margin-bottom: 5px; }
+.air-step-desc { font-size: 13px; color: var(--ink-mid); line-height: 1.65; }
+
+/* ══════════════════════════════════════════
+   SPECS
+   ══════════════════════════════════════════ */
+.specs-section { padding: 100px 80px; }
+.specs-table {
+  width: 100%; border-collapse: collapse; margin-top: 64px;
+  border-top: 2px solid var(--ink);
+}
+.specs-table tr { border-bottom: 1px solid var(--line); }
+.specs-table tr:hover td { background: rgba(217,110,40,0.03); }
+.specs-table td { padding: 18px 0; font-size: 14px; vertical-align: top; }
+.specs-table td:first-child {
+  color: var(--ink-soft); font-weight: var(--fw-med);
+  letter-spacing: 0.02em; width: 220px;
+}
+.specs-table td:last-child { color: var(--ink); font-weight: var(--fw-med); }
+.specs-table td em { color: var(--orange); font-style: normal; }
+
+/* ══════════════════════════════════════════
+   CTA
+   ══════════════════════════════════════════ */
+.cta-section {
+  background: var(--bg-dark); text-align: center;
+  padding: 120px 80px; position: relative; overflow: hidden;
+}
+.cta-ring {
+  position: absolute; border-radius: 50%;
+  top: 50%; left: 50%; transform: translate(-50%, -50%);
+  pointer-events: none; border: 1px solid rgba(217,110,40,0.07);
+}
+.cta-ring:nth-child(1) { width: 600px; height: 600px; }
+.cta-ring:nth-child(2) { width: 400px; height: 400px; border-color: rgba(217,110,40,0.11); }
+.cta-ring:nth-child(3) { width: 220px; height: 220px; border-color: rgba(217,110,40,0.16);
+  animation: spin-slow-r 18s linear infinite; }
+.cta-eyebrow { color: var(--orange); letter-spacing: 3px; font-size: 10px;
+  font-weight: var(--fw-med); text-transform: uppercase; margin-bottom: 24px; }
+.cta-title {
+  font-size: clamp(38px, 5vw, 70px);
+  font-weight: var(--fw-thin); letter-spacing: -0.03em;
+  color: #fff; line-height: 1.1; margin-bottom: 20px;
+}
+.cta-title strong { font-weight: var(--fw-bold); color: var(--orange); }
+.cta-sub {
+  font-size: 16px; color: rgba(255,255,255,0.38);
+  max-width: 480px; margin: 0 auto 52px; line-height: 1.75;
+}
+.cta-btns { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+.btn-cta-primary {
+  display: inline-flex; align-items: center; gap: 9px;
+  background: var(--orange); color: #fff;
+  font-size: 14px; font-weight: var(--fw-med); letter-spacing: 0.04em;
+  padding: 16px 36px; border-radius: 100px; border: none;
+  cursor: pointer; transition: background 0.25s, transform 0.2s; text-decoration: none;
+}
+.btn-cta-primary:hover { background: var(--orange-lt); transform: translateY(-2px); }
+.btn-cta-outline {
+  display: inline-flex; align-items: center; gap: 9px;
+  background: transparent; color: rgba(255,255,255,0.65);
+  font-size: 14px; font-weight: var(--fw-med); letter-spacing: 0.04em;
+  padding: 16px 36px; border-radius: 100px;
+  border: 1px solid rgba(255,255,255,0.15);
+  cursor: pointer; transition: all 0.25s; text-decoration: none;
+}
+.btn-cta-outline:hover { border-color: rgba(255,255,255,0.4); color: #fff; }
+
+/* ══════════════════════════════════════════
+   FOOTER
+   ══════════════════════════════════════════ */
+.footer-bar {
+  background: #080807; padding: 22px 80px;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.footer-copy { font-size: 12px; color: rgba(255,255,255,0.22); letter-spacing: 0.03em; }
+.footer-link { font-size: 12px; color: rgba(255,255,255,0.3); transition: color 0.2s; }
+.footer-link:hover { color: var(--orange); }
+
+/* ══════════════════════════════════════════
+   RESPONSIVE
+   ══════════════════════════════════════════ */
+@media (max-width: 900px) {
+  .hero { grid-template-columns: 1fr; height: auto; }
+  .hero-right { height: 60vw; }
+  .hero-left { padding: 60px 28px; }
+  .hero-divider { display: none; }
+  .fff-section { grid-template-columns: 1fr; padding: 72px 28px; }
+  .feature-row, .feature-row.reverse { grid-template-columns: 1fr; direction: ltr; }
+  .feature-row.reverse .feature-img { order: -1; }
+  .feature-img { height: 54vw; }
+  .feature-body { padding: 48px 28px; }
+  .gallery-strip { grid-template-columns: 1fr 1fr; height: 240px; }
+  .gallery-strip .gallery-cell:last-child { display: none; }
+  .autism-grid, .materials-grid { grid-template-columns: 1fr; }
+  .airflow-grid { grid-template-columns: 1fr; }
+  section { padding: 80px 28px; }
+  .materials-section, .airflow-section, .specs-section, .cta-section, .autism-section { padding: 80px 28px; }
+  .topbar { padding: 0 20px; }
+  .topbar-nav { display: none; }
+  .footer-bar { padding: 20px 28px; flex-direction: column; gap: 8px; text-align: center; }
+}
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<header class="topbar" id="topbar">
+  <a href="#hero" class="topbar-logo">
+    <img src="assets/tonitruum-logo-white.png" alt="TONITRUUM">
+  </a>
+  <nav class="topbar-nav">
+    <a href="#design">Design</a>
+    <a href="#features">Features</a>
+    <a href="#sensory">Sensory</a>
+    <a href="#materials">Materials</a>
+    <a href="#specs">Specs</a>
+  </nav>
+  <a href="index.html" class="btn-back">
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10 12L6 8l4-4"/></svg>
+    Back to Dashboard
+  </a>
+</header>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+  <!-- background slideshow -->
+  <div class="hero-slides">
+    <div class="hero-slide active" style="background-image:url('assets/hero-room.jpg')"></div>
+    <div class="hero-slide"        style="background-image:url('assets/hero-jungle.jpg')"></div>
+  </div>
+  <!-- gradient overlay -->
+  <div class="hero-overlay"></div>
+  <!-- ambient particles -->
+  <canvas id="heroParticles"></canvas>
+  <!-- content -->
+  <div class="hero-content">
+    <p class="hero-kicker">Intelligent Habitat · 2026</p>
+    <h1 class="hero-title">TONITRUUM</h1>
+    <p class="hero-tagline">Precision Habitat Engineering</p>
+    <div class="hero-rule"></div>
+    <p class="hero-subtitle">
+      A next-generation intelligent reptile enclosure — engineered for
+      serious keepers and designed with sensory-informed principles
+      for therapeutic environments.
+    </p>
+    <div class="hero-specs">
+      <div class="hero-spec-item">
+        <div class="hero-spec-val">360°</div>
+        <div class="hero-spec-label">Glass Panels</div>
+      </div>
+      <div class="hero-spec-item">
+        <div class="hero-spec-val">HEPA</div>
+        <div class="hero-spec-label">H13 Filtration</div>
+      </div>
+      <div class="hero-spec-item">
+        <div class="hero-spec-val">AI</div>
+        <div class="hero-spec-label">Behaviour ID</div>
+      </div>
+      <div class="hero-spec-item">
+        <div class="hero-spec-val">≤28</div>
+        <div class="hero-spec-label">dBA Quiet</div>
+      </div>
+    </div>
+    <div class="hero-cta-row">
+      <a href="#features" class="btn-primary">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6"/><path d="M8 5v3.5l2 2"/></svg>
+        Explore Product
+      </a>
+      <a href="/Volumes/SAMSUNG/惊蛰/06. 钱青云爬缸工业设计/爬缸.pptx" class="btn-outline" download>
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2v8M5 7l3 3 3-3M3 12h10"/></svg>
+        Download Design File
+      </a>
+    </div>
+  </div>
+  <!-- slide dots -->
+  <div class="hero-dots">
+    <div class="hero-dot active" onclick="goSlide(0)"></div>
+    <div class="hero-dot"        onclick="goSlide(1)"></div>
+  </div>
+  <!-- scroll hint -->
+  <div class="hero-scroll-hint">
+    <div class="hero-scroll-line"></div>
+    <span>Scroll</span>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-bar">
+  <div class="marquee-track">
+    <span class="marquee-item">Anodized Aluminium Frame <span>·</span></span>
+    <span class="marquee-item">Self-locking Magnetic Knob <span>·</span></span>
+    <span class="marquee-item">AI Behaviour Recognition <span>·</span></span>
+    <span class="marquee-item">HEPA H13 Filtration <span>·</span></span>
+    <span class="marquee-item">Ozone + Negative Ion <span>·</span></span>
+    <span class="marquee-item">Sensory-Informed Design <span>·</span></span>
+    <span class="marquee-item">Circadian Light Rhythm <span>·</span></span>
+    <span class="marquee-item">Double-wall Insulation <span>·</span></span>
+    <span class="marquee-item">≤28dBA Silent Operation <span>·</span></span>
+    <span class="marquee-item">Anodized Aluminium Frame <span>·</span></span>
+    <span class="marquee-item">Self-locking Magnetic Knob <span>·</span></span>
+    <span class="marquee-item">AI Behaviour Recognition <span>·</span></span>
+    <span class="marquee-item">HEPA H13 Filtration <span>·</span></span>
+    <span class="marquee-item">Ozone + Negative Ion <span>·</span></span>
+    <span class="marquee-item">Sensory-Informed Design <span>·</span></span>
+    <span class="marquee-item">Circadian Light Rhythm <span>·</span></span>
+    <span class="marquee-item">Double-wall Insulation <span>·</span></span>
+    <span class="marquee-item">≤28dBA Silent Operation <span>·</span></span>
+  </div>
+</div>
+
+<!-- FORM FOLLOWS FUNCTION -->
+<div class="fff-section" id="design">
+  <div>
+    <p class="eyebrow reveal" style="color:var(--orange-lt)">Design Philosophy</p>
+    <h2 class="fff-quote reveal reveal-delay-1">
+      Form<br>follows<br><em>function.</em>
+    </h2>
+    <p class="fff-body reveal reveal-delay-2">
+      Every curve, every perforation, every folded edge is an extension of purpose —
+      not decoration. The chamfered edge is both a design statement and a natural grip.
+      The parametric hole array maximises ventilation while reinforcing structural
+      integrity. The result is a precision instrument built entirely around
+      the life it shelters.
+    </p>
+  </div>
+  <div class="fff-right-img reveal reveal-delay-2">
+    <img src="assets/renders/WechatIMG035da4ae3bde01e43dfe2644368e72b2.jpeg"
+         alt="TONITRUUM side profile">
+    <div class="shimmer"></div>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<div class="features-section" id="features">
+
+  <!-- 01 -->
+  <div class="feature-row">
+    <div class="feature-img">
+      <img src="assets/renders/WechatIMG3bb2d6a5dbdef4bf7e24d6cd4a5f7b9d.jpeg" alt="Magnetic lid">
+      <div class="feature-img-tilt"></div>
+    </div>
+    <div class="feature-body">
+      <p class="feature-num reveal">01 / 06</p>
+      <h3 class="feature-title reveal reveal-delay-1">Self-locking<br><strong>Magnetic Lid</strong></h3>
+      <p class="feature-sub reveal reveal-delay-1">Single-hand Operation</p>
+      <p class="feature-desc reveal reveal-delay-2">
+        Open and lock with a single hand. The parametric hexagonal perforation array
+        balances maximum airflow with structural strength. Magnets align with the
+        enclosure's structural screw positions, leveraging thread self-locking
+        for a secure hold. Top panels are user-replaceable in multiple styles.
+      </p>
+      <div class="feature-tag reveal reveal-delay-3">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6" cy="6" r="5"/><path d="M6 4v2.5l1.5 1.5"/></svg>
+        One-hand · Customisable
+      </div>
+    </div>
+  </div>
+
+  <!-- 02 -->
+  <div class="feature-row reverse">
+    <div class="feature-img">
+      <img src="assets/renders/WechatIMG710af278494800e876cb0d2cf60d29a7.jpeg" alt="AI camera module">
+      <div class="feature-img-tilt"></div>
+    </div>
+    <div class="feature-body">
+      <p class="feature-num reveal">02 / 06</p>
+      <h3 class="feature-title reveal reveal-delay-1">AI Behaviour<br><strong>Recognition</strong></h3>
+      <p class="feature-sub reveal reveal-delay-1">Pet ID Card System</p>
+      <p class="feature-desc reveal reveal-delay-2">
+        The embedded AI camera integrates flush into the top corner frame —
+        naturally concealed and non-disruptive. Real-time behaviour state
+        identification pairs with the Pet ID Card for individual profile
+        unlocking and personalised environment control per animal.
+      </p>
+      <div class="feature-tag reveal reveal-delay-3">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="3" width="8" height="6" rx="1"/><path d="M9 5.5l2-1.5v4l-2-1.5"/></svg>
+        Per-animal Profiles
+      </div>
+    </div>
+  </div>
+
+  <!-- 03 -->
+  <div class="feature-row">
+    <div class="feature-img">
+      <img src="assets/renders/WechatIMG7547a23a9cfd763816acdeae5ffe0036.jpeg" alt="Cable routing">
+      <div class="feature-img-tilt"></div>
+    </div>
+    <div class="feature-body">
+      <p class="feature-num reveal">03 / 06</p>
+      <h3 class="feature-title reveal reveal-delay-1">Hidden<br><strong>Cable Routing</strong></h3>
+      <p class="feature-sub reveal reveal-delay-1">Zero External Exposure</p>
+      <p class="feature-desc reveal reveal-delay-2">
+        All cables, water tubing and heating pad wiring run entirely inside
+        the hollow frame cavity — nothing exposed externally. The modular
+        corner design supports a top-mounted water fill port with rear
+        one-way valve positions configurable to any plumbing layout.
+        A single cable daisy-chains multiple enclosures.
+      </p>
+      <div class="feature-tag reveal reveal-delay-3">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 6a4 4 0 108 0 4 4 0 00-8 0z"/><path d="M6 4v4M4 6h4"/></svg>
+        Daisy-chain Power
+      </div>
+    </div>
+  </div>
+
+  <!-- 04 -->
+  <div class="feature-row reverse">
+    <div class="feature-img">
+      <img src="assets/renders/WechatIMG9561efebed19ea7d3e52e76915c6a7c7.jpeg" alt="Base control module">
+      <div class="feature-img-tilt"></div>
+    </div>
+    <div class="feature-body">
+      <p class="feature-num reveal">04 / 06</p>
+      <h3 class="feature-title reveal reveal-delay-1">Smart Base<br><strong>Control Module</strong></h3>
+      <p class="feature-sub reveal reveal-delay-1">Circadian Rhythm Simulation</p>
+      <p class="feature-desc reveal reveal-delay-2">
+        The mirror-finish stainless steel base houses an embedded status display
+        showing live temperature, humidity, light duration and purification state.
+        A full-perimeter acrylic breathing light ring wraps the base — independently
+        mounted, capable of simulating gradual day-to-night light cycles.
+      </p>
+      <div class="feature-tag reveal reveal-delay-3">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="8" height="8" rx="1"/><path d="M4 6h4M6 4v4"/></svg>
+        Day / Night Rhythm
+      </div>
+    </div>
+  </div>
+
+  <!-- 05 -->
+  <div class="feature-row">
+    <div class="feature-img">
+      <img src="assets/renders/WechatIMGb5ce2888223e976cf87780e2080c9a79.jpeg" alt="Lid open">
+      <div class="feature-img-tilt"></div>
+    </div>
+    <div class="feature-body">
+      <p class="feature-num reveal">05 / 06</p>
+      <h3 class="feature-title reveal reveal-delay-1">Self-return<br><strong>Hinged Lid</strong></h3>
+      <p class="feature-sub reveal reveal-delay-1">Stays Open Past 90°</p>
+      <p class="feature-desc reveal reveal-delay-2">
+        The self-return hinge holds the lid open automatically once it exceeds 90°,
+        freeing both hands for feeding or maintenance. Closing is a single-hand
+        operation via the magnetic knob — no tools required.
+        The top rail system accommodates panels of varying widths
+        with full room for customisation.
+      </p>
+      <div class="feature-tag reveal reveal-delay-3">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 9V3Q3 1 5 1H9"/><path d="M7 3l2-2 2 2"/></svg>
+        Auto-holds at 90°+
+      </div>
+    </div>
+  </div>
+
+  <!-- 06 -->
+  <div class="feature-row reverse">
+    <div class="feature-img">
+      <img src="assets/renders/WechatIMG6da72e0871a3df77b4174ecf55ddc928.jpeg" alt="Top panel">
+      <div class="feature-img-tilt"></div>
+    </div>
+    <div class="feature-body">
+      <p class="feature-num reveal">06 / 06</p>
+      <h3 class="feature-title reveal reveal-delay-1">Double-wall<br><strong>Insulation Glass</strong></h3>
+      <p class="feature-sub reveal reveal-delay-1">Air-wall Thermal Barrier</p>
+      <p class="feature-desc reveal reveal-delay-2">
+        The rear panel uses a double-layer hollow black glass structure that
+        completely conceals all pipes, cables and heating pads while a
+        trapped 12mm air layer acts as a thermal wall — significantly
+        reducing heating energy consumption. The front view is clean
+        and uncluttered, keeping all focus on the animal.
+      </p>
+      <div class="feature-tag reveal reveal-delay-3">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="2" width="4" height="8" rx="0.5"/><rect x="7" y="2" width="4" height="8" rx="0.5"/></svg>
+        12mm Air-wall Insulation
+      </div>
+    </div>
+  </div>
+
+</div><!-- /features -->
+
+<!-- GALLERY STRIP -->
+<div class="gallery-strip">
+  <div class="gallery-cell"><img src="assets/renders/WechatIMG035da4ae3bde01e43dfe2644368e72b2.jpeg" alt="Side view"></div>
+  <div class="gallery-cell"><img src="assets/renders/WechatIMG844d6703613510dfcfaf62aedfb623de.jpeg" alt="Front view"></div>
+  <div class="gallery-cell"><img src="assets/renders/WechatIMGb5ce2888223e976cf87780e2080c9a79.jpeg" alt="Lid open"></div>
+</div>
+
+<!-- AUTISM-INFORMED DESIGN -->
+<section class="autism-section" id="sensory">
+  <canvas id="calmCanvas"></canvas>
+
+  <div class="autism-header">
+    <p class="autism-eyebrow reveal">Sensory-Informed Design</p>
+    <h2 class="autism-title reveal reveal-delay-1">
+      Engineered for<br><strong>Calm & Connection</strong>
+    </h2>
+    <p class="autism-lead reveal reveal-delay-2">
+      TONITRUUM is designed with the specific needs of autistic children and their
+      therapeutic environments at its core. Every design decision — from acoustic
+      isolation to predictable light rhythms — supports sensory regulation,
+      emotional safety and meaningful human-animal connection.
+    </p>
+  </div>
+
+  <div class="autism-orb-row reveal">
+    <div>
+      <div class="breathe-orb">
+        <div class="ring"></div>
+        <div class="ring"></div>
+        <div class="ring"></div>
+        <div class="core"></div>
+      </div>
+      <p class="breathe-label">Breathing Light Rhythm</p>
+    </div>
+  </div>
+
+  <div class="autism-grid">
+
+    <div class="autism-card reveal reveal-delay-1">
+      <div class="autism-card-icon">
+        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/><path d="M12 6v6l4 2"/></svg>
+      </div>
+      <div class="autism-card-title">Predictable Routine</div>
+      <div class="autism-card-desc">
+        Programmable circadian lighting cycles reinforce daily structure —
+        sunrise, basking peak, sunset and night-mode transition
+        at consistent, learnable intervals.
+      </div>
+      <div class="autism-card-tag">Routine Reinforcement</div>
+      <div class="sensory-bar"><div class="sensory-fill" style="--fill-w:88%"></div></div>
+    </div>
+
+    <div class="autism-card reveal reveal-delay-2">
+      <div class="autism-card-icon">
+        <svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v4M8 23h8"/></svg>
+      </div>
+      <div class="autism-card-title">Near-silent Operation</div>
+      <div class="autism-card-desc">
+        At ≤28dBA, the 80mm axial fan is quieter than a library.
+        No sudden mechanical sounds, clicks or vibrations that could
+        trigger sensory overload or startle responses.
+      </div>
+      <div class="autism-card-tag">≤28dBA · Acoustic Safety</div>
+      <div class="sensory-bar"><div class="sensory-fill" style="--fill-w:95%"></div></div>
+    </div>
+
+    <div class="autism-card reveal reveal-delay-3">
+      <div class="autism-card-icon">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+      </div>
+      <div class="autism-card-title">Calming Ambient Light</div>
+      <div class="autism-card-desc">
+        The full-perimeter RGBW breathing light ring pulses at 4-second
+        inhale/exhale intervals — a clinically informed rhythm that
+        mirrors calming breathing exercises used in therapy.
+      </div>
+      <div class="autism-card-tag">4s Breathing Cycle</div>
+      <div class="sensory-bar"><div class="sensory-fill" style="--fill-w:92%"></div></div>
+    </div>
+
+    <div class="autism-card reveal reveal-delay-1">
+      <div class="autism-card-icon">
+        <svg viewBox="0 0 24 24"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>
+      </div>
+      <div class="autism-card-title">Unobstructed Viewing</div>
+      <div class="autism-card-desc">
+        Four-sided full-clarity glass creates an undistorted window to the
+        animal's world. The hidden cable rear panel ensures the view remains
+        uncluttered — a defined, bounded space that is calming to observe.
+      </div>
+      <div class="autism-card-tag">360° Clear Observation</div>
+      <div class="sensory-bar"><div class="sensory-fill" style="--fill-w:100%"></div></div>
+    </div>
+
+    <div class="autism-card reveal reveal-delay-2">
+      <div class="autism-card-icon">
+        <svg viewBox="0 0 24 24"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
+      </div>
+      <div class="autism-card-title">Safe Surface Interaction</div>
+      <div class="autism-card-desc">
+        Smooth glass surfaces, chamfered aluminium edges and rubber corner buffers
+        eliminate sharp points or rough textures. The soft-closing magnetic lid
+        removes the risk of sudden loud closing sounds or finger pinch hazards.
+      </div>
+      <div class="autism-card-tag">Touch-safe Materials</div>
+      <div class="sensory-bar"><div class="sensory-fill" style="--fill-w:96%"></div></div>
+    </div>
+
+    <div class="autism-card reveal reveal-delay-3">
+      <div class="autism-card-icon">
+        <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+      </div>
+      <div class="autism-card-title">Real-time Biofeedback</div>
+      <div class="autism-card-desc">
+        The embedded display provides live, legible environmental data —
+        temperature, humidity and light level — giving children a clear,
+        numeric readout that builds science literacy and emotional
+        co-regulation through care responsibility.
+      </div>
+      <div class="autism-card-tag">Live Environmental Display</div>
+      <div class="sensory-bar"><div class="sensory-fill" style="--fill-w:82%"></div></div>
+    </div>
+
+  </div>
+</section>
+
+<!-- MATERIALS -->
+<section class="materials-section" id="materials">
+  <p class="eyebrow reveal" style="color:var(--orange-lt)">Material & Craft</p>
+  <h2 class="sec-title reveal reveal-delay-1" style="color:#fff">Three <strong>Core Materials</strong></h2>
+  <div class="materials-grid">
+    <div class="mat-card reveal reveal-delay-1">
+      <div class="mat-icon">▪</div>
+      <div class="mat-name">Anodized Aluminium</div>
+      <div class="mat-desc">
+        Aerospace-grade 6063-T5 aluminium alloy, hard-anodized to
+        surface hardness HV≥200. Corrosion-resistant and scratch-resistant.
+        The matte black finish is refined to the touch and
+        communicates precision without visual aggression.
+      </div>
+    </div>
+    <div class="mat-card reveal reveal-delay-2">
+      <div class="mat-icon">◆</div>
+      <div class="mat-name">Mirror Stainless Steel</div>
+      <div class="mat-desc">
+        Grade 304 cold-rolled stainless steel, 8K mirror-polished to
+        Ra ≤ 0.05μm. The base acts as an optical reflective surface,
+        extending the breathing light effect downward to create
+        an infinite layered mirror visual.
+      </div>
+    </div>
+    <div class="mat-card reveal reveal-delay-3">
+      <div class="mat-icon">○</div>
+      <div class="mat-name">Diffusing Acrylic</div>
+      <div class="mat-desc">
+        A full-perimeter acrylic insert at the base distributes light
+        evenly with no hot spots. Non-load-bearing — sheet metal
+        runs through from above to carry the structural load
+        with all four feet anchored to the metal framework.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- AIRFLOW -->
+<section class="airflow-section" id="airflow">
+  <p class="eyebrow reveal">Climate System</p>
+  <h2 class="sec-title reveal reveal-delay-1">Intelligent <strong>Climate Loop</strong></h2>
+  <p class="sec-lead reveal reveal-delay-2">
+    A meticulously engineered convection loop integrates thermal management,
+    ozone purification and HEPA filtration into a single closed-loop system.
+  </p>
+  <div class="airflow-grid">
+    <canvas id="airCanvas"></canvas>
+    <div class="airflow-steps">
+      <div class="air-step reveal">
+        <div class="air-step-num">1</div>
+        <div>
+          <div class="air-step-title">Cool Air Ingress</div>
+          <div class="air-step-desc">Fresh cool air enters naturally through the glass door gap at the base, establishing the low-temperature foundation flow.</div>
+        </div>
+      </div>
+      <div class="air-step reveal reveal-delay-1">
+        <div class="air-step-num">2</div>
+        <div>
+          <div class="air-step-title">Heating Panel Convection</div>
+          <div class="air-step-desc">Cool air warms on contact with the heating panel and is drawn upward by the exhaust fan, completing the convection loop.</div>
+        </div>
+      </div>
+      <div class="air-step reveal reveal-delay-2">
+        <div class="air-step-num">3</div>
+        <div>
+          <div class="air-step-title">O₃ + Negative Ion Zone</div>
+          <div class="air-step-desc">Rising airflow passes through the ozone generator and negative ion module, neutralising odours and airborne pathogens.</div>
+        </div>
+      </div>
+      <div class="air-step reveal reveal-delay-3">
+        <div class="air-step-num">4</div>
+        <div>
+          <div class="air-step-title">Camera Heat Recovery</div>
+          <div class="air-step-desc">Waste heat from the AI camera is captured within the airflow path and exhausted simultaneously — a passive efficiency gain.</div>
+        </div>
+      </div>
+      <div class="air-step reveal reveal-delay-4">
+        <div class="air-step-num">5</div>
+        <div>
+          <div class="air-step-title">HEPA Final Filtration</div>
+          <div class="air-step-desc">An 80×80×25mm axial fan drives air through the H13 HEPA filter, exhausting clean air to complete the cycle at ≤28dBA.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SPECS -->
+<section class="specs-section" id="specs">
+  <p class="eyebrow reveal">Technical Specifications</p>
+  <h2 class="sec-title reveal reveal-delay-1">Product <strong>Specifications</strong></h2>
+  <table class="specs-table reveal reveal-delay-2">
+    <tr><td>Frame Structure</td><td>6063-T5 hard-anodized aluminium extrusion, matte black <em>RAL 9005</em></td></tr>
+    <tr><td>Glass Panels</td><td>4-sided ultra-clear tempered glass, <em>5mm</em>, light transmittance ≥ 92%</td></tr>
+    <tr><td>Rear Insulation</td><td>Double-layer hollow black glass, air gap <em>12mm</em></td></tr>
+    <tr><td>Base Material</td><td>Grade 304 stainless steel 8K mirror + anodized aluminium plate</td></tr>
+    <tr><td>Top Panel</td><td>Parametric hexagonal perforated aluminium, self-locking magnetic knob, self-return hinge (holds ≥ 90°)</td></tr>
+    <tr><td>Lighting</td><td>Full-perimeter acrylic light guide, RGBW, circadian rhythm programmable</td></tr>
+    <tr><td>Purification</td><td>Ozone generator + negative ion generator + HEPA H13 filter</td></tr>
+    <tr><td>Fan</td><td>80×80×25mm axial fan, <em>≤ 28 dBA</em></td></tr>
+    <tr><td>Camera</td><td>Embedded AI camera, behaviour recognition, Pet ID Card integration</td></tr>
+    <tr><td>Power</td><td>Single-input + daisy-chain output, one cable powers multiple units</td></tr>
+    <tr><td>Display</td><td>Embedded base LCD — live temperature, humidity, light, purification</td></tr>
+    <tr><td>Vibration Damping</td><td>Full-corner rubber buffer pads, anti-vibration and anti-slip</td></tr>
+    <tr><td>Sensory Rating</td><td>Acoustic ≤28dBA · No UV flicker · No sharp edges · Touch-safe glass</td></tr>
+  </table>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="cta-ring"></div>
+  <div class="cta-ring"></div>
+  <div class="cta-ring"></div>
+  <div class="reveal" style="display:flex;justify-content:center;margin-bottom:32px;">
+    <img src="assets/tonitruum-logo-white.png" alt="TONITRUUM"
+         style="width:260px;height:auto;opacity:0.6;">
+  </div>
+  <h2 class="cta-title reveal reveal-delay-1">
+    A habitat that<br><strong>thinks</strong> and<br><strong>breathes</strong>
+  </h2>
+  <p class="cta-sub reveal reveal-delay-2">
+    Download the full design documentation, 3D models and render assets below.
+  </p>
+  <div class="cta-btns reveal reveal-delay-3">
+    <a href="/Volumes/SAMSUNG/惊蛰/06. 钱青云爬缸工业设计/爬缸.pptx" class="btn-cta-primary" download>
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2v8M5 7l3 3 3-3M2 12h12"/></svg>
+      Download Full Design Deck
+    </a>
+    <a href="service.html" class="btn-cta-outline">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 4l4 4-4 4"/></svg>
+      View Therapy Service
+    </a>
+    <a href="index.html" class="btn-cta-outline">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10 12L6 8l4-4"/></svg>
+      Back to Dashboard
+    </a>
+  </div>
+</section>
+
+<div class="footer-bar">
+  <span class="footer-copy">© 2026 TONITRUUM · Intelligent Reptile Habitat System</span>
+  <a href="service.html" class="footer-link">Therapy Service Overview →</a>
+</div>
+
+<script>
+/* ══════════════════════════════════════════
+   SCROLL REVEAL + SEC-RULE + SENSORY BARS
+   ══════════════════════════════════════════ */
+const revealObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (!e.isIntersecting) return;
+    e.target.classList.add('visible');
+    // trigger sensory bars inside cards
+    e.target.querySelectorAll('.sensory-fill').forEach(b => b.classList.add('visible'));
+  });
+}, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+document.querySelectorAll('.reveal, .sec-rule').forEach(el => revealObs.observe(el));
+
+// also trigger sensory bars when their parent card scrolls in
+document.querySelectorAll('.autism-card').forEach(card => {
+  const obs = new IntersectionObserver(entries => {
+    if (entries[0].isIntersecting)
+      card.querySelectorAll('.sensory-fill').forEach(b => b.classList.add('visible'));
+  }, { threshold: 0.3 });
+  obs.observe(card);
+});
+
+// feature img scale on scroll
+document.querySelectorAll('.feature-img').forEach(img => {
+  new IntersectionObserver(entries => {
+    if (entries[0].isIntersecting) img.classList.add('in-view');
+  }, { threshold: 0.2 }).observe(img);
+});
+
+/* ══════════════════════════════════════════
+   TOPBAR SCROLL
+   ══════════════════════════════════════════ */
+(function() {
+  const tb = document.getElementById('topbar');
+  function onScroll() {
+    tb.classList.toggle('scrolled', window.scrollY > 60);
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+})();
+
+/* ══════════════════════════════════════════
+   HERO SLIDESHOW
+   ══════════════════════════════════════════ */
+(function() {
+  const slides = document.querySelectorAll('.hero-slide');
+  const dots   = document.querySelectorAll('.hero-dot');
+  let cur = 0, timer;
+
+  window.goSlide = function(idx) {
+    slides[cur].classList.remove('active');
+    dots[cur].classList.remove('active');
+    cur = (idx + slides.length) % slides.length;
+    slides[cur].classList.add('active');
+    dots[cur].classList.add('active');
+    clearInterval(timer);
+    timer = setInterval(() => window.goSlide(cur + 1), 6000);
+  };
+
+  timer = setInterval(() => window.goSlide(cur + 1), 6000);
+})();
+
+/* ══════════════════════════════════════════
+   HERO PARTICLE CANVAS
+   ══════════════════════════════════════════ */
+(function() {
+  const c = document.getElementById('heroParticles');
+  if (!c) return;
+  const ctx = c.getContext('2d');
+  let W, H, pts;
+
+  function resize() {
+    const dpr = window.devicePixelRatio || 1;
+    const r = c.parentElement.getBoundingClientRect();
+    W = r.width; H = r.height;
+    c.width = W * dpr; c.height = H * dpr;
+    c.style.width = W + 'px'; c.style.height = H + 'px';
+    ctx.scale(dpr, dpr);
+    pts = Array.from({ length: 55 }, () => ({
+      x: Math.random() * W, y: Math.random() * H,
+      vx: (Math.random() - 0.5) * 0.3,
+      vy: (Math.random() - 0.5) * 0.3,
+      r: 1.2 + Math.random() * 1.8,
+      a: 0.15 + Math.random() * 0.35
+    }));
+  }
+  resize();
+  const ro = new ResizeObserver(resize);
+  ro.observe(c.parentElement);
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    pts.forEach(p => {
+      p.x += p.vx; p.y += p.vy;
+      if (p.x < 0) p.x = W; if (p.x > W) p.x = 0;
+      if (p.y < 0) p.y = H; if (p.y > H) p.y = 0;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(217,110,40,${p.a})`;
+      ctx.fill();
+    });
+    // connect nearby
+    for (let i = 0; i < pts.length; i++) {
+      for (let j = i + 1; j < pts.length; j++) {
+        const dx = pts[i].x - pts[j].x, dy = pts[i].y - pts[j].y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 90) {
+          ctx.beginPath();
+          ctx.moveTo(pts[i].x, pts[i].y);
+          ctx.lineTo(pts[j].x, pts[j].y);
+          ctx.strokeStyle = `rgba(217,110,40,${(1 - dist / 90) * 0.07})`;
+          ctx.lineWidth = 0.6;
+          ctx.stroke();
+        }
+      }
+    }
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+
+/* ══════════════════════════════════════════
+   CALM CANVAS — autism section background
+   ══════════════════════════════════════════ */
+(function() {
+  const c = document.getElementById('calmCanvas');
+  if (!c) return;
+  const ctx = c.getContext('2d');
+  let W, H;
+
+  function resize() {
+    const dpr = window.devicePixelRatio || 1;
+    const r = c.parentElement.getBoundingClientRect();
+    W = r.width; H = r.height;
+    c.width = W * dpr; c.height = H * dpr;
+    c.style.width = W + 'px'; c.style.height = H + 'px';
+    ctx.scale(dpr, dpr);
+  }
+  resize();
+  new ResizeObserver(resize).observe(c.parentElement);
+
+  let t = 0;
+  // slow wave rings
+  function draw() {
+    t += 0.004;
+    ctx.clearRect(0, 0, W, H);
+    // concentric breathing rings from centre
+    const cx = W * 0.72, cy = H * 0.32;
+    for (let i = 0; i < 6; i++) {
+      const r = (80 + i * 80) + Math.sin(t + i * 0.7) * 18;
+      const a = Math.max(0, 0.06 - i * 0.009);
+      ctx.beginPath();
+      ctx.arc(cx, cy, r, 0, Math.PI * 2);
+      ctx.strokeStyle = `rgba(107,158,184,${a})`;
+      ctx.lineWidth = 1;
+      ctx.stroke();
+    }
+    // drifting calm particles
+    const pts = draw._pts || (draw._pts = Array.from({ length: 40 }, () => ({
+      x: Math.random() * W, y: Math.random() * H,
+      vx: (Math.random() - 0.5) * 0.15, vy: (Math.random() - 0.5) * 0.15,
+      r: 1 + Math.random() * 2, a: 0.06 + Math.random() * 0.1
+    })));
+    pts.forEach(p => {
+      p.x += p.vx; p.y += p.vy;
+      if (p.x < 0) p.x = W; if (p.x > W) p.x = 0;
+      if (p.y < 0) p.y = H; if (p.y > H) p.y = 0;
+      ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(107,158,184,${p.a})`; ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+/* ══════════════════════════════════════════
+   AIRFLOW CANVAS
+   ══════════════════════════════════════════ */
+(function() {
+  const canvas = document.getElementById('airCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+
+  function resize() {
+    const r = canvas.parentElement.getBoundingClientRect();
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width  = r.width * dpr;
+    canvas.height = (r.width * 0.75) * dpr;
+    canvas.style.width  = r.width + 'px';
+    canvas.style.height = (r.width * 0.75) + 'px';
+    ctx.scale(dpr, dpr);
+  }
+  resize();
+  window.addEventListener('resize', resize, { passive: true });
+
+  const W = () => canvas.width  / (window.devicePixelRatio || 1);
+  const H = () => canvas.height / (window.devicePixelRatio || 1);
+
+  const ENC = () => ({
+    x: W()*0.22, y: H()*0.08, w: W()*0.56, h: H()*0.72, baseH: H()*0.12
+  });
+
+  const path = e => [
+    { x: e.x + e.w*0.82, y: e.y + e.h - 4 },
+    { x: e.x + e.w*0.82, y: e.y + e.h*0.7 },
+    { x: e.x + e.w*0.5,  y: e.y + e.h*0.45 },
+    { x: e.x + e.w*0.2,  y: e.y + e.h*0.3 },
+    { x: e.x + e.w*0.5,  y: e.y + e.h*0.1 },
+    { x: e.x + e.w*0.5,  y: e.y - 12 },
+  ];
+
+  const PCOUNT = 30;
+  const particles = Array.from({ length: PCOUNT }, (_, i) => ({
+    t: i / PCOUNT, speed: 0.0018 + Math.random() * 0.0012,
+    size: 2 + Math.random() * 2.5, opacity: 0.5 + Math.random() * 0.5
+  }));
+
+  function getPt(pts, t) {
+    const n = pts.length - 1;
+    const seg = Math.min(Math.floor(t * n), n - 1);
+    const local = (t * n) - seg;
+    const a = pts[seg], b = pts[seg + 1];
+    return { x: a.x + (b.x - a.x) * local, y: a.y + (b.y - a.y) * local };
+  }
+
+  let tick = 0;
+  function draw() {
+    tick += 0.01;
+    const w = W(), h = H();
+    ctx.clearRect(0, 0, w, h);
+    const e = ENC();
+    const pts = path(e);
+
+    const bgGrad = ctx.createLinearGradient(0,0,0,h);
+    bgGrad.addColorStop(0,'#0e0e0d'); bgGrad.addColorStop(1,'#161614');
+    ctx.fillStyle = bgGrad; ctx.fillRect(0,0,w,h);
+
+    ctx.strokeStyle = 'rgba(255,255,255,0.11)'; ctx.lineWidth = 1.5;
+    ctx.fillStyle = 'rgba(180,200,220,0.04)';
+    ctx.fillRect(e.x,e.y,e.w,e.h); ctx.strokeRect(e.x,e.y,e.w,e.h);
+
+    ctx.fillStyle = 'rgba(28,28,26,0.92)';
+    ctx.fillRect(e.x-4, e.y-8, e.w+8, 8);
+
+    ctx.fillStyle = 'rgba(38,36,34,0.95)';
+    ctx.fillRect(e.x, e.y+e.h, e.w, e.baseH);
+    ctx.strokeRect(e.x, e.y+e.h, e.w, e.baseH);
+
+    const breathA = 0.4 + 0.35*Math.sin(tick*1.4);
+    const bglow = ctx.createLinearGradient(e.x,e.y+e.h+e.baseH-4,e.x,e.y+e.h+e.baseH+18);
+    bglow.addColorStop(0,`rgba(217,110,40,${breathA})`); bglow.addColorStop(1,'rgba(217,110,40,0)');
+    ctx.fillStyle = bglow; ctx.fillRect(e.x, e.y+e.h+e.baseH-4, e.w, 22);
+
+    const stripA = 0.55 + 0.3*Math.sin(tick*1.2+1);
+    const sg = ctx.createLinearGradient(e.x,e.y,e.x,e.y+e.h);
+    sg.addColorStop(0,`rgba(217,110,40,0)`);
+    sg.addColorStop(0.3,`rgba(217,110,40,${stripA})`);
+    sg.addColorStop(0.7,`rgba(217,110,40,${stripA})`);
+    sg.addColorStop(1,`rgba(217,110,40,0)`);
+    ctx.fillStyle = sg; ctx.fillRect(e.x+4, e.y+4, 3, e.h-8);
+
+    ctx.font='9px -apple-system,sans-serif'; ctx.textAlign='center';
+    ctx.fillStyle='rgba(217,110,40,0.8)'; ctx.fillText('HEPA', e.x+e.w/2, e.y-18);
+    ctx.fillStyle='rgba(255,255,255,0.18)'; ctx.fillRect(e.x+e.w*0.3,e.y-14,e.w*0.4,5);
+
+    ctx.font='8px -apple-system,sans-serif'; ctx.fillStyle='rgba(255,255,255,0.22)'; ctx.textAlign='left';
+    ctx.fillText('O₃ + Ion Zone', e.x+8, e.y+e.h*0.3);
+    ctx.fillText('Heat Zone',     e.x+e.w*0.5, e.y+e.h*0.55);
+    ctx.fillText('Cold Air In',   e.x+e.w*0.7, e.y+e.h-16);
+
+    particles.forEach(p => {
+      p.t += p.speed; if (p.t >= 1) p.t -= 1;
+      const pos = getPt(pts, p.t);
+      const r2 = Math.round(217+(127-217)*p.t);
+      const g2 = Math.round(110+(179-110)*p.t);
+      const b2 = Math.round(40 +(200-40) *p.t);
+      const a2 = p.opacity * Math.sin(p.t * Math.PI);
+      const rg = ctx.createRadialGradient(pos.x,pos.y,0,pos.x,pos.y,p.size*3);
+      rg.addColorStop(0,`rgba(${r2},${g2},${b2},${a2*0.4})`);
+      rg.addColorStop(1,'rgba(0,0,0,0)');
+      ctx.fillStyle=rg; ctx.beginPath(); ctx.arc(pos.x,pos.y,p.size*3,0,Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(pos.x,pos.y,p.size*0.6,0,Math.PI*2);
+      ctx.fillStyle=`rgba(${r2},${g2},${b2},${a2})`; ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phase 0 — Project Origin · TONITRUUM</title>
+<link rel="stylesheet" href="shared.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+/* ── Phase 0 custom palette ── */
+:root {
+  --p0-purple: #9b59d0;
+  --p0-purple-lt: #b97fe0;
+  --p0-purple-dim: rgba(155,89,208,0.18);
+  --p0-red:    #c0392b;
+  --p0-red-dim:rgba(192,57,43,0.15);
+}
+
+/* ── Hero ── */
+.p0-hero {
+  position: relative; overflow: hidden;
+  background: linear-gradient(135deg, #0f0f0e 60%, #1a0f1a 100%);
+  border: 1px solid var(--border); border-radius: 16px;
+  padding: 52px 48px 44px; margin-bottom: 28px;
+}
+.p0-hero::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 60% 80% at 80% 50%, rgba(155,89,208,0.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+.p0-eyebrow {
+  font-size: 10px; font-weight: 700; letter-spacing: 0.18em;
+  text-transform: uppercase; color: var(--p0-purple);
+  margin-bottom: 12px; display: flex; align-items: center; gap: 8px;
+}
+.p0-eyebrow::before { content:''; display:inline-block; width:24px; height:1px; background:var(--p0-purple); }
+.p0-hero-title {
+  font-size: clamp(22px, 4vw, 42px); font-weight: 800;
+  color: var(--text-primary); line-height: 1.15; letter-spacing: -0.02em;
+  max-width: 680px; margin-bottom: 20px;
+}
+.p0-hero-title em { color: var(--p0-purple); font-style: normal; }
+.p0-hero-sub {
+  font-size: 13px; color: var(--text-secondary); max-width: 560px;
+  line-height: 1.7; margin-bottom: 28px;
+}
+.p0-hero-meta { display: flex; gap: 24px; flex-wrap: wrap; }
+.p0-meta-pill {
+  padding: 5px 14px; border-radius: 20px; font-size: 10px; font-weight: 600;
+  letter-spacing: 0.06em; text-transform: uppercase;
+}
+.p0-hero-badge {
+  position: absolute; top: 48px; right: 48px;
+  width: 120px; height: 120px; border-radius: 50%;
+  background: var(--p0-purple-dim); border: 1px solid rgba(155,89,208,0.35);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  font-size: 11px; color: var(--p0-purple); text-align: center; font-weight: 600;
+  letter-spacing: 0.04em;
+}
+.p0-hero-badge .big { font-size: 32px; font-weight: 800; display: block; line-height: 1; }
+
+/* ── Section titles ── */
+.p0-section-head {
+  display: flex; align-items: center; gap: 12px; margin-bottom: 20px;
+}
+.p0-section-num {
+  width: 28px; height: 28px; border-radius: 6px;
+  background: var(--p0-purple-dim); border: 1px solid rgba(155,89,208,0.3);
+  color: var(--p0-purple); font-size: 12px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.p0-section-title {
+  font-size: 15px; font-weight: 700; color: var(--text-primary); letter-spacing: -0.01em;
+}
+.p0-section-sub { font-size: 11px; color: var(--text-muted); margin-left: auto; }
+
+/* ── HMW statement ── */
+.hmw-block {
+  background: linear-gradient(135deg, rgba(155,89,208,0.1), rgba(155,89,208,0.04));
+  border: 1px solid rgba(155,89,208,0.25); border-radius: 14px;
+  padding: 32px 36px; margin-bottom: 28px; text-align: center;
+}
+.hmw-label { font-size: 10px; color: var(--p0-purple); letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 10px; }
+.hmw-text {
+  font-size: clamp(18px, 3vw, 30px); font-weight: 800;
+  color: var(--text-primary); line-height: 1.25; letter-spacing: -0.02em;
+  max-width: 720px; margin: 0 auto;
+}
+.hmw-text em { color: var(--p0-purple); font-style: normal; }
+
+/* ── Main timeline ── */
+.p0-timeline { position: relative; margin-bottom: 28px; }
+.p0-timeline::before {
+  content: ''; position: absolute; left: 22px; top: 0; bottom: 0;
+  width: 2px; background: linear-gradient(to bottom, var(--p0-purple), rgba(155,89,208,0.1));
+}
+.p0-tl-item {
+  display: flex; gap: 20px; padding: 0 0 32px; position: relative;
+  opacity: 0; transform: translateX(-16px);
+  transition: opacity 0.55s ease, transform 0.55s ease;
+}
+.p0-tl-item.visible { opacity: 1; transform: none; }
+.p0-tl-dot {
+  width: 46px; height: 46px; border-radius: 12px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; border: 1px solid; z-index: 1;
+}
+.p0-tl-body { flex: 1; padding-top: 8px; }
+.p0-tl-period { font-size: 9px; color: var(--text-muted); font-family: monospace; letter-spacing: 0.06em; margin-bottom: 4px; }
+.p0-tl-name { font-size: 14px; font-weight: 700; color: var(--text-primary); margin-bottom: 6px; }
+.p0-tl-desc { font-size: 12px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 8px; }
+.p0-tl-tags { display: flex; flex-wrap: wrap; gap: 5px; }
+.p0-tag {
+  padding: 2px 8px; border-radius: 4px; font-size: 9.5px; font-weight: 600;
+  letter-spacing: 0.04em; background: var(--p0-purple-dim);
+  color: var(--p0-purple-lt); border: 1px solid rgba(155,89,208,0.25);
+}
+.p0-tag.red { background: var(--p0-red-dim); color: #e07060; border-color: rgba(192,57,43,0.25); }
+.p0-tag.grn { background: rgba(74,140,104,0.15); color: #6aad84; border-color: rgba(74,140,104,0.25); }
+.p0-tag.ora { background: rgba(217,110,40,0.15); color: #e8884a; border-color: rgba(217,110,40,0.25); }
+
+/* ── Research methods grid ── */
+.method-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px,1fr)); gap: 10px; margin-bottom: 28px; }
+.method-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 10px; padding: 14px 16px;
+  border-top: 2px solid var(--p0-purple);
+  transition: border-color 0.2s, background 0.2s;
+}
+.method-card:hover { background: var(--bg-card-alt); border-top-color: var(--p0-purple-lt); }
+.method-num { font-size: 24px; font-weight: 800; color: rgba(155,89,208,0.3); letter-spacing: -0.03em; line-height: 1; margin-bottom: 6px; }
+.method-name { font-size: 12px; font-weight: 700; color: var(--text-primary); margin-bottom: 5px; }
+.method-desc { font-size: 11px; color: var(--text-secondary); line-height: 1.55; }
+.method-stat { font-size: 10px; color: var(--p0-purple); margin-top: 8px; font-weight: 600; }
+
+/* ── Pain points ── */
+.pain-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-bottom: 28px; }
+.pain-card {
+  background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px;
+  padding: 14px; border-left: 3px solid var(--p0-red);
+}
+.pain-n { font-size: 10px; color: #e07060; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 5px; }
+.pain-title { font-size: 12px; font-weight: 600; color: var(--text-primary); margin-bottom: 4px; }
+.pain-desc { font-size: 11px; color: var(--text-secondary); line-height: 1.55; }
+
+/* ── Planned field flow ── */
+.field-flow { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; margin-bottom: 28px; }
+.field-node {
+  background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px;
+  padding: 10px 14px; text-align: center; flex: 1; min-width: 80px;
+}
+.field-node-icon { font-size: 16px; margin-bottom: 4px; }
+.field-node-label { font-size: 10px; font-weight: 600; color: var(--text-secondary); letter-spacing: 0.04em; }
+.field-arrow { color: var(--p0-purple); font-size: 14px; flex-shrink: 0; }
+.field-node.highlight { border-color: rgba(155,89,208,0.4); background: var(--p0-purple-dim); }
+.field-node.highlight .field-node-label { color: var(--p0-purple-lt); }
+
+/* ── Literature grid ── */
+.lit-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; margin-bottom: 28px; }
+.lit-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 10px; padding: 14px;
+  transition: background 0.2s;
+}
+.lit-card:hover { background: var(--bg-card-alt); }
+.lit-num { font-size: 28px; font-weight: 800; color: var(--p0-purple-dim); letter-spacing: -0.04em; }
+.lit-name { font-size: 11.5px; font-weight: 700; color: var(--text-primary); margin-bottom: 5px; }
+.lit-desc { font-size: 10.5px; color: var(--text-secondary); line-height: 1.55; }
+
+/* ── Survey insight ── */
+.survey-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 28px; }
+.survey-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
+.survey-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.09em; color: var(--text-muted); margin-bottom: 14px; font-weight: 600; }
+.survey-stat-row { display: flex; align-items: baseline; gap: 6px; margin-bottom: 8px; }
+.survey-big { font-size: 36px; font-weight: 800; color: var(--p0-purple); letter-spacing: -0.03em; }
+.survey-unit { font-size: 13px; color: var(--text-muted); }
+.survey-bar-list { display: flex; flex-direction: column; gap: 7px; margin-top: 10px; }
+.s-bar-item { display: grid; grid-template-columns: 110px 1fr 36px; align-items: center; gap: 8px; font-size: 11px; }
+.s-bar-lbl { color: var(--text-secondary); }
+.s-bar-track { height: 5px; background: rgba(255,255,255,0.06); border-radius: 3px; overflow: hidden; }
+.s-bar-fill { height: 100%; border-radius: 3px; background: var(--p0-purple); transition: width 1.2s ease; }
+.s-bar-fill.green { background: #4a8c68; }
+.s-bar-fill.red   { background: var(--p0-red); }
+.s-bar-val { font-size: 10px; color: var(--text-muted); text-align: right; }
+
+/* ── Quote / insight block ── */
+.p0-insight {
+  background: linear-gradient(135deg, rgba(217,110,40,0.06), rgba(155,89,208,0.06));
+  border: 1px solid rgba(217,110,40,0.2); border-radius: 14px;
+  padding: 28px 32px; margin-bottom: 28px; position: relative;
+}
+.p0-insight::before {
+  content: '"'; position: absolute; top: 16px; left: 24px;
+  font-size: 80px; color: rgba(155,89,208,0.15); font-family: Georgia, serif;
+  line-height: 1; pointer-events: none;
+}
+.p0-insight-text {
+  font-size: 16px; font-weight: 600; color: var(--text-primary);
+  line-height: 1.6; letter-spacing: -0.01em; margin-bottom: 10px;
+  padding-left: 20px;
+}
+.p0-insight-text em { color: var(--p0-purple); font-style: normal; }
+.p0-insight-attr { font-size: 11px; color: var(--text-muted); padding-left: 20px; }
+
+/* ── Geographical data ── */
+.geo-stat-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; margin-bottom: 28px; }
+.geo-stat {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 10px; padding: 16px; text-align: center;
+}
+.geo-stat-val { font-size: 28px; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 4px; }
+.geo-stat-lbl { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.07em; }
+.geo-stat-src { font-size: 9px; color: var(--text-muted); margin-top: 5px; opacity: 0.6; }
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+  .pain-grid { grid-template-columns: 1fr 1fr; }
+  .lit-grid  { grid-template-columns: 1fr 1fr; }
+  .geo-stat-row { grid-template-columns: 1fr 1fr; }
+  .p0-hero-badge { display: none; }
+}
+@media (max-width: 600px) {
+  .p0-hero { padding: 28px 20px; }
+  .hmw-block { padding: 20px; }
+  .pain-grid, .survey-grid { grid-template-columns: 1fr; }
+  .lit-grid { grid-template-columns: 1fr 1fr; }
+  .field-flow { gap: 3px; }
+  .field-node { padding: 8px; min-width: 60px; }
+  .field-node-label { font-size: 8.5px; }
+  .geo-stat-row { grid-template-columns: 1fr 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="app-container">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <span class="logo-icon">⬡</span>
+      <div><div class="logo-title">TONITRUUM</div><div class="logo-sub">Habitat Intelligence</div></div>
+    </div>
+    <ul class="nav-list">
+      <li class="nav-section">Monitor</li>
+      <li class="nav-item"><a href="index.html"><span class="nav-icon">⬡</span>Habitat Monitor</a></li>
+      <li class="nav-section">Clinical</li>
+      <li class="nav-item"><a href="autism.html"><span class="nav-icon">♡</span>Patient Care</a></li>
+      <li class="nav-item"><a href="assessment.html"><span class="nav-icon">≡</span>Assessments</a></li>
+      <li class="nav-item"><a href="parent-form.html"><span class="nav-icon">✎</span>Parent Reports</a></li>
+      <li class="nav-item"><a href="medical.html"><span class="nav-icon">✚</span>Medical Consult</a></li>
+      <li class="nav-section">Strategy</li>
+      <li class="nav-item"><a href="service.html"><span class="nav-icon">◎</span>Service Overview</a></li>
+      <li class="nav-item"><a href="stakeholder.html"><span class="nav-icon">◉</span>Stakeholder Map</a></li>
+      <li class="nav-item"><a href="product.html"><span class="nav-icon">◈</span>Product Design</a></li>
+      <li class="nav-section">Project</li>
+      <li class="nav-item active"><a href="phase0.html"><span class="nav-icon">◫</span>Phase 0 Origin</a></li>
+      <li class="nav-item"><a href="founder.html"><span class="nav-icon">◐</span>Founder</a></li>
+      <li class="nav-item"><a href="research.html"><span class="nav-icon">◇</span>Reptile Therapy</a></li>
+      <li class="nav-item"><a href="market.html"><span class="nav-icon">◆</span>Business Model</a></li>
+      <li class="nav-section">Play</li>
+      <li class="nav-item"><a href="game.html"><span class="nav-icon">◎</span>Cricket Hunter</a></li>
+    
+    </ul>
+    <div class="sidebar-footer">
+      <div class="sys-status"><span class="status-indicator status-good"></span><span class="sys-time" id="sidebarTime"></span></div>
+      <div>TONITRUUM © 2025</div>
+    </div>
+  </aside>
+
+  <main class="main-content">
+
+    <!-- Hero -->
+    <div class="p0-hero">
+      <div class="p0-eyebrow">Xinghao Ni · M3 Digital · 2025</div>
+      <div class="p0-hero-title">
+        "In the memory of Pipi" —<br>
+        <em>Phase 0</em> : L'origine du projet
+      </div>
+      <p class="p0-hero-sub">
+        Three years ago, a crested gecko named Pipi started everything. From a personal crisis of overwork and disconnection to a design research project that asks: <strong>how might we build a medium between reptiles and their owners?</strong> This is the documented journey of Phase 0.
+      </p>
+      <div class="p0-hero-meta">
+        <span class="p0-meta-pill" style="background:var(--p0-purple-dim);color:var(--p0-purple-lt);border:1px solid rgba(155,89,208,0.3);">Phase 0 · Research</span>
+        <span class="p0-meta-pill" style="background:rgba(217,110,40,0.12);color:#e8884a;border:1px solid rgba(217,110,40,0.25);">M3 Digital / 2025</span>
+        <span class="p0-meta-pill" style="background:rgba(74,140,104,0.12);color:#6aad84;border:1px solid rgba(74,140,104,0.25);">Scientific Enclosure Design</span>
+      </div>
+      <div class="p0-hero-badge">
+        <span class="big">P0</span>
+        Phase Zero<br>Origin
+      </div>
+    </div>
+
+    <!-- HMW -->
+    <div class="hmw-block">
+      <div class="hmw-label">Design Challenge</div>
+      <div class="hmw-text">"How might we <em>build a medium</em> between geckos and their owners?"</div>
+    </div>
+
+    <!-- Personal quote -->
+    <div class="p0-insight">
+      <div class="p0-insight-text">
+        Because of my busy schedule, I often worked overtime and didn't give enough attention to Pipi. Despite this, I really wanted a pet — something that wouldn't require as much time and energy as a cat or a dog, but could still be <em>handled and interacted with</em>.
+      </div>
+      <div class="p0-insight-attr">— Xinghao Ni, founder · personal narrative, Phase 0 documentation</div>
+    </div>
+
+    <!-- Project timeline -->
+    <div style="margin-bottom:10px;">
+      <div class="p0-section-head">
+        <div class="p0-section-num">→</div>
+        <div class="p0-section-title">Chronologie du projet</div>
+        <div class="p0-section-sub">De l'intuition au design</div>
+      </div>
+    </div>
+    <div class="p0-timeline" id="p0Timeline">
+
+      <div class="p0-tl-item">
+        <div class="p0-tl-dot" style="background:rgba(155,89,208,0.12);border-color:rgba(155,89,208,0.35);color:var(--p0-purple);">🦎</div>
+        <div class="p0-tl-body">
+          <div class="p0-tl-period">2022 — DÉBUT</div>
+          <div class="p0-tl-name">Rencontre avec Pipi — premier gecko huppé</div>
+          <div class="p0-tl-desc">En cherchant un compagnon de vie adapté à un emploi du temps chargé, un premier gecko huppé entre dans la vie du fondateur. Ce petit animal nocturne révèle très vite la complexité de ses besoins : température, humidité, comportement nocturne, alimentation spécifique. Les erreurs de débutant s'accumulent.</div>
+          <div class="p0-tl-tags"><span class="p0-tag">Expérience directe</span><span class="p0-tag red">Manque de ressources</span><span class="p0-tag grn">Curiosité naturelle</span></div>
+        </div>
+      </div>
+
+      <div class="p0-tl-item">
+        <div class="p0-tl-dot" style="background:rgba(192,57,43,0.12);border-color:rgba(192,57,43,0.35);color:#e07060;">💔</div>
+        <div class="p0-tl-body">
+          <div class="p0-tl-period">2022–2023 — MOMENT PIVOT</div>
+          <div class="p0-tl-name">"In the memory of Pipi" — le décès qui change tout</div>
+          <div class="p0-tl-desc">Pipi décède après deux ans de soins. La cause : un enclos inadapté, une surveillance insuffisante, l'absence d'alerte en temps réel sur les paramètres critiques. Ce deuil personnel devient le moteur d'une recherche approfondie : comment éviter que d'autres propriétaires traversent la même expérience ?</div>
+          <div class="p0-tl-tags"><span class="p0-tag red">Moment déclencheur</span><span class="p0-tag">Deuil animalier</span><span class="p0-tag ora">Motivation projet</span></div>
+        </div>
+      </div>
+
+      <div class="p0-tl-item">
+        <div class="p0-tl-dot" style="background:rgba(107,158,184,0.12);border-color:rgba(107,158,184,0.35);color:#8ab8ce;">🔬</div>
+        <div class="p0-tl-body">
+          <div class="p0-tl-period">2023 — RECHERCHE</div>
+          <div class="p0-tl-name">Phase de recherche scientifique intensive</div>
+          <div class="p0-tl-desc">Internet research, book studies, documentary viewing (National Geographic, Our Planet, Nature Journal), expert interviews — entretien avec un éthologiste animale (2023), visite chez un éleveur reptile (Oct 2025). Observation de 5+ espèces en captivité : corn snakes, California kingsnake, bearded dragon, White's tree frog, crested gecko.</div>
+          <div class="p0-tl-tags"><span class="p0-tag">7 méthodes de recherche</span><span class="p0-tag grn">Observation terrain</span><span class="p0-tag">Éthologie reptilienne</span></div>
+        </div>
+      </div>
+
+      <div class="p0-tl-item">
+        <div class="p0-tl-dot" style="background:rgba(74,140,104,0.12);border-color:rgba(74,140,104,0.35);color:#6aad84;">👥</div>
+        <div class="p0-tl-body">
+          <div class="p0-tl-period">2023–2024 — ENQUÊTES</div>
+          <div class="p0-tl-name">Enquêtes communautaires &amp; terrain</div>
+          <div class="p0-tl-desc">4 reptile enthusiasts interviewed. 6 general students. Observed Chinese art school reptile group (~300 members). Engaged with 5 large reptile hobbyist communities (~400 members each). Conducted 22-question independent questionnaire — 40 responses, 32 valid. Recorded one documentary featuring community insights.</div>
+          <div class="p0-tl-tags"><span class="p0-tag grn">40 répondants</span><span class="p0-tag">Ethnographie digitale</span><span class="p0-tag">5 communautés</span></div>
+        </div>
+      </div>
+
+      <div class="p0-tl-item">
+        <div class="p0-tl-dot" style="background:rgba(217,110,40,0.12);border-color:rgba(217,110,40,0.35);color:#e8884a;">💡</div>
+        <div class="p0-tl-body">
+          <div class="p0-tl-period">2024 — DESIGN THINKING</div>
+          <div class="p0-tl-name">Formulation du HMW &amp; planned field</div>
+          <div class="p0-tl-desc">La question centrale émerge : "How might we build a medium between geckos and their owners?" Le Planned Field est établi : Research → Observation → Interview → Analysis → Consulting → Brainstorm → Product Design → Strategy → Market. L'ambition artistique entre en jeu : mettre l'art et le sens esthétique au service d'une résolution de problème différente.</div>
+          <div class="p0-tl-tags"><span class="p0-tag ora">Design Thinking</span><span class="p0-tag">HMW Method</span><span class="p0-tag">Vision produit</span></div>
+        </div>
+      </div>
+
+      <div class="p0-tl-item">
+        <div class="p0-tl-dot" style="background:rgba(155,89,208,0.2);border-color:rgba(155,89,208,0.5);color:var(--p0-purple);">🏗</div>
+        <div class="p0-tl-body">
+          <div class="p0-tl-period">2025 — TONITRUUM</div>
+          <div class="p0-tl-name">Naissance du concept TONITRUUM</div>
+          <div class="p0-tl-desc">Les données, la recherche, et l'expérience personnelle convergent vers TONITRUUM : un système de monitoring intelligent pour terrarium, intégrant capteurs temps réel, alertes comportementales, et plus tard — un pont thérapeutique avec les enfants autistes. "It's gonna be the best product that ever exist in reptile industry!"</div>
+          <div class="p0-tl-tags"><span class="p0-tag">TONITRUUM v1</span><span class="p0-tag grn">Pivot thérapeutique</span><span class="p0-tag ora">M3 Digital 2025</span></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Planned field flow -->
+    <div class="card" style="margin-bottom:28px;">
+      <div class="p0-section-head" style="margin-bottom:16px;">
+        <div class="p0-section-num">8</div>
+        <div class="p0-section-title">Planned Field — Méthodologie de projet</div>
+      </div>
+      <div class="field-flow">
+        <div class="field-node"><div class="field-node-icon">🔎</div><div class="field-node-label">Research</div></div>
+        <div class="field-arrow">→</div>
+        <div class="field-node"><div class="field-node-icon">👁</div><div class="field-node-label">Observation</div></div>
+        <div class="field-arrow">→</div>
+        <div class="field-node"><div class="field-node-icon">🎙</div><div class="field-node-label">Interview</div></div>
+        <div class="field-arrow">→</div>
+        <div class="field-node"><div class="field-node-icon">📊</div><div class="field-node-label">Analysis</div></div>
+        <div class="field-arrow">→</div>
+        <div class="field-node"><div class="field-node-icon">💼</div><div class="field-node-label">Consulting</div></div>
+        <div class="field-arrow">→</div>
+        <div class="field-node highlight"><div class="field-node-icon">🧠</div><div class="field-node-label">Brainstorm</div></div>
+        <div class="field-arrow">→</div>
+        <div class="field-node highlight"><div class="field-node-icon">⬡</div><div class="field-node-label">Product Design</div></div>
+        <div class="field-arrow">→</div>
+        <div class="field-node highlight"><div class="field-node-icon">♟</div><div class="field-node-label">Strategy</div></div>
+        <div class="field-arrow">→</div>
+        <div class="field-node highlight"><div class="field-node-icon">🚀</div><div class="field-node-label">Market</div></div>
+      </div>
+      <div style="font-size:10px;color:var(--text-muted);margin-top:10px;line-height:1.6;padding:8px;background:rgba(155,89,208,0.05);border-radius:6px;border:1px solid rgba(155,89,208,0.12);">
+        ★ Comparaison Europe–Chine · Exploration des nouvelles technologies · Mise en valeur du sens artistique dans la résolution de problèmes
+      </div>
+    </div>
+
+    <!-- 7 Research Methods -->
+    <div style="margin-bottom:10px;">
+      <div class="p0-section-head">
+        <div class="p0-section-num">7</div>
+        <div class="p0-section-title">Méthodologies de recherche</div>
+        <div class="p0-section-sub">Phase 0 · Terrain &amp; littérature</div>
+      </div>
+    </div>
+    <div class="method-grid" style="margin-bottom:28px;">
+      <div class="method-card">
+        <div class="method-num">01</div>
+        <div class="method-name">Internet Research</div>
+        <div class="method-desc">YouTube, réseaux sociaux, forums spécialisés. Identification des tendances et phénomènes sociaux autour des reptiles.</div>
+        <div class="method-stat">Plateformes : YT, Reddit, Bilibili</div>
+      </div>
+      <div class="method-card">
+        <div class="method-num">02</div>
+        <div class="method-name">Book Studies</div>
+        <div class="method-desc">Littérature scientifique et culturelle. Husbandry, symbolisme, éthique animale, lois et réglementations.</div>
+        <div class="method-stat">8 axes scientifiques explorés</div>
+      </div>
+      <div class="method-card">
+        <div class="method-num">03</div>
+        <div class="method-name">Expériences directes</div>
+        <div class="method-desc">Élevage de 5+ espèces en captivité : corn snakes, kingsnake, bearded dragon, White's tree frog, crested gecko.</div>
+        <div class="method-stat">2 corn snakes · 1 bearded dragon · 1 gecko</div>
+      </div>
+      <div class="method-card">
+        <div class="method-num">04</div>
+        <div class="method-name">Documentary Viewing</div>
+        <div class="method-desc">National Geographic, Our Planet, Nature Journal — comportements sauvages et interactions environnementales.</div>
+        <div class="method-stat">Dozens of documentaries</div>
+      </div>
+      <div class="method-card">
+        <div class="method-num">05</div>
+        <div class="method-name">Expert Interviews</div>
+        <div class="method-desc">Éthologiste animale (2023). Visite chez un éleveur reptile (Oct 2025). Filmé et documenté.</div>
+        <div class="method-stat">2 experts · 1 breeder visit</div>
+      </div>
+      <div class="method-card">
+        <div class="method-num">06</div>
+        <div class="method-name">General Public Research</div>
+        <div class="method-desc">4 passionnés interviewés. 6 étudiants. Groupe reptile art school (~300). 5 communautés (~400 membres chacune).</div>
+        <div class="method-stat">~2 500 personnes touchées</div>
+      </div>
+      <div class="method-card">
+        <div class="method-num">07</div>
+        <div class="method-name">Surveys &amp; Reports</div>
+        <div class="method-desc">Questionnaire 22 questions indépendant. Analyse du White Paper 2023 sur l'industrie exotic pet.</div>
+        <div class="method-stat">40 réponses · 32 valides</div>
+      </div>
+    </div>
+
+    <!-- Pain Points -->
+    <div style="margin-bottom:10px;">
+      <div class="p0-section-head">
+        <div class="p0-section-num">9</div>
+        <div class="p0-section-title">Pain Points identifiés</div>
+        <div class="p0-section-sub">Propriétaires de geckos huppés</div>
+      </div>
+    </div>
+    <div class="pain-grid">
+      <div class="pain-card">
+        <div class="pain-n">Pain 01</div>
+        <div class="pain-title">Température &amp; humidité</div>
+        <div class="pain-desc">Les geckos nécessitent des plages précises de température/humidité. Les variations jour/nuit sont souvent mal gérées.</div>
+      </div>
+      <div class="pain-card">
+        <div class="pain-n">Pain 02</div>
+        <div class="pain-title">Comportement &amp; santé</div>
+        <div class="pain-desc">Animaux nocturnes — les signes de maladie (shedding, perte d'appétit) sont subtils et facilement manqués.</div>
+      </div>
+      <div class="pain-card">
+        <div class="pain-n">Pain 03</div>
+        <div class="pain-title">Alimentation inadaptée</div>
+        <div class="pain-desc">Les propriétaires dépendent des régimes commerciaux. Calcium et vitamine D3 souvent insuffisants — risque de maladie osseuse.</div>
+      </div>
+      <div class="pain-card">
+        <div class="pain-n">Pain 04</div>
+        <div class="pain-title">Enclos monotone</div>
+        <div class="pain-desc">Beaucoup d'enclos manquent de structures grimpantes et de cachettes. Stress environnemental et comportements anormaux.</div>
+      </div>
+      <div class="pain-card">
+        <div class="pain-n">Pain 05</div>
+        <div class="pain-title">Adaptation &amp; déménagements</div>
+        <div class="pain-desc">Les geckos sont hypersensibles aux changements environnementaux. Tout déplacement génère du stress et des refus alimentaires.</div>
+      </div>
+      <div class="pain-card">
+        <div class="pain-n">Pain 06</div>
+        <div class="pain-title">Information dispersée</div>
+        <div class="pain-desc">Les données de soin sont fragmentées entre forums, vidéos, groupes. Aucun guide structuré et fiable pour les débutants.</div>
+      </div>
+      <div class="pain-card">
+        <div class="pain-n">Pain 07</div>
+        <div class="pain-title">Communauté &amp; support</div>
+        <div class="pain-desc">Contrairement aux chats et chiens, les communautés de reptiles sont réduites. Peu d'accès à des conseils professionnels.</div>
+      </div>
+      <div class="pain-card">
+        <div class="pain-n">Pain 08</div>
+        <div class="pain-title">Oubli post-repas</div>
+        <div class="pain-desc">Beaucoup de propriétaires laissent accidentellement l'enclos ouvert après le repas — risque de fuite ou blessure.</div>
+      </div>
+      <div class="pain-card">
+        <div class="pain-n">Pain 09</div>
+        <div class="pain-title">Pas de monitoring temps réel</div>
+        <div class="pain-desc">La plupart des enclos n'ont aucun capteur. Les alertes (chute de température nocturne, humidité critique) n'existent pas.</div>
+      </div>
+    </div>
+
+    <!-- Geographic data -->
+    <div style="margin-top:28px;margin-bottom:10px;">
+      <div class="p0-section-head">
+        <div class="p0-section-num">◎</div>
+        <div class="p0-section-title">Contexte marché — reptiles en captivité</div>
+        <div class="p0-section-sub">Sources : FEDIAF, Petdata.cn 2025</div>
+      </div>
+    </div>
+    <div class="geo-stat-row">
+      <div class="geo-stat">
+        <div class="geo-stat-val" style="color:var(--p0-purple);">9M</div>
+        <div class="geo-stat-lbl">Reptiles en Europe</div>
+        <div class="geo-stat-src">FEDIAF / 88M foyers</div>
+      </div>
+      <div class="geo-stat">
+        <div class="geo-stat-val" style="color:#e8884a;">17.07M</div>
+        <div class="geo-stat-lbl">Propriétaires exotiques Chine</div>
+        <div class="geo-stat-src">Petdata.cn 2025 White Paper</div>
+      </div>
+      <div class="geo-stat">
+        <div class="geo-stat-val" style="color:#6aad84;">£200M</div>
+        <div class="geo-stat-lbl">Marché exotic pet UK/an</div>
+        <div class="geo-stat-src">250 000 reptiles CB/an</div>
+      </div>
+      <div class="geo-stat">
+        <div class="geo-stat-val" style="color:#6b9eb8;">€4B</div>
+        <div class="geo-stat-lbl">Commerce animaux vivants (2005)</div>
+        <div class="geo-stat-src">21% = animaux exotiques</div>
+      </div>
+    </div>
+
+    <!-- Scientific literature -->
+    <div style="margin-bottom:10px;">
+      <div class="p0-section-head">
+        <div class="p0-section-num">8</div>
+        <div class="p0-section-title">Littérature scientifique — axes d'investigation</div>
+        <div class="p0-section-sub">Scientific Literature Viewpoint</div>
+      </div>
+    </div>
+    <div class="lit-grid">
+      <div class="lit-card">
+        <div class="lit-num">01</div>
+        <div class="lit-name">Husbandry</div>
+        <div class="lit-desc">Large enclosure, temperature gradient, hiding spots, heat source, fresh water, soaking container. Paramètres vitaux espèce-spécifiques.</div>
+      </div>
+      <div class="lit-card">
+        <div class="lit-num">02</div>
+        <div class="lit-name">Market</div>
+        <div class="lit-desc">Wild-caught → captive-rearing → farm breeding. Transition vers le captif pour réduire la mortalité et les pressions sur les populations sauvages.</div>
+      </div>
+      <div class="lit-card">
+        <div class="lit-num">03</div>
+        <div class="lit-name">Sensory Abilities</div>
+        <div class="lit-desc">Many vets fail to recognize reptile stress signs. Behavioral changes, autonomic nervous system responses, hypothalamus CRH.</div>
+      </div>
+      <div class="lit-card">
+        <div class="lit-num">04</div>
+        <div class="lit-name">Criticism</div>
+        <div class="lit-desc">Risques parasitaires : helminths, spargana, arthropod-borne parasites. Enjeux de santé publique liés aux reptiles en captivité.</div>
+      </div>
+      <div class="lit-card">
+        <div class="lit-num">05</div>
+        <div class="lit-name">Wild vs. Captive</div>
+        <div class="lit-desc">Captive breeding reduces mortality rates but illegal wild collection persists. Wild-caught → captive-rearing → farm breeding continuum.</div>
+      </div>
+      <div class="lit-card">
+        <div class="lit-num">06</div>
+        <div class="lit-name">Animal Ethics</div>
+        <div class="lit-desc">Transport injuries, zoonotic diseases, invasive species risk, broader animal welfare. Ethical frameworks for exotic pet keeping.</div>
+      </div>
+      <div class="lit-card">
+        <div class="lit-num">07</div>
+        <div class="lit-name">Animal Welfare</div>
+        <div class="lit-desc">Stress, pain, pleasure, happiness — animal lives matter. Appropriate environments, proper food/water access, emotional lives.</div>
+      </div>
+      <div class="lit-card">
+        <div class="lit-num">08</div>
+        <div class="lit-name">Laws &amp; Regulations</div>
+        <div class="lit-desc">German Tierschutzgesetz, BartSchV (Bundesartenschutzverordnung), CITES. Restrictions sur la capture, le commerce et la détention privée.</div>
+      </div>
+    </div>
+
+    <!-- Survey insights -->
+    <div style="margin-top:28px;margin-bottom:10px;">
+      <div class="p0-section-head">
+        <div class="p0-section-num">◉</div>
+        <div class="p0-section-title">Insights enquête publique</div>
+        <div class="p0-section-sub">40 réponses · 32 valides</div>
+      </div>
+    </div>
+    <div class="survey-grid">
+      <div class="survey-card">
+        <div class="survey-label">Profil démographique</div>
+        <div class="survey-stat-row"><span class="survey-big">18–25</span><span class="survey-unit">ans</span></div>
+        <div style="font-size:11px;color:var(--text-secondary);margin-bottom:12px;">Achat pour soi ou pour un ami proche</div>
+        <div class="survey-bar-list">
+          <div class="s-bar-item">
+            <span class="s-bar-lbl">Pour soi</span>
+            <div class="s-bar-track"><div class="s-bar-fill" data-w="72" style="width:0%;"></div></div>
+            <span class="s-bar-val">72%</span>
+          </div>
+          <div class="s-bar-item">
+            <span class="s-bar-lbl">Pour un ami</span>
+            <div class="s-bar-track"><div class="s-bar-fill" data-w="28" style="width:0%;"></div></div>
+            <span class="s-bar-val">28%</span>
+          </div>
+          <div class="s-bar-item">
+            <span class="s-bar-lbl">Déjà propriétaire</span>
+            <div class="s-bar-track"><div class="s-bar-fill green" data-w="45" style="width:0%;"></div></div>
+            <span class="s-bar-val">45%</span>
+          </div>
+        </div>
+      </div>
+      <div class="survey-card">
+        <div class="survey-label">Perception émotionnelle — reptiles</div>
+        <div style="display:flex;gap:20px;margin-bottom:12px;">
+          <div><div style="font-size:10px;color:#6aad84;text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px;">✓ Positif</div>
+            <div style="font-size:11px;color:var(--text-secondary);line-height:1.8;">Cute · Interesting<br>Cool · Quiet<br>Easy to keep<br>Exotic · Observation</div>
+          </div>
+          <div><div style="font-size:10px;color:#e07060;text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px;">✗ Négatif</div>
+            <div style="font-size:11px;color:var(--text-secondary);line-height:1.8;">Disgust<br>Fear<br>Danger<br>Unkempt</div>
+          </div>
+        </div>
+        <div class="survey-bar-list">
+          <div class="s-bar-item">
+            <span class="s-bar-lbl">Perceptions +</span>
+            <div class="s-bar-track"><div class="s-bar-fill green" data-w="63" style="width:0%;"></div></div>
+            <span class="s-bar-val">63%</span>
+          </div>
+          <div class="s-bar-item">
+            <span class="s-bar-lbl">Perceptions −</span>
+            <div class="s-bar-track"><div class="s-bar-fill red" data-w="37" style="width:0%;"></div></div>
+            <span class="s-bar-val">37%</span>
+          </div>
+          <div class="s-bar-item">
+            <span class="s-bar-lbl">Début nature : jeune</span>
+            <div class="s-bar-track"><div class="s-bar-fill" data-w="81" style="width:0%;"></div></div>
+            <span class="s-bar-val">81%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stakeholder categories -->
+    <div class="card" style="margin-bottom:28px;">
+      <div class="p0-section-head" style="margin-bottom:14px;">
+        <div class="p0-section-num">◈</div>
+        <div class="p0-section-title">Écosystème des parties prenantes</div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;">
+        <div style="padding:10px 12px;background:var(--bg-card-alt);border:1px solid var(--border);border-radius:8px;font-size:11px;">
+          <div style="color:var(--p0-purple);font-weight:700;margin-bottom:3px;">⚖ Law &amp; Policy</div>
+          <div style="color:var(--text-muted);">CITES, EU Welfare Directive</div>
+        </div>
+        <div style="padding:10px 12px;background:var(--bg-card-alt);border:1px solid var(--border);border-radius:8px;font-size:11px;">
+          <div style="color:#6b9eb8;font-weight:700;margin-bottom:3px;">🔬 Scientific Research</div>
+          <div style="color:var(--text-muted);">Éthologistes, vétérinaires</div>
+        </div>
+        <div style="padding:10px 12px;background:var(--bg-card-alt);border:1px solid var(--border);border-radius:8px;font-size:11px;">
+          <div style="color:#e07060;font-weight:700;margin-bottom:3px;">🏥 Exotic Vets</div>
+          <div style="color:var(--text-muted);">Diagnostic, santé reptile</div>
+        </div>
+        <div style="padding:10px 12px;background:var(--bg-card-alt);border:1px solid var(--border);border-radius:8px;font-size:11px;">
+          <div style="color:#4a8c68;font-weight:700;margin-bottom:3px;">♡ Animal Welfare</div>
+          <div style="color:var(--text-muted);">Organisations, sanctuaires</div>
+        </div>
+        <div style="padding:10px 12px;background:var(--bg-card-alt);border:1px solid var(--border);border-radius:8px;font-size:11px;">
+          <div style="color:#d96e28;font-weight:700;margin-bottom:3px;">🏠 Family Members</div>
+          <div style="color:var(--text-muted);">Famille, colocataires</div>
+        </div>
+        <div style="padding:10px 12px;background:var(--bg-card-alt);border:1px solid var(--border);border-radius:8px;font-size:11px;">
+          <div style="color:var(--p0-purple);font-weight:700;margin-bottom:3px;">📦 Wholesalers</div>
+          <div style="color:var(--text-muted);">Exoterra, ReptiZoo, Das Tropen</div>
+        </div>
+        <div style="padding:10px 12px;background:var(--bg-card-alt);border:1px solid var(--border);border-radius:8px;font-size:11px;">
+          <div style="color:#6aad84;font-weight:700;margin-bottom:3px;">🏪 Pet Shops</div>
+          <div style="color:var(--text-muted);">Maxi Zoo, Reptile Paradise, Reptilis</div>
+        </div>
+        <div style="padding:10px 12px;background:var(--bg-card-alt);border:1px solid var(--border);border-radius:8px;font-size:11px;">
+          <div style="color:#8ab8ce;font-weight:700;margin-bottom:3px;">✈ Transportation</div>
+          <div style="color:var(--text-muted);">SAS Cargo, JAS, B3</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Final quote -->
+    <div class="p0-insight" style="border-color:rgba(155,89,208,0.2);text-align:center;">
+      <div class="p0-insight-text" style="font-size:18px;padding-left:0;text-align:center;">
+        "The most beautiful part of that — in my way to solve the problem <em>differently</em>."<br>
+        <span style="font-size:13px;color:var(--text-secondary);font-weight:400;">"It's gonna be the best product that ever exist in reptile industry!"</span>
+      </div>
+      <div class="p0-insight-attr" style="padding-left:0;">— Xinghao Ni · Phase 0 closing statement · M3 Digital 2025</div>
+    </div>
+
+  </main>
+</div>
+
+<script src="shared.js"></script>
+<script>
+// Animate timeline items on scroll
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach((e, i) => {
+    if (e.isIntersecting) {
+      setTimeout(() => e.target.classList.add('visible'), i * 80);
+      observer.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.1 });
+document.querySelectorAll('.p0-tl-item').forEach(el => observer.observe(el));
+
+// Animate survey bars
+const barObs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.querySelectorAll('.s-bar-fill').forEach(bar => {
+        bar.style.width = bar.dataset.w + '%';
+      });
+      barObs.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.2 });
+document.querySelectorAll('.survey-card').forEach(el => barObs.observe(el));
+</script>
+</body>
+</html>

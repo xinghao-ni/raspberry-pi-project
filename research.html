@@ -1,0 +1,1776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reptile-Assisted Therapy & ASD — Research</title>
+<link rel="stylesheet" href="shared.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0f0f0e;--bg-mid:#141312;--bg-card:#1a1918;
+  --ink:#ede9e4;--ink-mid:#8a8784;--ink-soft:#5a5855;
+  --orange:#d96e28;--orange-lt:#e8884a;
+  --line:rgba(255,255,255,0.07);--line-light:rgba(255,255,255,0.12);
+  --ff:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;
+  --ease:cubic-bezier(0.25,0.46,0.45,0.94);
+  --sidebar-w:220px;
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--ff);background:var(--bg);color:var(--ink);
+  overflow-x:hidden;-webkit-font-smoothing:antialiased}
+a{text-decoration:none;color:inherit}
+img{display:block;max-width:100%;height:auto}
+
+/* ── Scroll progress ── */
+#scrollBar{
+  position:fixed;top:0;left:var(--sidebar-w);right:0;height:2px;
+  background:var(--orange);transform-origin:left;transform:scaleX(0);
+  z-index:999;transition:transform 0.1s linear;
+}
+
+/* ── Cursor glow ── */
+#cursor{
+  position:fixed;width:320px;height:320px;border-radius:50%;
+  background:radial-gradient(circle,rgba(217,110,40,0.06) 0%,transparent 70%);
+  pointer-events:none;z-index:1;transform:translate(-50%,-50%);
+  transition:opacity 0.4s;
+}
+
+/* ── Layout ── */
+.page-wrap{display:flex;min-height:100vh}
+.r-main{margin-left:var(--sidebar-w);flex:1;overflow-x:hidden}
+
+/* ── Hero ── */
+.r-hero{
+  min-height:100vh;position:relative;
+  display:flex;align-items:flex-end;
+  padding:0 80px 80px;
+  overflow:hidden;
+}
+.r-hero-bg{
+  position:absolute;inset:0;z-index:0;
+  background:
+    radial-gradient(ellipse 80% 60% at 70% 40%,rgba(217,110,40,0.07) 0%,transparent 60%),
+    radial-gradient(ellipse 50% 80% at 20% 80%,rgba(30,60,90,0.3) 0%,transparent 70%),
+    #0a0a09;
+}
+.r-hero-grid{
+  position:absolute;inset:0;z-index:0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.025) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,0.025) 1px,transparent 1px);
+  background-size:80px 80px;
+  mask-image:linear-gradient(to bottom,transparent 0%,black 20%,black 70%,transparent 100%);
+}
+.r-hero-content{position:relative;z-index:2;max-width:760px}
+.r-hero-eyebrow{
+  font-size:9px;letter-spacing:6px;text-transform:uppercase;
+  color:var(--orange);font-weight:500;margin-bottom:20px;
+  display:flex;align-items:center;gap:12px;
+}
+.r-hero-eyebrow::before{
+  content:'';display:block;width:32px;height:1px;background:var(--orange);
+}
+.r-hero-title{
+  font-size:clamp(48px,6vw,88px);font-weight:700;
+  letter-spacing:-0.04em;line-height:0.92;
+  color:#fff;margin-bottom:32px;
+}
+.r-hero-title em{font-style:normal;color:var(--orange)}
+.r-hero-desc{
+  font-size:15px;color:rgba(255,255,255,0.45);
+  line-height:1.8;max-width:520px;margin-bottom:48px;
+  letter-spacing:0.01em;
+}
+.r-hero-stats{
+  display:flex;gap:48px;flex-wrap:wrap;
+}
+.r-hero-stat{border-left:2px solid var(--orange);padding-left:16px}
+.r-hero-stat-num{
+  font-size:clamp(28px,3.5vw,48px);font-weight:700;
+  color:#fff;letter-spacing:-0.03em;line-height:1;
+}
+.r-hero-stat-num span{color:var(--orange)}
+.r-hero-stat-label{
+  font-size:10px;letter-spacing:0.14em;text-transform:uppercase;
+  color:var(--ink-soft);margin-top:4px;
+}
+.r-hero-scroll{
+  position:absolute;right:80px;bottom:80px;z-index:2;
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+  font-size:9px;letter-spacing:4px;text-transform:uppercase;
+  color:var(--ink-soft);
+}
+.r-hero-scroll-line{
+  width:1px;height:60px;
+  background:linear-gradient(to bottom,var(--orange),transparent);
+  animation:scroll-pulse 2s ease-in-out infinite;
+}
+@keyframes scroll-pulse{0%,100%{opacity:0.4;transform:scaleY(1)}50%{opacity:1;transform:scaleY(1.1)}}
+
+/* ── Section shell ── */
+.r-section{
+  padding:100px 80px;
+  border-top:1px solid var(--line);
+  position:relative;
+}
+.r-section-eyebrow{
+  font-size:9px;letter-spacing:5px;text-transform:uppercase;
+  color:var(--orange);font-weight:500;margin-bottom:16px;
+}
+.r-section-title{
+  font-size:clamp(28px,3.5vw,52px);font-weight:200;
+  letter-spacing:-0.03em;line-height:1.05;
+  color:var(--ink);margin-bottom:56px;
+}
+.r-section-title strong{font-weight:700;color:#fff}
+
+/* ── Stat cards ── */
+.stat-grid{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:1px;
+  background:var(--line);border:1px solid var(--line);
+  border-radius:12px;overflow:hidden;margin-bottom:64px;
+}
+.stat-cell{
+  background:var(--bg-card);padding:32px 28px;
+  position:relative;overflow:hidden;
+  transition:background 0.3s;
+}
+.stat-cell:hover{background:#1f1e1c}
+.stat-cell::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(217,110,40,0.05) 0%,transparent 60%);
+  opacity:0;transition:opacity 0.3s;
+}
+.stat-cell:hover::before{opacity:1}
+.stat-num{
+  font-size:clamp(36px,4vw,60px);font-weight:700;
+  letter-spacing:-0.04em;color:#fff;line-height:1;
+  margin-bottom:10px;
+}
+.stat-num sup{font-size:0.45em;vertical-align:super;color:var(--orange)}
+.stat-label{
+  font-size:12px;color:var(--ink-mid);line-height:1.5;
+  letter-spacing:0.02em;
+}
+.stat-source{
+  font-size:9px;color:var(--ink-soft);letter-spacing:0.06em;
+  margin-top:12px;text-transform:uppercase;
+}
+
+/* ── Two-col layout ── */
+.r-two-col{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:start}
+.r-three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:32px}
+
+/* ── Chart containers ── */
+.chart-wrap{
+  background:var(--bg-card);border:1px solid var(--line);
+  border-radius:12px;padding:32px;position:relative;
+}
+.chart-wrap:hover{border-color:rgba(217,110,40,0.25)}
+.chart-title{
+  font-size:11px;letter-spacing:0.12em;text-transform:uppercase;
+  color:var(--orange);margin-bottom:6px;font-weight:500;
+}
+.chart-subtitle{
+  font-size:13px;color:var(--ink-mid);margin-bottom:28px;line-height:1.5;
+}
+.chart-canvas{width:100%!important;height:260px!important}
+.chart-source{
+  font-size:9px;color:var(--ink-soft);letter-spacing:0.06em;
+  text-transform:uppercase;margin-top:16px;
+  border-top:1px solid var(--line);padding-top:10px;
+}
+
+/* ── Comparison table ── */
+.compare-table{width:100%;border-collapse:collapse;margin-top:8px}
+.compare-table th{
+  font-size:9px;letter-spacing:0.16em;text-transform:uppercase;
+  color:var(--orange);padding:12px 16px;text-align:left;
+  border-bottom:1px solid var(--line);font-weight:500;
+}
+.compare-table td{
+  font-size:12px;color:var(--ink-mid);padding:14px 16px;
+  border-bottom:1px solid rgba(255,255,255,0.04);
+  line-height:1.5;
+}
+.compare-table tr:last-child td{border-bottom:none}
+.compare-table tr:hover td{background:rgba(255,255,255,0.02)}
+.tag-high{color:#e05555;font-size:10px;letter-spacing:0.08em;text-transform:uppercase}
+.tag-med {color:#d9a828;font-size:10px;letter-spacing:0.08em;text-transform:uppercase}
+.tag-low {color:#4a8c68;font-size:10px;letter-spacing:0.08em;text-transform:uppercase}
+
+/* ── Pathway timeline ── */
+.pathway{display:flex;flex-direction:column;gap:0}
+.pathway-step{
+  display:grid;grid-template-columns:56px 1fr;gap:0;
+  position:relative;
+}
+.pathway-step:not(:last-child) .p-line{
+  position:absolute;left:27px;top:52px;bottom:0;
+  width:1px;background:linear-gradient(to bottom,rgba(217,110,40,0.5),rgba(217,110,40,0.1));
+}
+.p-dot{
+  width:56px;padding-top:4px;display:flex;justify-content:center;
+  position:relative;z-index:1;
+}
+.p-dot-inner{
+  width:14px;height:14px;border-radius:50%;
+  border:2px solid var(--orange);background:var(--bg);
+  transition:background 0.3s,transform 0.3s;
+}
+.pathway-step:hover .p-dot-inner{background:var(--orange);transform:scale(1.3)}
+.p-body{padding:0 0 48px 0}
+.p-phase{
+  font-size:8px;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--orange);margin-bottom:6px;opacity:0.8;
+}
+.p-title{
+  font-size:17px;font-weight:600;color:#fff;
+  letter-spacing:-0.01em;margin-bottom:8px;
+}
+.p-desc{font-size:13px;color:var(--ink-mid);line-height:1.7}
+
+/* ── Oxytocin visual ── */
+.oxy-wrap{
+  background:var(--bg-card);border:1px solid var(--line);
+  border-radius:12px;padding:40px;
+}
+.oxy-bars{display:flex;flex-direction:column;gap:20px;margin-top:8px}
+.oxy-bar-row{display:grid;grid-template-columns:180px 1fr 60px;align-items:center;gap:16px}
+.oxy-bar-label{font-size:12px;color:var(--ink-mid)}
+.oxy-bar-track{
+  height:8px;background:rgba(255,255,255,0.06);border-radius:100px;overflow:hidden;
+}
+.oxy-bar-fill{
+  height:100%;border-radius:100px;
+  transition:width 1.4s cubic-bezier(0.25,0.46,0.45,0.94);
+  width:0;
+}
+.oxy-bar-val{font-size:11px;color:var(--ink-mid);text-align:right}
+
+/* ── Pull quote ── */
+.pull-quote{
+  border-left:3px solid var(--orange);
+  padding:24px 32px;margin:48px 0;
+  background:rgba(217,110,40,0.04);border-radius:0 8px 8px 0;
+}
+.pull-quote blockquote{
+  font-size:clamp(16px,2vw,22px);font-weight:300;
+  color:rgba(255,255,255,0.75);line-height:1.6;
+  letter-spacing:-0.01em;font-style:italic;
+}
+.pull-quote cite{
+  display:block;margin-top:12px;font-size:11px;
+  color:var(--orange);letter-spacing:0.1em;text-transform:uppercase;
+  font-style:normal;
+}
+
+/* ── Reveal animations ── */
+.reveal{opacity:0;transform:translateY(32px);
+  transition:opacity 0.9s var(--ease),transform 0.9s var(--ease)}
+.reveal.visible{opacity:1;transform:none}
+.reveal-d1{transition-delay:0.1s}
+.reveal-d2{transition-delay:0.2s}
+.reveal-d3{transition-delay:0.3s}
+.reveal-d4{transition-delay:0.45s}
+
+/* ── Source chip ── */
+.source-chip{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:9px;letter-spacing:0.12em;text-transform:uppercase;
+  color:var(--ink-soft);border:1px solid rgba(255,255,255,0.08);
+  padding:4px 10px;border-radius:100px;
+}
+.source-chip::before{content:'¹';color:var(--orange)}
+
+/* ── References ── */
+.ref-section{
+  padding:80px 80px;border-top:1px solid var(--line);
+  background:var(--bg-mid);
+}
+.ref-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:40px;
+}
+.ref-item{
+  font-size:11px;color:var(--ink-soft);line-height:1.7;
+  padding:16px 20px;background:var(--bg-card);
+  border-radius:8px;border-left:2px solid rgba(217,110,40,0.3);
+}
+.ref-num{color:var(--orange);font-weight:600;margin-right:6px}
+
+/* ── Footer ── */
+.r-footer{
+  padding:20px 80px;border-top:1px solid var(--line);
+  display:flex;justify-content:space-between;
+  font-size:11px;color:var(--ink-soft);letter-spacing:0.04em;
+}
+
+/* ── Persona / Interview Cards ── */
+.persona-grid{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-bottom:48px}
+.persona-card{
+  background:var(--bg-card);border:1px solid var(--line);
+  border-radius:16px;padding:36px 32px;
+  position:relative;overflow:hidden;
+  transition:border-color 0.3s,transform 0.3s;
+}
+.persona-card:hover{border-color:rgba(217,110,40,0.3);transform:translateY(-3px)}
+.persona-card::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 60% 40% at 10% 10%,rgba(217,110,40,0.04) 0%,transparent 70%);
+  pointer-events:none;
+}
+.persona-top{display:flex;align-items:flex-start;gap:20px;margin-bottom:24px}
+.persona-figure{flex-shrink:0;position:relative}
+.stick-figure{color:var(--orange);overflow:visible;display:block}
+.sf-head{animation:sf-bob 3.2s ease-in-out infinite}
+.sf-arm-r{animation:sf-wave 2.4s ease-in-out infinite;transform-origin:40px 44px}
+.sf-arm-l{animation:sf-wave-l 3s ease-in-out infinite;transform-origin:40px 44px}
+.sf-body{animation:sf-sway 4s ease-in-out infinite;transform-origin:40px 72px}
+@keyframes sf-bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-2.5px)}}
+@keyframes sf-wave{0%,100%{transform:rotate(0deg)}30%{transform:rotate(18deg)}70%{transform:rotate(-8deg)}}
+@keyframes sf-wave-l{0%,100%{transform:rotate(0deg)}40%{transform:rotate(-12deg)}80%{transform:rotate(6deg)}}
+@keyframes sf-sway{0%,100%{transform:rotate(0deg)}50%{transform:rotate(1.5deg)}}
+.sf-mouth{animation:sf-talk 0.7s ease-in-out infinite alternate}
+@keyframes sf-talk{0%{d:path("M33 22 Q40 26 47 22")}100%{d:path("M33 22 Q40 19 47 22")}}
+.persona-bubble{
+  flex:1;position:relative;
+  background:rgba(217,110,40,0.06);
+  border:1px solid rgba(217,110,40,0.18);
+  border-radius:4px 12px 12px 12px;
+  padding:18px 20px;
+}
+.persona-bubble::before{
+  content:'';position:absolute;left:-8px;top:20px;
+  border:0;border-top:7px solid transparent;
+  border-bottom:7px solid transparent;
+  border-right:8px solid rgba(217,110,40,0.18);
+}
+.persona-bubble-text{
+  font-size:13.5px;color:rgba(255,255,255,0.78);
+  line-height:1.7;font-style:italic;
+}
+.persona-bubble-text::before{content:'\201C';color:var(--orange);font-size:22px;line-height:0;vertical-align:-6px;margin-right:3px}
+.persona-bubble-text::after{content:'\201D';color:var(--orange);font-size:22px;line-height:0;vertical-align:-6px;margin-left:3px}
+.persona-divider{height:1px;background:var(--line);margin:20px 0}
+.persona-name{font-size:17px;font-weight:700;color:#fff;letter-spacing:-0.01em;margin-bottom:3px}
+.persona-role{font-size:9px;letter-spacing:0.18em;text-transform:uppercase;color:var(--orange);margin-bottom:12px}
+.persona-bio{font-size:12px;color:var(--ink-mid);line-height:1.65}
+.persona-insights{margin-top:16px;display:flex;flex-direction:column;gap:8px}
+.persona-insight{
+  display:flex;align-items:flex-start;gap:10px;
+  font-size:12px;color:var(--ink-mid);line-height:1.55;
+}
+.persona-insight::before{
+  content:'';flex-shrink:0;width:5px;height:5px;
+  border-radius:50%;background:var(--orange);
+  margin-top:6px;opacity:0.7;
+}
+.persona-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
+.persona-tag{
+  font-size:9px;letter-spacing:0.08em;text-transform:uppercase;
+  padding:3px 9px;border-radius:100px;
+  border:1px solid rgba(255,255,255,0.09);color:var(--ink-soft);
+}
+.persona-source{
+  font-size:9px;color:var(--ink-soft);letter-spacing:0.07em;
+  text-transform:uppercase;margin-top:14px;
+  padding-top:12px;border-top:1px solid var(--line);
+}
+.persona-num{
+  position:absolute;top:24px;right:28px;
+  font-size:56px;font-weight:800;color:rgba(217,110,40,0.05);
+  letter-spacing:-0.05em;line-height:1;pointer-events:none;
+}
+
+/* ── Tiffany Case Study ── */
+.tiffany-hero{
+  display:grid;grid-template-columns:auto 1fr;gap:56px;
+  align-items:start;margin-bottom:64px;
+}
+.tiffany-avatar-wrap{
+  position:relative;width:200px;flex-shrink:0;
+}
+.tiffany-avatar-svg{
+  width:200px;height:240px;display:block;
+  filter:drop-shadow(0 8px 24px rgba(217,110,40,0.15));
+}
+.tiffany-speech{
+  position:absolute;top:-20px;left:210px;width:280px;
+  background:rgba(217,110,40,0.08);border:1px solid rgba(217,110,40,0.22);
+  border-radius:4px 12px 12px 12px;padding:14px 18px;
+}
+.tiffany-speech::before{
+  content:'';position:absolute;left:-8px;top:24px;
+  border:0;border-top:7px solid transparent;
+  border-bottom:7px solid transparent;
+  border-right:8px solid rgba(217,110,40,0.22);
+}
+.tiffany-speech p{font-size:13px;color:rgba(255,255,255,0.75);line-height:1.65;font-style:italic}
+.tiffany-speech cite{display:block;margin-top:8px;font-size:9px;color:var(--orange);letter-spacing:0.12em;text-transform:uppercase;font-style:normal}
+.tiffany-bio h3{font-size:28px;font-weight:700;color:#fff;letter-spacing:-0.03em;margin-bottom:4px}
+.tiffany-bio .t-role{font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--orange);margin-bottom:20px}
+.tiffany-bio p{font-size:13.5px;color:var(--ink-mid);line-height:1.75;margin-bottom:14px}
+.tiffany-tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:16px}
+.tiffany-tag{font-size:9px;letter-spacing:0.1em;text-transform:uppercase;padding:4px 11px;border-radius:100px;border:1px solid rgba(255,255,255,0.1);color:var(--ink-soft)}
+
+.t-challenges{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin:48px 0}
+.t-challenge-card{background:var(--bg-card);border:1px solid var(--line);border-radius:12px;padding:28px 24px;position:relative;overflow:hidden}
+.t-challenge-card:hover{border-color:rgba(217,110,40,0.25)}
+.t-challenge-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--orange);opacity:0.4}
+.t-challenge-icon{font-size:24px;margin-bottom:12px}
+.t-challenge-title{font-size:13px;font-weight:600;color:#fff;margin-bottom:8px;letter-spacing:-0.01em}
+.t-challenge-desc{font-size:12px;color:var(--ink-mid);line-height:1.65}
+
+.quotes-strip{display:flex;flex-direction:column;gap:16px;margin:48px 0}
+.quote-item{
+  display:grid;grid-template-columns:3px 1fr;gap:20px;
+  align-items:start;
+  padding:20px 0;border-bottom:1px solid var(--line);
+}
+.quote-item:last-child{border-bottom:none}
+.quote-accent{width:3px;background:var(--orange);border-radius:3px;min-height:40px;opacity:0.6}
+.quote-text{font-size:15px;color:rgba(255,255,255,0.8);line-height:1.65;font-style:italic}
+.quote-meta{font-size:10px;color:var(--orange);letter-spacing:0.12em;text-transform:uppercase;margin-top:8px;font-style:normal}
+
+/* ── Floor Plan ── */
+.floor-plan-wrap{
+  background:var(--bg-card);border:1px solid var(--line);
+  border-radius:16px;padding:40px;margin:48px 0;
+  position:relative;
+}
+.floor-plan-label{
+  font-size:9px;letter-spacing:0.16em;text-transform:uppercase;
+  color:var(--orange);margin-bottom:8px;font-weight:500;
+}
+.floor-plan-title{font-size:18px;font-weight:600;color:#fff;margin-bottom:32px}
+.floor-plan-svg{width:100%;max-width:680px;display:block;margin:0 auto}
+
+/* ── Daughters ── */
+.daughters-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px;margin:48px 0}
+.daughter-card{
+  background:var(--bg-card);border:1px solid var(--line);
+  border-radius:14px;padding:28px 24px;text-align:center;
+  transition:border-color 0.3s,transform 0.3s;
+}
+.daughter-card:hover{border-color:rgba(217,110,40,0.3);transform:translateY(-2px)}
+.daughter-svg-wrap{height:130px;display:flex;align-items:center;justify-content:center;margin-bottom:16px}
+.daughter-name{font-size:16px;font-weight:700;color:#fff;letter-spacing:-0.01em;margin-bottom:3px}
+.daughter-age{font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:var(--orange);margin-bottom:10px}
+.daughter-desc{font-size:11px;color:var(--ink-mid);line-height:1.6}
+.daughter-challenges{margin-top:12px;display:flex;flex-wrap:wrap;justify-content:center;gap:5px}
+.daughter-challenge{font-size:8px;letter-spacing:0.08em;text-transform:uppercase;padding:3px 8px;border-radius:100px;border:1px solid rgba(255,255,255,0.08);color:var(--ink-soft)}
+
+/* ── Talking animation ── */
+@keyframes t-mouth-open{0%,100%{d:path("M52 38 Q60 42 68 38")}50%{d:path("M52 38 Q60 44 68 38")}}
+@keyframes t-head-nod{0%,100%{transform:translateY(0)}50%{transform:translateY(-2px)}}
+@keyframes t-arm-gesture{0%,100%{transform:rotate(0deg)}40%{transform:rotate(20deg)}80%{transform:rotate(-5deg)}}
+@keyframes daughter-bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+
+/* ── Responsive ── */
+@media(max-width:1100px){
+  .stat-grid{grid-template-columns:1fr 1fr}
+  .r-two-col{grid-template-columns:1fr}
+  .r-three-col{grid-template-columns:1fr}
+  .persona-grid{grid-template-columns:1fr}
+}
+@media(max-width:900px){
+  .r-section,.r-hero{padding-left:36px;padding-right:36px}
+  .ref-section{padding:60px 36px}
+  .r-footer{padding:16px 36px}
+}
+@media(max-width:768px){
+  .r-main{margin-left:56px}
+  #scrollBar{left:56px}
+  .stat-grid{grid-template-columns:1fr 1fr}
+  .ref-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<div id="cursor"></div>
+<div id="scrollBar"></div>
+
+<div class="page-wrap">
+
+  <!-- ── Sidebar ── -->
+  <nav class="sidebar">
+    <div class="sidebar-logo" style="justify-content:center;padding:24px 12px 20px;">
+      <img src="assets/tonitruum-logo-white.png" alt="TONITRUUM"
+           style="width:100%;height:auto;max-width:180px;opacity:0.85;">
+    </div>
+    <ul class="nav-list">
+      <li class="nav-section">Monitor</li>
+      <li class="nav-item"><a href="index.html"><span class="nav-icon">⬡</span>Habitat Monitor</a></li>
+      <li class="nav-section">Clinical</li>
+      <li class="nav-item"><a href="autism.html"><span class="nav-icon">♡</span>Patient Care</a></li>
+      <li class="nav-item"><a href="assessment.html"><span class="nav-icon">≡</span>Assessments</a></li>
+      <li class="nav-item"><a href="parent-form.html"><span class="nav-icon">✎</span>Parent Reports</a></li>
+      <li class="nav-item"><a href="medical.html"><span class="nav-icon">✚</span>Medical Consult</a></li>
+      <li class="nav-section">Strategy</li>
+      <li class="nav-item"><a href="service.html"><span class="nav-icon">◎</span>Service Overview</a></li>
+      <li class="nav-item"><a href="stakeholder.html"><span class="nav-icon">◉</span>Stakeholder Map</a></li>
+      <li class="nav-item"><a href="product.html"><span class="nav-icon">◈</span>Product Design</a></li>
+      <li class="nav-section">Project</li>
+      <li class="nav-item"><a href="phase0.html"><span class="nav-icon">◫</span>Phase 0 Origin</a></li>
+      <li class="nav-item"><a href="phase1.html"><span class="nav-icon">◧</span>Phase 1 Research</a></li>
+      <li class="nav-item"><a href="founder.html"><span class="nav-icon">◐</span>Founder</a></li>
+      <li class="nav-item active"><a href="research.html"><span class="nav-icon">◇</span>Reptile Therapy</a></li>
+      <li class="nav-item"><a href="market.html"><span class="nav-icon">◆</span>Business Model</a></li>
+      <li class="nav-section">Play</li>
+      <li class="nav-item"><a href="game.html"><span class="nav-icon">◎</span>Cricket Hunter</a></li>
+    
+    
+    </ul>
+    <div class="sidebar-footer">
+      <div class="sys-status"><span class="status-indicator status-good"></span>All Systems Online</div>
+      <div class="sys-time" id="sidebarTime"></div>
+    </div>
+  </nav>
+
+  <main class="r-main">
+
+    <!-- ══ HERO ══ -->
+    <section class="r-hero">
+      <div class="r-hero-bg"></div>
+      <div class="r-hero-grid"></div>
+
+      <div class="r-hero-content">
+        <p class="r-hero-eyebrow">Academic Research · ESP Thesis · EDNA 2025</p>
+        <h1 class="r-hero-title">
+          Reptile-Assisted<br>
+          Therapy &amp; <em>ASD</em>
+        </h1>
+        <p class="r-hero-desc">
+          An evidence-based design research exploring how service and spatial design can support
+          reptile-assisted therapy for individuals with Level 1 Autism Spectrum Disorder —
+          through low-stimulation environments, predictable interaction, and structured emotional co-regulation.
+        </p>
+        <div class="r-hero-stats">
+          <div class="r-hero-stat">
+            <div class="r-hero-stat-num" data-target="75"><span>75</span>%</div>
+            <div class="r-hero-stat-label">ASD children with sensory issues</div>
+          </div>
+          <div class="r-hero-stat">
+            <div class="r-hero-stat-num">L<span>1</span></div>
+            <div class="r-hero-stat-label">ASD focus — high-functioning</div>
+          </div>
+          <div class="r-hero-stat">
+            <div class="r-hero-stat-num"><span>4</span></div>
+            <div class="r-hero-stat-label">Research methods triangulated</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="r-hero-scroll">
+        <div class="r-hero-scroll-line"></div>
+        <span>Scroll</span>
+      </div>
+    </section>
+
+    <!-- ══ KEY STATISTICS ══ -->
+    <section class="r-section">
+      <p class="r-section-eyebrow reveal">Epidemiology &amp; Context</p>
+      <h2 class="r-section-title reveal reveal-d1">
+        The Scale of <strong>the Challenge</strong>
+      </h2>
+
+      <div class="stat-grid reveal reveal-d2">
+        <div class="stat-cell">
+          <div class="stat-num counter" data-target="75">0<sup>%</sup></div>
+          <div class="stat-label">of autistic children experience significant sensory processing difficulties</div>
+          <div class="stat-source">Baranek et al., 2006 · Sensory research</div>
+        </div>
+        <div class="stat-cell">
+          <div class="stat-num">1 <span style="font-size:0.45em;color:var(--orange)">in</span> 36</div>
+          <div class="stat-label">children in the United States diagnosed with ASD as of 2023</div>
+          <div class="stat-source">CDC ADDM Network, 2023</div>
+        </div>
+        <div class="stat-cell">
+          <div class="stat-num counter" data-target="40">0<sup>%</sup></div>
+          <div class="stat-label">of children with ASD show reduced cortisol stress response in animal-assisted settings</div>
+          <div class="stat-source">O'Haire et al., 2013 · AAT outcomes</div>
+        </div>
+        <div class="stat-cell">
+          <div class="stat-num counter" data-target="68">0<sup>%</sup></div>
+          <div class="stat-label">of standard AAT programmes rely on dogs or horses — species with high sensory output</div>
+          <div class="stat-source">IAHAIO White Paper, 2022</div>
+        </div>
+      </div>
+
+      <div class="pull-quote reveal">
+        <blockquote>
+          "The central challenge is not diagnosis — it is regulation. Reptile-assisted therapy offers a uniquely
+          low-intrusion, high-predictability interaction model that aligns with the neurological profile of Level 1 ASD."
+        </blockquote>
+        <cite>Xinghao NI — ESP Thesis, EDNA Nantes, November 2025</cite>
+      </div>
+    </section>
+
+    <!-- ══ SENSORY COMPARISON ══ -->
+    <section class="r-section" style="background:var(--bg-mid)">
+      <p class="r-section-eyebrow reveal">Comparative Analysis</p>
+      <h2 class="r-section-title reveal reveal-d1">
+        Why Reptiles: <strong>Sensory Profile</strong>
+      </h2>
+
+      <div class="r-two-col">
+        <div class="reveal reveal-d2">
+          <div class="chart-wrap">
+            <p class="chart-title">Sensory Input Intensity</p>
+            <p class="chart-subtitle">Comparison of sensory demands across common therapy animals</p>
+            <canvas id="sensoryChart" class="chart-canvas"></canvas>
+            <div class="chart-source">Source: Adapted from Katcher &amp; Wilkins, 1998 · IAHAIO guidelines</div>
+          </div>
+        </div>
+
+        <div class="reveal reveal-d3">
+          <div class="chart-wrap">
+            <p class="chart-title">Interaction Predictability</p>
+            <p class="chart-subtitle">Behavioural consistency score across therapy animal types</p>
+            <canvas id="predictChart" class="chart-canvas"></canvas>
+            <div class="chart-source">Source: Marcus, 2013 · Geist, 2011 · Ni, 2025</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="reveal" style="margin-top:40px">
+        <div class="chart-wrap">
+          <p class="chart-title">Therapy Animal Suitability Matrix — Level 1 ASD</p>
+          <p class="chart-subtitle">Five dimensions rated 1–10; lower sensory scores are therapeutically preferable for ASD profiles</p>
+          <table class="compare-table">
+            <thead>
+              <tr>
+                <th>Animal</th>
+                <th>Sensory Load</th>
+                <th>Predictability</th>
+                <th>Social Pressure</th>
+                <th>Maintenance</th>
+                <th>ASD Suitability</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong style="color:#fff">Dog</strong></td>
+                <td><span class="tag-high">High ●●●●●</span></td>
+                <td><span class="tag-med">Medium</span></td>
+                <td><span class="tag-high">High</span></td>
+                <td><span class="tag-high">High</span></td>
+                <td><span class="tag-med">Moderate</span></td>
+              </tr>
+              <tr>
+                <td><strong style="color:#fff">Horse</strong></td>
+                <td><span class="tag-high">Very High</span></td>
+                <td><span class="tag-med">Medium</span></td>
+                <td><span class="tag-high">High</span></td>
+                <td><span class="tag-high">Very High</span></td>
+                <td><span class="tag-med">Moderate</span></td>
+              </tr>
+              <tr>
+                <td><strong style="color:#fff">Cat</strong></td>
+                <td><span class="tag-med">Medium</span></td>
+                <td><span class="tag-low">Low–Med</span></td>
+                <td><span class="tag-med">Medium</span></td>
+                <td><span class="tag-med">Medium</span></td>
+                <td><span class="tag-med">Moderate</span></td>
+              </tr>
+              <tr>
+                <td><strong style="color:#fff">Bearded Dragon</strong></td>
+                <td><span class="tag-low">Low ●</span></td>
+                <td><span class="tag-low">High</span></td>
+                <td><span class="tag-low">Very Low</span></td>
+                <td><span class="tag-med">Medium</span></td>
+                <td><span class="tag-low">Optimal ✦</span></td>
+              </tr>
+              <tr>
+                <td><strong style="color:#fff">Leopard Gecko</strong></td>
+                <td><span class="tag-low">Very Low</span></td>
+                <td><span class="tag-low">High</span></td>
+                <td><span class="tag-low">Very Low</span></td>
+                <td><span class="tag-low">Low</span></td>
+                <td><span class="tag-low">Optimal ✦</span></td>
+              </tr>
+              <tr>
+                <td><strong style="color:#fff">Ball Python</strong></td>
+                <td><span class="tag-low">Low</span></td>
+                <td><span class="tag-low">High</span></td>
+                <td><span class="tag-low">Very Low</span></td>
+                <td><span class="tag-low">Low</span></td>
+                <td><span class="tag-low">High ✦</span></td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="chart-source">Source: Ni, X. (2025). ESP Thesis — EDNA Nantes · Katcher &amp; Wilkins (1998)</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ OXYTOCIN SCIENCE ══ -->
+    <section class="r-section">
+      <p class="r-section-eyebrow reveal">Neurochemistry</p>
+      <h2 class="r-section-title reveal reveal-d1">
+        The <strong>Oxytocin</strong> Regulation Model
+      </h2>
+
+      <div class="r-two-col">
+        <div>
+          <div class="oxy-wrap reveal reveal-d2">
+            <p class="chart-title" style="margin-bottom:20px">Plasma Oxytocin Levels — Relative Comparison</p>
+            <div class="oxy-bars" id="oxyBars">
+              <div class="oxy-bar-row">
+                <span class="oxy-bar-label">Neurotypical children</span>
+                <div class="oxy-bar-track"><div class="oxy-bar-fill" data-w="82" style="background:linear-gradient(90deg,#4a8c68,#6aad84)"></div></div>
+                <span class="oxy-bar-val">Baseline</span>
+              </div>
+              <div class="oxy-bar-row">
+                <span class="oxy-bar-label">ASD — Level 3</span>
+                <div class="oxy-bar-track"><div class="oxy-bar-fill" data-w="28" style="background:linear-gradient(90deg,#e05555,#d97070)"></div></div>
+                <span class="oxy-bar-val">↓ ~66%</span>
+              </div>
+              <div class="oxy-bar-row">
+                <span class="oxy-bar-label">ASD — Level 2</span>
+                <div class="oxy-bar-track"><div class="oxy-bar-fill" data-w="42" style="background:linear-gradient(90deg,#d9a828,#e8c048)"></div></div>
+                <span class="oxy-bar-val">↓ ~49%</span>
+              </div>
+              <div class="oxy-bar-row">
+                <span class="oxy-bar-label">ASD — Level 1</span>
+                <div class="oxy-bar-track"><div class="oxy-bar-fill" data-w="58" style="background:linear-gradient(90deg,#d96e28,#e8884a)"></div></div>
+                <span class="oxy-bar-val">↓ ~29%</span>
+              </div>
+              <div class="oxy-bar-row">
+                <span class="oxy-bar-label">Post low-stim interaction</span>
+                <div class="oxy-bar-track"><div class="oxy-bar-fill" data-w="72" style="background:linear-gradient(90deg,#4a8c68,#6aad84)"></div></div>
+                <span class="oxy-bar-val">↑ Recovery</span>
+              </div>
+            </div>
+            <div class="chart-source" style="margin-top:24px">Source: Davis &amp; Valla (1978) · Beck &amp; Clark (2011) · Adapted by Ni, 2025</div>
+          </div>
+        </div>
+
+        <div class="reveal reveal-d3">
+          <div style="display:flex;flex-direction:column;gap:20px">
+            <div class="chart-wrap">
+              <p class="chart-title">Key Neurochemical Finding</p>
+              <p style="font-size:13px;color:var(--ink-mid);line-height:1.7;margin-top:8px">
+                Individuals with ASD exhibit significantly <strong style="color:#fff">lower total plasma oxytocin levels</strong>
+                compared to age-matched controls, alongside an abnormally elevated ratio of
+                oxytocin precursor (OT-X) to active oxytocin — indicating impaired synthesis,
+                not simply lower production.
+              </p>
+              <p style="font-size:13px;color:var(--ink-mid);line-height:1.7;margin-top:16px">
+                Low-stimulation, <strong style="color:#fff">non-reciprocal interactions</strong> — such as observing a reptile —
+                avoid triggering the cortisol stress response, creating conditions where
+                natural oxytocin activity can function without suppression.
+              </p>
+              <div class="chart-source">Beck &amp; Clark, 2011 · Murry &amp; Allen, 2012</div>
+            </div>
+            <div class="chart-wrap">
+              <p class="chart-title">Therapeutic Mechanism</p>
+              <canvas id="mechChart" class="chart-canvas" style="height:200px!important"></canvas>
+              <div class="chart-source">Source: O'Haire et al. 2013 · Katcher &amp; Wilkins 1998</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ PUBLIC PERCEPTION ══ -->
+    <section class="r-section" style="background:var(--bg-mid)">
+      <p class="r-section-eyebrow reveal">Survey Data — Sept 2025</p>
+      <h2 class="r-section-title reveal reveal-d1">
+        Public Attitudes <strong>Toward Reptiles</strong>
+      </h2>
+
+      <div class="r-three-col">
+        <div class="reveal reveal-d1">
+          <div class="chart-wrap">
+            <p class="chart-title">Overall Attitude Distribution</p>
+            <p class="chart-subtitle">Respondents: 18–25 yrs · Multi-country</p>
+            <canvas id="attitudeChart" class="chart-canvas"></canvas>
+            <div class="chart-source">Primary survey · Ni, X. · EDNA Sept 2025</div>
+          </div>
+        </div>
+        <div class="reveal reveal-d2">
+          <div class="chart-wrap">
+            <p class="chart-title">Ownership Barriers</p>
+            <p class="chart-subtitle">Why respondents don't own reptiles</p>
+            <canvas id="barrierChart" class="chart-canvas"></canvas>
+            <div class="chart-source">Primary survey · Ni, X. · EDNA Sept 2025</div>
+          </div>
+        </div>
+        <div class="reveal reveal-d3">
+          <div class="chart-wrap">
+            <p class="chart-title">Perceived Motivations</p>
+            <p class="chart-subtitle">Why people keep reptiles</p>
+            <canvas id="motivChart" class="chart-canvas"></canvas>
+            <div class="chart-source">Primary survey · Ni, X. · EDNA Sept 2025</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ FIELD INTERVIEWS ══ -->
+    <section class="r-section">
+      <p class="r-section-eyebrow reveal">Qualitative Research — Chapter 4.2 · Nantes 2025</p>
+      <h2 class="r-section-title reveal reveal-d1">
+        Voices from <strong>the Field</strong>
+      </h2>
+      <p style="font-size:14px;color:var(--ink-mid);line-height:1.8;max-width:720px;margin-bottom:64px" class="reveal reveal-d2">
+        Four semi-structured in-depth interviews were conducted in the Nantes region with a licensed reptile keeper,
+        a family caregiver, design students, and a pet trade professional. Their accounts reveal convergent tensions
+        between ethics, responsibility, and the latent therapeutic potential of non-conventional animal cohabitation.
+      </p>
+
+      <div class="persona-grid">
+
+        <!-- ── Persona 1: Mickaël Grévois ── -->
+        <div class="persona-card reveal reveal-d1">
+          <span class="persona-num">01</span>
+          <div class="persona-top">
+            <div class="persona-figure">
+              <svg class="stick-figure" viewBox="0 0 80 118" width="72" height="108">
+                <!-- head -->
+                <circle class="sf-head" cx="40" cy="16" r="12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                <!-- face: eyes -->
+                <circle cx="36" cy="14" r="1.5" fill="currentColor"/>
+                <circle cx="44" cy="14" r="1.5" fill="currentColor"/>
+                <!-- mouth talking -->
+                <path class="sf-mouth" d="M33 20 Q40 24 47 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                <!-- body -->
+                <line class="sf-body" x1="40" y1="28" x2="40" y2="72" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                <!-- right arm raised (teaching gesture) -->
+                <line class="sf-arm-r" x1="40" y1="44" x2="66" y2="28" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                <!-- left arm down -->
+                <line class="sf-arm-l" x1="40" y1="44" x2="18" y2="58" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                <!-- legs -->
+                <line x1="40" y1="72" x2="25" y2="100" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                <line x1="40" y1="72" x2="55" y2="100" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="persona-bubble">
+              <p class="persona-bubble-text">
+                Animal care is not merely a technical practice, but a fundamentally ethical and cultural responsibility.
+                Human–animal coexistence must be grounded in deep respect for animal needs, natural behaviour, and environmental integrity.
+              </p>
+            </div>
+          </div>
+          <div class="persona-divider"></div>
+          <p class="persona-name">Mickaël Grévois</p>
+          <p class="persona-role">Licensed Reptile Keeper · Welfare Advocate · Nantes</p>
+          <p class="persona-bio">
+            A multifaceted perspective on reptile keeping that interweaves therapeutic practice, legal regulation,
+            and animal welfare ethics. Grévois distinguishes between responsible, welfare-oriented keepers
+            and trend-driven, uninformed owners.
+          </p>
+          <div class="persona-insights">
+            <div class="persona-insight">Reptile keeping requires long-term commitment, technical knowledge, and strict environmental control — not impulse acquisition.</div>
+            <div class="persona-insight">Reptiles demonstrate therapeutic potential through calm, non-verbal interaction that supports emotional regulation in children with behavioural difficulties.</div>
+            <div class="persona-insight">French and European legal frameworks are necessary safeguards against ecological disruption and animal welfare risks.</div>
+          </div>
+          <div class="persona-tags">
+            <span class="persona-tag">Ethics</span>
+            <span class="persona-tag">Legal Regulation</span>
+            <span class="persona-tag">Therapeutic Value</span>
+            <span class="persona-tag">Animal Welfare</span>
+          </div>
+          <p class="persona-source">Interview · §4.2.1 · Ni, X. (2025) · EDNA Nantes</p>
+        </div>
+
+        <!-- ── Persona 2: Ayna ── -->
+        <div class="persona-card reveal reveal-d2">
+          <span class="persona-num">02</span>
+          <div class="persona-top">
+            <div class="persona-figure">
+              <svg class="stick-figure" viewBox="0 0 80 118" width="72" height="108" style="animation-delay:0.4s">
+                <!-- head -->
+                <circle class="sf-head" cx="40" cy="16" r="12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="animation-delay:0.6s"/>
+                <circle cx="36" cy="14" r="1.5" fill="currentColor"/>
+                <circle cx="44" cy="14" r="1.5" fill="currentColor"/>
+                <path class="sf-mouth" d="M34 21 Q40 24 46 21" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                <!-- body -->
+                <line class="sf-body" x1="40" y1="28" x2="40" y2="72" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="animation-delay:0.3s"/>
+                <!-- arms: welcoming/open -->
+                <line class="sf-arm-r" x1="40" y1="44" x2="62" y2="38" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="animation-delay:0.5s"/>
+                <line class="sf-arm-l" x1="40" y1="44" x2="18" y2="38" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="animation-delay:0.8s"/>
+                <!-- legs -->
+                <line x1="40" y1="72" x2="28" y2="102" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                <line x1="40" y1="72" x2="52" y2="102" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="persona-bubble">
+              <p class="persona-bubble-text">
+                Our turtles gradually shifted from being perceived as simple pets to becoming full members of the family.
+                Animals are not decorative objects — they are sentient beings with emotional and physical needs.
+              </p>
+            </div>
+          </div>
+          <div class="persona-divider"></div>
+          <p class="persona-name">Ayna</p>
+          <p class="persona-role">Family Caregiver · Aquatic Turtle Keeper · Nantes</p>
+          <p class="persona-bio">
+            A childhood experience of keeping aquatic turtles reveals how early human–animal interaction
+            functions as informal education in responsibility, empathy, and care. Daily maintenance,
+            behavioural observation, and health monitoring built deep emotional attachment.
+          </p>
+          <div class="persona-insights">
+            <div class="persona-insight">Early co-habitation with reptiles teaches children curiosity, accountability, and long-term responsibility — without explicit instruction.</div>
+            <div class="persona-insight">Turtles require complex environmental conditions: clean water, temperature regulation, sunlight, and adequate space — far from "low-maintenance."</div>
+            <div class="persona-insight">Ethical companionship is grounded in genuine care, not control or convenience — a direct parallel to therapeutic animal interaction principles.</div>
+          </div>
+          <div class="persona-tags">
+            <span class="persona-tag">Family Care</span>
+            <span class="persona-tag">Childhood Experience</span>
+            <span class="persona-tag">Empathy</span>
+            <span class="persona-tag">Responsibility</span>
+          </div>
+          <p class="persona-source">Interview · §4.2.2 · Ni, X. (2025) · EDNA Nantes</p>
+        </div>
+
+        <!-- ── Persona 3: EDNA Students ── -->
+        <div class="persona-card reveal reveal-d3">
+          <span class="persona-num">03</span>
+          <div class="persona-top">
+            <div class="persona-figure">
+              <svg class="stick-figure" viewBox="0 0 80 118" width="72" height="108">
+                <!-- head, slightly tilted (observing) -->
+                <circle class="sf-head" cx="40" cy="16" r="12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="animation-delay:1s"/>
+                <circle cx="35" cy="15" r="1.5" fill="currentColor"/>
+                <circle cx="43" cy="14" r="1.5" fill="currentColor"/>
+                <path class="sf-mouth" d="M34 21 Q40 24 46 21" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                <!-- body -->
+                <line class="sf-body" x1="40" y1="28" x2="40" y2="72" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="animation-delay:0.7s"/>
+                <!-- arms: one pointing forward, one at side -->
+                <line class="sf-arm-r" x1="40" y1="44" x2="68" y2="44" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="animation-delay:0.2s"/>
+                <line class="sf-arm-l" x1="40" y1="44" x2="18" y2="52" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="animation-delay:0.9s"/>
+                <!-- legs slightly spread -->
+                <line x1="40" y1="72" x2="22" y2="100" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                <line x1="40" y1="72" x2="58" y2="100" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="persona-bubble">
+              <p class="persona-bubble-text">
+                Modern pet-keeping has become, to some extent, a symbolic social behaviour rather than a genuine response to
+                animal needs. Pets increasingly become objects of display and aesthetic consumption.
+              </p>
+            </div>
+          </div>
+          <div class="persona-divider"></div>
+          <p class="persona-name">Students from EDNA</p>
+          <p class="persona-role">Design Students · L'École de Design Nantes Atlantique</p>
+          <p class="persona-bio">
+            A generational perspective revealing how contemporary pet-keeping is often driven less by
+            deliberate ethical reflection and more by habit, social inertia, and symbolic attachment.
+            Urban lifestyle, limited living space, and industry aesthetics all shape these patterns.
+          </p>
+          <div class="persona-insights">
+            <div class="persona-insight">Many people continue keeping pets as a normalised life practice, frequently without establishing clear boundaries or long-term responsibility.</div>
+            <div class="persona-insight">Fast-paced urban lifestyles and restrictive regulations often make it difficult to meet animals' real needs, leading to neglect and abandonment.</div>
+            <div class="persona-insight">The well-being of companion animals today is largely defined by how human societies choose to regulate, manage, and spatially accommodate them.</div>
+          </div>
+          <div class="persona-tags">
+            <span class="persona-tag">Urban Lifestyle</span>
+            <span class="persona-tag">Social Behaviour</span>
+            <span class="persona-tag">Pet Culture</span>
+            <span class="persona-tag">Ethics</span>
+          </div>
+          <p class="persona-source">Interview · §4.2.3 · Ni, X. (2025) · EDNA Nantes</p>
+        </div>
+
+        <!-- ── Persona 4: Pet Shop Retailer ── -->
+        <div class="persona-card reveal reveal-d4">
+          <span class="persona-num">04</span>
+          <div class="persona-top">
+            <div class="persona-figure">
+              <svg class="stick-figure" viewBox="0 0 80 118" width="72" height="108">
+                <!-- head -->
+                <circle class="sf-head" cx="40" cy="16" r="12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="animation-delay:1.2s"/>
+                <circle cx="37" cy="14" r="1.5" fill="currentColor"/>
+                <circle cx="45" cy="14" r="1.5" fill="currentColor"/>
+                <path class="sf-mouth" d="M33 21 Q40 24 47 21" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                <!-- body -->
+                <line class="sf-body" x1="40" y1="28" x2="40" y2="72" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="animation-delay:0.4s"/>
+                <!-- both arms raised/gesturing (explaining) -->
+                <line class="sf-arm-r" x1="40" y1="44" x2="65" y2="30" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="animation-delay:0.3s"/>
+                <line class="sf-arm-l" x1="40" y1="44" x2="15" y2="30" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="animation-delay:0.6s"/>
+                <!-- legs -->
+                <line x1="40" y1="72" x2="26" y2="100" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                <line x1="40" y1="72" x2="54" y2="100" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="persona-bubble">
+              <p class="persona-bubble-text">
+                Reptiles are chosen in cities because they are perceived as quiet and space-efficient —
+                yet this convenience-driven logic often overlooks their emotional, environmental, and physiological needs.
+              </p>
+            </div>
+          </div>
+          <div class="persona-divider"></div>
+          <p class="persona-name">Pet Shop Retailer</p>
+          <p class="persona-role">Animal Trade Professional · Reptile Specialist · Nantes</p>
+          <p class="persona-bio">
+            An industry-insider account revealing the contradictory landscape of reptile keeping shaped by
+            urban living conditions, legal regulation, and ethical debate. Deep tensions between rescue
+            intentions and ecological interference, between responsibility and impulsive ownership.
+          </p>
+          <div class="persona-insights">
+            <div class="persona-insight">While some keepers demonstrate lifelong commitment and professional knowledge, others acquire large or exotic species for social display, leading to neglect.</div>
+            <div class="persona-insight">France's particularly strict legal framework contrasts with more permissive systems in Europe — seen as a societal mechanism to control irresponsible behaviour.</div>
+            <div class="persona-insight">Captivity frames as both a necessary tool for conservation and biomedical survival (antivenom production), and a profound ethical dilemma.</div>
+          </div>
+          <div class="persona-tags">
+            <span class="persona-tag">Urban Context</span>
+            <span class="persona-tag">Legal Framework</span>
+            <span class="persona-tag">Conservation</span>
+            <span class="persona-tag">Trade Ethics</span>
+          </div>
+          <p class="persona-source">Interview · §4.2.4 · Ni, X. (2025) · EDNA Nantes</p>
+        </div>
+
+      </div><!-- /persona-grid -->
+
+      <div class="pull-quote reveal" style="margin-top:0">
+        <blockquote>
+          "Across all four interviews, a common thread emerges: the relationship between humans and reptiles is not one of
+          simple companionship, but a complex negotiation of responsibility, ethics, fear, and care — precisely the
+          qualities that make reptile-assisted therapy both challenging and uniquely valuable."
+        </blockquote>
+        <cite>Xinghao Ni — Field Research Synthesis, Chapter 4.2 · EDNA 2025</cite>
+      </div>
+    </section>
+
+    <!-- ══ THERAPEUTIC PATHWAY ══ -->
+    <section class="r-section">
+      <p class="r-section-eyebrow reveal">Service Design Framework</p>
+      <h2 class="r-section-title reveal reveal-d1">
+        Staged <strong>Therapeutic Pathway</strong>
+      </h2>
+
+      <div class="r-two-col">
+        <div class="pathway reveal reveal-d2">
+
+          <div class="pathway-step">
+            <div class="p-dot"><div class="p-dot-inner"></div></div>
+            <div class="p-line"></div>
+            <div class="p-body">
+              <p class="p-phase">Phase 01 — Orientation</p>
+              <p class="p-title">Environmental Familiarisation</p>
+              <p class="p-desc">Child and family enter the low-stimulation space. No direct animal contact. Ambient sound design at ≤40dB. Controlled lighting at 2700K warm. Visual introductions only — observation through transparent enclosure.</p>
+            </div>
+          </div>
+
+          <div class="pathway-step">
+            <div class="p-dot"><div class="p-dot-inner"></div></div>
+            <div class="p-line"></div>
+            <div class="p-body">
+              <p class="p-phase">Phase 02 — Observation</p>
+              <p class="p-title">Passive Proximity</p>
+              <p class="p-desc">Structured observation sessions of 15–20 minutes. Child controls distance and duration. Therapist narrates behaviour patterns in calm, slow cadence. Parent present throughout. Exit at any signal.</p>
+            </div>
+          </div>
+
+          <div class="pathway-step">
+            <div class="p-dot"><div class="p-dot-inner"></div></div>
+            <div class="p-line"></div>
+            <div class="p-body">
+              <p class="p-phase">Phase 03 — Contact</p>
+              <p class="p-title">Graduated Touch Interaction</p>
+              <p class="p-desc">Optional, child-initiated physical interaction. Structured rules about handling — both for child safety and animal welfare. Tactile input: smooth scales, slow temperature exchange, no sudden movement.</p>
+            </div>
+          </div>
+
+          <div class="pathway-step">
+            <div class="p-dot"><div class="p-dot-inner"></div></div>
+            <div class="p-line"></div>
+            <div class="p-body">
+              <p class="p-phase">Phase 04 — Co-Regulation</p>
+              <p class="p-title">Routine-Based Caregiving</p>
+              <p class="p-desc">Child participates in feeding and care rituals. Rule-based structure provides regulatory scaffold. Repetition and predictability support oxytocin system stabilisation. Progress documented for family review.</p>
+            </div>
+          </div>
+
+          <div class="pathway-step">
+            <div class="p-dot"><div class="p-dot-inner"></div></div>
+            <div class="p-body">
+              <p class="p-phase">Phase 05 — Integration</p>
+              <p class="p-title">Family &amp; School Transfer</p>
+              <p class="p-desc">Generalisation of skills. Liaison with school inclusion coordinator. Parent coaching on low-stimulation environments at home. Optional home reptile introduction protocol provided.</p>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="reveal reveal-d3">
+          <div class="chart-wrap" style="margin-bottom:24px">
+            <p class="chart-title">Session Frequency &amp; Duration</p>
+            <p class="chart-subtitle">Recommended protocol per phase</p>
+            <canvas id="sessionChart" class="chart-canvas"></canvas>
+            <div class="chart-source">Source: Ni, 2025 · Adapted from O'Haire et al.</div>
+          </div>
+          <div class="chart-wrap">
+            <p class="chart-title">Expected Regulatory Improvement</p>
+            <p class="chart-subtitle">Composite behavioural score over 12-week programme</p>
+            <canvas id="progressChart" class="chart-canvas"></canvas>
+            <div class="chart-source">Source: O'Haire (2013) · Marcus (2013) · Adapted</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ RESEARCH METHODOLOGY ══ -->
+    <section class="r-section" style="background:var(--bg-mid)">
+      <p class="r-section-eyebrow reveal">Methodology</p>
+      <h2 class="r-section-title reveal reveal-d1">
+        Mixed-Method <strong>Research Design</strong>
+      </h2>
+
+      <div class="r-three-col reveal reveal-d2">
+        <div class="chart-wrap">
+          <p class="chart-title">01 — Literature Review</p>
+          <p style="font-size:13px;color:var(--ink-mid);line-height:1.7;margin-top:12px">
+            Systematic review across four domains: neuroscience &amp; emotional regulation,
+            attachment theory and AAT, cognitive-behavioural psychology, and reptile
+            behaviour, ethics, and social perception.
+          </p>
+          <div style="margin-top:20px;display:flex;flex-wrap:wrap;gap:8px">
+            <span class="source-chip">Neuroscience</span>
+            <span class="source-chip">AAT Theory</span>
+            <span class="source-chip">Ethology</span>
+            <span class="source-chip">Social Perception</span>
+          </div>
+        </div>
+        <div class="chart-wrap">
+          <p class="chart-title">02 — Quantitative Survey</p>
+          <p style="font-size:13px;color:var(--ink-mid);line-height:1.7;margin-top:12px">
+            Online questionnaire distributed September 2025. Geographic coverage: France,
+            China, Iran, Australia, Mexico. Majority respondents aged 18–25. Focus on
+            reptile familiarity, acceptance, and therapy perception.
+          </p>
+          <div style="margin-top:20px;display:flex;flex-wrap:wrap;gap:8px">
+            <span class="source-chip">Multi-country</span>
+            <span class="source-chip">Sept 2025</span>
+            <span class="source-chip">18–25 yrs</span>
+          </div>
+        </div>
+        <div class="chart-wrap">
+          <p class="chart-title">03 — Qualitative Interviews</p>
+          <p style="font-size:13px;color:var(--ink-mid);line-height:1.7;margin-top:12px">
+            Semi-structured interviews with: reptile breeder Mickaël Grévois (2h),
+            EDNA designer Ayna (10min), students, and pet shop retailer LIOPE PETSHOP (20min).
+            Topics: animal behaviour, child-animal relationships, emotional stability.
+          </p>
+          <div style="margin-top:20px;display:flex;flex-wrap:wrap;gap:8px">
+            <span class="source-chip">Breeders</span>
+            <span class="source-chip">Retailers</span>
+            <span class="source-chip">Designers</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ CASE STUDY: TIFFANY ══ -->
+<section class="r-section" id="tiffany" style="background:var(--bg-mid)">
+  <p class="r-section-eyebrow reveal">Primary Field Interview — Phase 2 Research · Nantes 2025</p>
+  <h2 class="r-section-title reveal reveal-d1">
+    Case Study: <strong>Tiffany</strong>
+  </h2>
+
+  <!-- Hero: Avatar + Bio -->
+  <div class="tiffany-hero reveal reveal-d2">
+    <div class="tiffany-avatar-wrap">
+      <!-- Animated Tiffany SVG avatar -->
+      <svg class="tiffany-avatar-svg" viewBox="0 0 200 240" xmlns="http://www.w3.org/2000/svg">
+        <!-- Hair back layer -->
+        <path d="M64 44 Q48 80 50 130" stroke="#6B3A2A" stroke-width="10" fill="none" stroke-linecap="round" opacity="0.9"/>
+        <path d="M136 44 Q152 80 150 130" stroke="#6B3A2A" stroke-width="10" fill="none" stroke-linecap="round" opacity="0.9"/>
+        <!-- Head group with nod animation -->
+        <g style="animation:t-head-nod 3.5s ease-in-out infinite;transform-origin:100px 55px">
+          <!-- Head shape -->
+          <ellipse cx="100" cy="55" rx="34" ry="36" fill="#E8B896" stroke="#C89060" stroke-width="1.5"/>
+          <!-- Hair top -->
+          <path d="M66 48 Q100 18 134 48 Q128 24 100 20 Q72 24 66 48" fill="#6B3A2A"/>
+          <!-- Hair side strands -->
+          <path d="M66 50 Q62 70 64 85" stroke="#6B3A2A" stroke-width="6" fill="none" stroke-linecap="round"/>
+          <path d="M134 50 Q138 70 136 85" stroke="#6B3A2A" stroke-width="6" fill="none" stroke-linecap="round"/>
+          <!-- Eyes -->
+          <ellipse cx="88" cy="50" rx="5" ry="5.5" fill="#3A2B20"/>
+          <ellipse cx="112" cy="50" rx="5" ry="5.5" fill="#3A2B20"/>
+          <!-- Eye shine -->
+          <circle cx="90" cy="48" r="1.5" fill="white"/>
+          <circle cx="114" cy="48" r="1.5" fill="white"/>
+          <!-- Brows -->
+          <path d="M82 42 Q88 39 94 41" stroke="#5A3A20" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <path d="M106 41 Q112 39 118 42" stroke="#5A3A20" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <!-- Nose -->
+          <path d="M96 58 Q100 63 104 58" fill="none" stroke="#C07050" stroke-width="1.5"/>
+          <!-- Mouth — animated talking -->
+          <path class="t-mouth" d="M88 70 Q100 74 112 70" fill="none" stroke="#C07050" stroke-width="2.5" stroke-linecap="round" style="animation:t-mouth-open 0.65s ease-in-out infinite"/>
+          <!-- Cheeks -->
+          <ellipse cx="78" cy="64" rx="9" ry="6" fill="#E09080" opacity="0.25"/>
+          <ellipse cx="122" cy="64" rx="9" ry="6" fill="#E09080" opacity="0.25"/>
+        </g>
+        <!-- Neck -->
+        <rect x="90" y="89" width="20" height="16" rx="4" fill="#C89060"/>
+        <!-- Body (blue top / sweater) -->
+        <path d="M62 105 Q52 125 50 165 L150 165 Q148 125 138 105 Q120 98 100 98 Q80 98 62 105Z" fill="#4A6FA5"/>
+        <!-- Collar detail -->
+        <path d="M86 105 Q100 115 114 105" fill="none" stroke="#3A5F95" stroke-width="2"/>
+        <!-- Right arm (raised/gesturing) -->
+        <g style="animation:t-arm-gesture 2.8s ease-in-out infinite;transform-origin:138px 110px">
+          <line x1="138" y1="110" x2="170" y2="90" stroke="#E8B896" stroke-width="10" stroke-linecap="round"/>
+          <ellipse cx="173" cy="88" rx="8" ry="8" fill="#E8B896"/>
+        </g>
+        <!-- Left arm (relaxed) -->
+        <g style="animation:t-arm-gesture 3.2s ease-in-out infinite reverse;transform-origin:62px 110px">
+          <line x1="62" y1="110" x2="30" y2="130" stroke="#E8B896" stroke-width="10" stroke-linecap="round"/>
+          <ellipse cx="27" cy="132" rx="8" ry="8" fill="#E8B896"/>
+        </g>
+        <!-- Legs (pants/jeans) -->
+        <path d="M75 165 Q70 195 68 225" stroke="#2C3E50" stroke-width="14" stroke-linecap="round" fill="none"/>
+        <path d="M125 165 Q130 195 132 225" stroke="#2C3E50" stroke-width="14" stroke-linecap="round" fill="none"/>
+        <!-- Feet -->
+        <ellipse cx="65" cy="228" rx="14" ry="6" fill="#8B6914"/>
+        <ellipse cx="135" cy="228" rx="14" ry="6" fill="#8B6914"/>
+      </svg>
+      <!-- Name tag below avatar -->
+      <div style="text-align:center;margin-top:12px">
+        <div style="font-size:18px;font-weight:700;color:#fff;letter-spacing:-0.02em">Tiffany</div>
+        <div style="font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:var(--orange);margin-top:3px">41 ans · ASD L1 · Nantes</div>
+      </div>
+    </div>
+    <!-- Bio panel -->
+    <div class="tiffany-bio">
+      <h3>Tiffany</h3>
+      <p class="t-role">Gymnastic Coach · Library Host · Mère de 3 filles · ASD Level 1</p>
+      <p>
+        Tiffany is 41 years old, a rhythmic gymnastics coach and judge who also works as a library host welcoming school classes.
+        She lives in a top-floor attic apartment in Nantes with her three daughters. She received her autism diagnosis
+        after age 30 — years after experiencing a burnout triggered by her youngest daughter Savanna's birth and health complications.
+      </p>
+      <p>
+        Initially misdiagnosed with postpartum depression, she was referred to a neuropsychologist whose assessment
+        revealed patterns consistent with ASD. After several weeks of in-depth testing, she received her diagnosis —
+        learning she had been autistic her entire life without knowing it.
+      </p>
+      <p>
+        Her autism manifests primarily through <strong style="color:rgba(255,255,255,0.85)">hypersensitivity to textures, sound, and light</strong>.
+        Touching a glass just out of the dishwasher can feel painful. Neon lighting in supermarkets sends too much information to her brain.
+        Background white noise — ventilation systems, vacuum cleaners — accumulates invisibly until a small additional stimulus causes complete
+        sensory freeze. She describes this through a "bucket" metaphor: stimuli fill up through the day until there is no more room.
+      </p>
+      <p>
+        Her directness and frank communication — a trait of her autism — had been misread as immaturity throughout her life.
+        <em style="color:rgba(255,255,255,0.65)">"On me pose une question, je réponds. Je vais pas réfléchir à tout l'aspect psychologique derrière."</em>
+        People perceived this as lack of empathy, when it was simply the absence of an automatic social filtering mechanism.
+      </p>
+      <div class="tiffany-tags">
+        <span class="tiffany-tag">ASD Level 1</span>
+        <span class="tiffany-tag">Hypersensitivity</span>
+        <span class="tiffany-tag">Late Diagnosis</span>
+        <span class="tiffany-tag">Social Masking</span>
+        <span class="tiffany-tag">Single Parent</span>
+        <span class="tiffany-tag">Animal-Assisted</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Key Quotes Strip -->
+  <div class="reveal">
+    <p style="font-size:9px;letter-spacing:0.18em;text-transform:uppercase;color:var(--orange);margin-bottom:24px">Key Quotes — Verbatim</p>
+    <div class="quotes-strip">
+      <div class="quote-item">
+        <div class="quote-accent"></div>
+        <div>
+          <p class="quote-text">"C'est comme si j'avais une jauge. Au fur et à mesure qu'elle se remplit, en bout d'un moment, j'ai plus de place."</p>
+          <cite class="quote-meta">On sensory overload · The Bucket Metaphor</cite>
+        </div>
+      </div>
+      <div class="quote-item">
+        <div class="quote-accent"></div>
+        <div>
+          <p class="quote-text">"Quand la texture n'est pas agréable, ça se ressent comme une douleur pour moi."</p>
+          <cite class="quote-meta">On tactile hypersensitivity</cite>
+        </div>
+      </div>
+      <div class="quote-item">
+        <div class="quote-accent"></div>
+        <div>
+          <p class="quote-text">"Il y a une vraie méconnaissance des neuro-atypies et surtout de l'autisme. Chez les femmes, c'est plus compliqué, parce qu'on masque beaucoup."</p>
+          <cite class="quote-meta">On female autism masking &amp; social invisibility</cite>
+        </div>
+      </div>
+      <div class="quote-item">
+        <div class="quote-accent"></div>
+        <div>
+          <p class="quote-text">"Ces crises d'angoisse passent plus vite quand elle a un animal dans les mains."</p>
+          <cite class="quote-meta">On daughter Alana's animal-assisted emotional regulation</cite>
+        </div>
+      </div>
+      <div class="quote-item">
+        <div class="quote-accent"></div>
+        <div>
+          <p class="quote-text">"J'ai eu un serpent, ça m'a aidé beaucoup aussi. C'est tellement fluide et lent quand ça rampe. Je ne sais pas, ça m'apaisait beaucoup."</p>
+          <cite class="quote-meta">On reptile interaction as personal emotional regulation</cite>
+        </div>
+      </div>
+      <div class="quote-item">
+        <div class="quote-accent"></div>
+        <div>
+          <p class="quote-text">"Il y a autant d'autisme que d'autiste. On a des traits communs qui permettent un diagnostic, mais on a tous un vécu différent qui va influencer nos réactions."</p>
+          <cite class="quote-meta">On the spectrum's diversity</cite>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Life Challenges Grid -->
+  <p style="font-size:9px;letter-spacing:0.18em;text-transform:uppercase;color:var(--orange);margin-bottom:24px;margin-top:56px" class="reveal">Life Challenges — Tiffany's Daily Reality</p>
+  <div class="t-challenges reveal">
+    <div class="t-challenge-card">
+      <div class="t-challenge-icon">🧠</div>
+      <div class="t-challenge-title">Sensory Overload Accumulation</div>
+      <p class="t-challenge-desc">Background noise (ventilation, appliances), flickering neon lights, and unexpected textures silently fill her sensory "bucket" throughout the day. By afternoon, even minor stimuli can cause complete freeze or panic.</p>
+    </div>
+    <div class="t-challenge-card">
+      <div class="t-challenge-icon">🔄</div>
+      <div class="t-challenge-title">Cognitive Rigidity &amp; Transitions</div>
+      <p class="t-challenge-desc">Mental anticipation of specific outcomes makes flexibility extremely difficult. She may leave a bakery in tears if her intended item is unavailable — her brain cannot rapidly generate alternatives without pre-planning.</p>
+    </div>
+    <div class="t-challenge-card">
+      <div class="t-challenge-icon">👥</div>
+      <div class="t-challenge-title">Social Misreading &amp; Masking</div>
+      <p class="t-challenge-desc">Decades of being labelled "immature" for direct communication. Her micro-expressions read as cold or arrogant to neurotypicals. Years of social masking depleted her energy and contributed directly to her burnout.</p>
+    </div>
+    <div class="t-challenge-card">
+      <div class="t-challenge-icon">⚡</div>
+      <div class="t-challenge-title">Undiagnosed Until Age 30+</div>
+      <p class="t-challenge-desc">Her burnout after Savanna's birth was the crisis that finally led to assessment. She had lived her entire childhood, adolescence, and early adult life without understanding the neurological reasons for her experiences.</p>
+    </div>
+  </div>
+
+  <!-- Floor Plan -->
+  <div class="floor-plan-wrap reveal">
+    <p class="floor-plan-label">Spatial Context — As Described in Interview</p>
+    <div class="floor-plan-title">Tiffany's Attic Apartment · Floor Plan</div>
+    <svg class="floor-plan-svg" viewBox="0 0 680 380" xmlns="http://www.w3.org/2000/svg">
+      <!-- Background -->
+      <rect width="680" height="380" fill="#141312" rx="8"/>
+      <!-- Roof shape indication -->
+      <path d="M20 80 L340 20 L660 80" stroke="rgba(217,110,40,0.25)" stroke-width="1.5" fill="none" stroke-dasharray="6,4"/>
+      <!-- Main room walls -->
+      <rect x="40" y="80" width="600" height="270" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="2" rx="4"/>
+      <!-- Room fill -->
+      <rect x="41" y="81" width="598" height="268" fill="rgba(255,255,255,0.02)" rx="4"/>
+
+      <!-- Roof label -->
+      <text x="340" y="60" text-anchor="middle" fill="rgba(217,110,40,0.5)" font-size="9" letter-spacing="3" font-family="-apple-system,sans-serif">ATTIC · SLOPED CEILING</text>
+
+      <!-- WINDOWS -->
+      <!-- North wall windows (top) - good natural light -->
+      <rect x="120" y="78" width="60" height="8" fill="#4A8FD4" opacity="0.6" rx="2"/>
+      <rect x="240" y="78" width="60" height="8" fill="#4A8FD4" opacity="0.6" rx="2"/>
+      <rect x="380" y="78" width="60" height="8" fill="#4A8FD4" opacity="0.6" rx="2"/>
+      <rect x="500" y="78" width="60" height="8" fill="#4A8FD4" opacity="0.6" rx="2"/>
+      <!-- West window (large) -->
+      <rect x="36" y="140" width="8" height="90" fill="#4A8FD4" opacity="0.8" rx="2"/>
+      <text x="30" y="185" fill="rgba(74,143,212,0.7)" font-size="8" text-anchor="middle" transform="rotate(-90,30,185)" font-family="-apple-system,sans-serif" letter-spacing="1">WEST WINDOW</text>
+
+      <!-- Door -->
+      <rect x="620" y="270" width="20" height="42" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1.5"/>
+      <path d="M620 312 Q600 290 620 270" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1" stroke-dasharray="3,3"/>
+      <text x="640" y="296" fill="rgba(255,255,255,0.3)" font-size="8" font-family="-apple-system,sans-serif">DOOR</text>
+
+      <!-- HAMSTER CAGE (near west window) -->
+      <rect x="55" y="145" width="72" height="52" rx="4" fill="rgba(217,110,40,0.12)" stroke="rgba(217,110,40,0.5)" stroke-width="1.5"/>
+      <!-- Cage grid lines -->
+      <line x1="73" y1="145" x2="73" y2="197" stroke="rgba(217,110,40,0.3)" stroke-width="0.7"/>
+      <line x1="91" y1="145" x2="91" y2="197" stroke="rgba(217,110,40,0.3)" stroke-width="0.7"/>
+      <line x1="109" y1="145" x2="109" y2="197" stroke="rgba(217,110,40,0.3)" stroke-width="0.7"/>
+      <line x1="55" y1="163" x2="127" y2="163" stroke="rgba(217,110,40,0.3)" stroke-width="0.7"/>
+      <line x1="55" y1="179" x2="127" y2="179" stroke="rgba(217,110,40,0.3)" stroke-width="0.7"/>
+      <text x="91" y="215" text-anchor="middle" fill="rgba(217,110,40,0.9)" font-size="9" font-family="-apple-system,sans-serif" font-weight="600">HAMSTER CAGE</text>
+
+      <!-- RAT CAGE (also near west side) -->
+      <rect x="55" y="225" width="65" height="48" rx="4" fill="rgba(217,110,40,0.08)" stroke="rgba(217,110,40,0.35)" stroke-width="1.5"/>
+      <line x1="72" y1="225" x2="72" y2="273" stroke="rgba(217,110,40,0.25)" stroke-width="0.7"/>
+      <line x1="89" y1="225" x2="89" y2="273" stroke="rgba(217,110,40,0.25)" stroke-width="0.7"/>
+      <line x1="106" y1="225" x2="106" y2="273" stroke="rgba(217,110,40,0.25)" stroke-width="0.7"/>
+      <line x1="55" y1="243" x2="120" y2="243" stroke="rgba(217,110,40,0.25)" stroke-width="0.7"/>
+      <line x1="55" y1="258" x2="120" y2="258" stroke="rgba(217,110,40,0.25)" stroke-width="0.7"/>
+      <text x="87" y="290" text-anchor="middle" fill="rgba(217,110,40,0.7)" font-size="8" font-family="-apple-system,sans-serif">RAT CAGE</text>
+
+      <!-- SOFA (center living room) -->
+      <rect x="230" y="160" width="180" height="70" rx="8" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.15)" stroke-width="1.5"/>
+      <!-- Sofa cushions -->
+      <rect x="238" y="166" width="54" height="56" rx="5" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+      <rect x="299" y="166" width="54" height="56" rx="5" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+      <rect x="360" y="166" width="42" height="56" rx="5" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+      <text x="320" y="250" text-anchor="middle" fill="rgba(255,255,255,0.35)" font-size="10" font-family="-apple-system,sans-serif">SOFA</text>
+
+      <!-- COFFEE TABLE -->
+      <rect x="265" y="240" width="110" height="48" rx="4" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+      <text x="320" y="270" text-anchor="middle" fill="rgba(255,255,255,0.25)" font-size="9" font-family="-apple-system,sans-serif">COFFEE TABLE</text>
+
+      <!-- TV UNIT (against wall, facing sofa) -->
+      <rect x="220" y="298" width="200" height="26" rx="4" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.12)" stroke-width="1.5"/>
+      <!-- TV screen -->
+      <rect x="256" y="303" width="128" height="16" rx="2" fill="rgba(30,50,80,0.8)" stroke="rgba(74,143,212,0.3)" stroke-width="1"/>
+      <text x="320" y="332" text-anchor="middle" fill="rgba(255,255,255,0.35)" font-size="10" font-family="-apple-system,sans-serif">TV UNIT</text>
+
+      <!-- WOOD BURNING STOVE -->
+      <rect x="560" y="130" width="55" height="55" rx="6" fill="rgba(180,60,20,0.15)" stroke="rgba(217,110,40,0.5)" stroke-width="1.5"/>
+      <!-- Stove details -->
+      <rect x="568" y="140" width="39" height="28" rx="3" fill="rgba(180,60,20,0.2)" stroke="rgba(217,110,40,0.4)" stroke-width="1"/>
+      <!-- Flames -->
+      <path d="M576 162 Q580 150 584 155 Q588 145 592 155 Q596 148 600 160" fill="none" stroke="rgba(255,140,0,0.6)" stroke-width="1.5" stroke-linecap="round"/>
+      <!-- Stovepipe -->
+      <rect x="580" y="98" width="16" height="34" rx="3" fill="rgba(100,100,100,0.4)" stroke="rgba(150,150,150,0.3)" stroke-width="1"/>
+      <text x="587" y="205" text-anchor="middle" fill="rgba(217,110,40,0.9)" font-size="9" font-family="-apple-system,sans-serif" font-weight="600">WOOD STOVE</text>
+      <!-- Heat waves -->
+      <path d="M555 125 Q560 115 565 125" fill="none" stroke="rgba(255,120,0,0.3)" stroke-width="1" stroke-linecap="round"/>
+      <path d="M561 120 Q566 110 571 120" fill="none" stroke="rgba(255,120,0,0.25)" stroke-width="1" stroke-linecap="round"/>
+
+      <!-- Natural light rays (good lighting) -->
+      <line x1="150" y1="88" x2="200" y2="130" stroke="rgba(255,220,100,0.08)" stroke-width="12"/>
+      <line x1="270" y1="88" x2="320" y2="140" stroke="rgba(255,220,100,0.06)" stroke-width="10"/>
+      <line x1="410" y1="88" x2="440" y2="140" stroke="rgba(255,220,100,0.06)" stroke-width="10"/>
+      <line x1="530" y1="88" x2="510" y2="130" stroke="rgba(255,220,100,0.05)" stroke-width="10"/>
+
+      <!-- LABELS -->
+      <text x="340" y="115" text-anchor="middle" fill="rgba(255,255,255,0.15)" font-size="11" font-family="-apple-system,sans-serif" letter-spacing="2">LIVING ROOM — OPEN PLAN</text>
+
+      <!-- Legend -->
+      <rect x="44" y="350" width="10" height="10" rx="2" fill="rgba(217,110,40,0.5)"/>
+      <text x="60" y="359" fill="rgba(255,255,255,0.35)" font-size="8" font-family="-apple-system,sans-serif">Animal Area</text>
+      <rect x="140" y="350" width="10" height="10" rx="2" fill="rgba(74,143,212,0.5)"/>
+      <text x="156" y="359" fill="rgba(255,255,255,0.35)" font-size="8" font-family="-apple-system,sans-serif">Natural Light</text>
+      <rect x="236" y="350" width="10" height="10" rx="2" fill="rgba(255,255,255,0.08)"/>
+      <text x="252" y="359" fill="rgba(255,255,255,0.35)" font-size="8" font-family="-apple-system,sans-serif">Furniture</text>
+      <rect x="320" y="350" width="10" height="10" rx="2" fill="rgba(180,60,20,0.3)"/>
+      <text x="336" y="359" fill="rgba(255,255,255,0.35)" font-size="8" font-family="-apple-system,sans-serif">Heat Source</text>
+    </svg>
+    <p style="font-size:11px;color:var(--ink-soft);line-height:1.6;margin-top:20px;max-width:600px">
+      Tiffany's attic apartment features a large open-plan living room with abundant natural light from north-facing skylights.
+      The wood-burning stove provides warmth. The large rat and hamster cage positioned near the west window forms a dedicated
+      animal interaction zone — where Alana retreats during anxiety episodes to hold the animals for emotional regulation.
+    </p>
+  </div>
+
+  <!-- Daughters Section -->
+  <p style="font-size:9px;letter-spacing:0.18em;text-transform:uppercase;color:var(--orange);margin-bottom:24px;margin-top:56px" class="reveal">Three Daughters</p>
+  <div class="daughters-row reveal">
+
+    <!-- Eldest daughter -->
+    <div class="daughter-card">
+      <div class="daughter-svg-wrap">
+        <svg viewBox="0 0 80 130" width="65" height="105" style="animation:daughter-bob 3.5s ease-in-out infinite;color:rgba(217,110,40,0.85)">
+          <!-- Hair long -->
+          <path d="M26 22 Q16 55 18 95" stroke="#8B4513" stroke-width="7" fill="none" stroke-linecap="round"/>
+          <path d="M54 22 Q64 55 62 95" stroke="#8B4513" stroke-width="7" fill="none" stroke-linecap="round"/>
+          <circle cx="40" cy="18" r="14" fill="#F0C090" stroke="#D4A060" stroke-width="1.5"/>
+          <path d="M26 18 Q40 4 54 18 Q50 8 40 7 Q30 8 26 18" fill="#8B4513"/>
+          <circle cx="35" cy="15" r="2" fill="#4A3020"/>
+          <circle cx="45" cy="15" r="2" fill="#4A3020"/>
+          <path d="M34 22 Q40 25 46 22" fill="none" stroke="#C07050" stroke-width="1.5" stroke-linecap="round"/>
+          <line x1="40" y1="32" x2="40" y2="68" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+          <line x1="40" y1="45" x2="20" y2="58" stroke="#F0C090" stroke-width="4" stroke-linecap="round"/>
+          <line x1="40" y1="45" x2="60" y2="55" stroke="#F0C090" stroke-width="4" stroke-linecap="round"/>
+          <line x1="40" y1="68" x2="28" y2="95" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+          <line x1="40" y1="68" x2="52" y2="95" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <p class="daughter-name">Eldest Daughter</p>
+      <p class="daughter-age">Teenage · Nantes</p>
+      <p class="daughter-desc">The eldest of Tiffany's three daughters. Not extensively discussed in the interview, she navigates the family's neurodivergent household alongside her sisters.</p>
+      <div class="daughter-challenges">
+        <span class="daughter-challenge">Family Support</span>
+        <span class="daughter-challenge">Neurotypical Context</span>
+      </div>
+    </div>
+
+    <!-- Alana -->
+    <div class="daughter-card" style="border-color:rgba(217,110,40,0.25)">
+      <div class="daughter-svg-wrap">
+        <svg viewBox="0 0 80 130" width="65" height="105" style="animation:daughter-bob 2.8s ease-in-out infinite 0.4s;color:rgba(217,110,40,0.9)">
+          <!-- Pigtails -->
+          <path d="M24 16 Q10 30 12 50" stroke="#5A3A1A" stroke-width="6" fill="none" stroke-linecap="round"/>
+          <path d="M56 16 Q70 30 68 50" stroke="#5A3A1A" stroke-width="6" fill="none" stroke-linecap="round"/>
+          <circle cx="40" cy="18" r="14" fill="#E8B896" stroke="#C89060" stroke-width="1.5"/>
+          <path d="M26 15 Q40 4 54 15" fill="#5A3A1A" stroke="#5A3A1A" stroke-width="6" stroke-linecap="round"/>
+          <circle cx="35" cy="15" r="2.2" fill="#3A2010"/>
+          <circle cx="45" cy="15" r="2.2" fill="#3A2010"/>
+          <!-- Slightly worried brows -->
+          <path d="M31 11 Q35 9 39 11" stroke="#5A3A1A" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+          <path d="M41 11 Q45 9 49 11" stroke="#5A3A1A" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+          <path d="M34 22 Q40 25 46 22" fill="none" stroke="#C07050" stroke-width="1.5" stroke-linecap="round"/>
+          <!-- Holding a small animal (rat) -->
+          <line x1="40" y1="32" x2="40" y2="70" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+          <line x1="40" y1="46" x2="18" y2="56" stroke="#E8B896" stroke-width="4" stroke-linecap="round"/>
+          <!-- Right arm holding rat -->
+          <line x1="40" y1="46" x2="60" y2="44" stroke="#E8B896" stroke-width="4" stroke-linecap="round"/>
+          <!-- Small rat in hand -->
+          <ellipse cx="65" cy="42" rx="7" ry="5" fill="#C8A888" stroke="#A08868" stroke-width="1"/>
+          <circle cx="70" cy="39" r="3" fill="#C8A888" stroke="#A08868" stroke-width="1"/>
+          <path d="M73 38 Q77 35 76 38" stroke="#A08868" stroke-width="0.8" fill="none"/>
+          <line x1="40" y1="70" x2="28" y2="97" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+          <line x1="40" y1="70" x2="52" y2="97" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <p class="daughter-name">Alana</p>
+      <p class="daughter-age">Middle School · ASD Suspected</p>
+      <p class="daughter-desc">Alana shows behavioral patterns strongly resembling Tiffany's own childhood experiences. She is hypersensitive to noise, refuses elevators, and uses her rat for emotional self-regulation during anxiety crises.</p>
+      <div class="daughter-challenges">
+        <span class="daughter-challenge">Elevator Phobia</span>
+        <span class="daughter-challenge">Recess Anxiety</span>
+        <span class="daughter-challenge">Animal Bonding</span>
+        <span class="daughter-challenge">Stimming</span>
+      </div>
+    </div>
+
+    <!-- Savanna -->
+    <div class="daughter-card">
+      <div class="daughter-svg-wrap">
+        <svg viewBox="0 0 80 130" width="65" height="105" style="animation:daughter-bob 3.2s ease-in-out infinite 0.8s;color:rgba(217,110,40,0.75)">
+          <!-- Short hair / baby/young child -->
+          <circle cx="40" cy="20" r="14" fill="#FDDCB0" stroke="#E0B080" stroke-width="1.5"/>
+          <path d="M26 18 Q40 6 54 18 Q50 10 40 9 Q30 10 26 18" fill="#7A4A20"/>
+          <circle cx="35" cy="17" r="2" fill="#4A3020"/>
+          <circle cx="45" cy="17" r="2" fill="#4A3020"/>
+          <!-- Happy mouth (rounder/younger) -->
+          <path d="M34 24 Q40 28 46 24" fill="none" stroke="#D08060" stroke-width="2" stroke-linecap="round"/>
+          <!-- Chubby cheeks -->
+          <ellipse cx="28" cy="21" rx="6" ry="4" fill="#F0A080" opacity="0.3"/>
+          <ellipse cx="52" cy="21" rx="6" ry="4" fill="#F0A080" opacity="0.3"/>
+          <line x1="40" y1="34" x2="40" y2="72" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+          <line x1="40" y1="47" x2="20" y2="60" stroke="#FDDCB0" stroke-width="4" stroke-linecap="round"/>
+          <line x1="40" y1="47" x2="60" y2="60" stroke="#FDDCB0" stroke-width="4" stroke-linecap="round"/>
+          <line x1="40" y1="72" x2="30" y2="96" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+          <line x1="40" y1="72" x2="50" y2="96" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <p class="daughter-name">Savanna</p>
+      <p class="daughter-age">Youngest · Health History</p>
+      <p class="daughter-desc">Born with health complications, Savanna's arrival and the weight of her medical needs triggered Tiffany's burnout — the crisis that ultimately led to her autism diagnosis. An inadvertent catalyst for her mother's self-discovery.</p>
+      <div class="daughter-challenges">
+        <span class="daughter-challenge">Health History</span>
+        <span class="daughter-challenge">Catalyst for Diagnosis</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Connection to Research -->
+  <div class="pull-quote reveal" style="margin-top:24px">
+    <blockquote>
+      "Tiffany's case is uniquely revealing: a mother who discovered her own autism through burnout, only to recognise it
+      in her daughter through shared behaviour. Her account demonstrates that reptile and small animal interaction —
+      slow, tactile, non-demanding — can serve as a genuine emotional regulation tool for individuals with ASD,
+      not as therapy in the clinical sense, but as an accessible, daily co-regulation mechanism."
+    </blockquote>
+    <cite>Xinghao Ni — Phase 2 Field Research Synthesis, EDNA Nantes 2025</cite>
+  </div>
+</section>
+
+    <!-- ══ REFERENCES ══ -->
+    <div class="ref-section">
+      <p class="r-section-eyebrow">Bibliography &amp; Data Sources</p>
+      <h2 class="r-section-title" style="margin-bottom:0">
+        Academic <strong>References</strong>
+      </h2>
+      <div class="ref-grid">
+        <div class="ref-item"><span class="ref-num">01</span>Beck, A. M., &amp; Clark, C. C. (2011). Animal-assisted therapy and the regulation of emotional arousal. <em>Anthrozoös</em>, 24(3), 223–238.</div>
+        <div class="ref-item"><span class="ref-num">02</span>Davis, H., &amp; Valla, F. R. (1978). Evidence for domestication of the dog 12,000 years ago in the Natufian of Israel. <em>Nature</em>, 276, 608–610.</div>
+        <div class="ref-item"><span class="ref-num">03</span>Geist, T. S. (2011). Conceptual framework for animal assisted intervention. <em>Child &amp; Adolescent Social Work Journal</em>, 28(3), 243–256.</div>
+        <div class="ref-item"><span class="ref-num">04</span>Katcher, A., &amp; Wilkins, G. G. (1998). Animal-assisted therapy in the treatment of disruptive behavior disorders in children. <em>The Environment and Mental Health</em>, 193–204.</div>
+        <div class="ref-item"><span class="ref-num">05</span>Marcus, D. A. (2013). The science behind animal-assisted therapy. <em>Current Pain and Headache Reports</em>, 17(4), 322.</div>
+        <div class="ref-item"><span class="ref-num">06</span>Murry, B. L., &amp; Allen, K. (2012). Oxytocin and autism spectrum disorders: A systematic review. <em>Journal of Autism and Developmental Disorders</em>, 43(4), 785–795.</div>
+        <div class="ref-item"><span class="ref-num">07</span>O'Haire, M. E., McKenzie, S. J., McCune, S., &amp; Slaughter, V. (2013). Social behaviors increase in children with autism in the presence of animals. <em>PLOS ONE</em>, 8(2).</div>
+        <div class="ref-item"><span class="ref-num">08</span>CDC ADDM Network (2023). Prevalence and characteristics of autism spectrum disorder among children. <em>MMWR Surveillance Summaries</em>, 72(2).</div>
+        <div class="ref-item"><span class="ref-num">09</span>Silverman, P. R., &amp; Worden, J. W. (1992). Children's reactions in the early months after the death of a parent. <em>American Journal of Orthopsychiatry</em>, 62(1), 93–104.</div>
+        <div class="ref-item"><span class="ref-num">10</span>Ni, X. (2025). <em>The introduction to reptile-assisted therapy for Level 1 ASD</em>. ESP Thesis, L'École de design Nantes Atlantique.</div>
+        <div class="ref-item"><span class="ref-num">11</span>IAHAIO (2022). White paper on animal-assisted interventions. International Association of Human-Animal Interaction Organizations.</div>
+        <div class="ref-item"><span class="ref-num">12</span>Baranek, G. T., David, F. J., Poe, M. D., Stone, W. L., &amp; Watson, L. R. (2006). Sensory Experiences Questionnaire. <em>Journal of Child Psychology and Psychiatry</em>, 47(6), 591–601.</div>
+      </div>
+    </div>
+
+    <footer class="r-footer">
+      <span>Reptile-Assisted Therapy Research · EDNA Nantes · 2025</span>
+      <span>Xinghao NI — ESP Thesis</span>
+    </footer>
+
+  </main>
+</div><!-- end page-wrap -->
+
+<script>
+/* ── Cursor glow ── */
+const cur = document.getElementById('cursor');
+document.addEventListener('mousemove', e => {
+  cur.style.left = e.clientX + 'px';
+  cur.style.top  = e.clientY + 'px';
+});
+
+/* ── Scroll progress bar ── */
+const bar = document.getElementById('scrollBar');
+window.addEventListener('scroll', () => {
+  const h = document.documentElement.scrollHeight - window.innerHeight;
+  bar.style.transform = `scaleX(${window.scrollY / h})`;
+}, {passive:true});
+
+/* ── Sidebar clock ── */
+function updateClock() {
+  const el = document.getElementById('sidebarTime');
+  if (el) el.textContent = new Date().toLocaleTimeString('en-US',{hour12:false});
+}
+setInterval(updateClock, 1000); updateClock();
+
+/* ── Reveal on scroll ── */
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, {threshold:0.12});
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+/* ── Counter animation ── */
+function animateCounter(el) {
+  const target = parseInt(el.dataset.target);
+  const sup = el.querySelector('sup');
+  let start = 0;
+  const step = () => {
+    start = Math.min(start + Math.ceil(target / 40), target);
+    el.childNodes[0].textContent = start;
+    if (start < target) requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
+}
+const counterObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) { animateCounter(e.target); counterObs.unobserve(e.target); }
+  });
+}, {threshold:0.5});
+document.querySelectorAll('.counter').forEach(el => counterObs.observe(el));
+
+/* ── Oxytocin bars ── */
+const oxyObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.currentTarget.querySelectorAll('.oxy-bar-fill').forEach(fill => {
+        setTimeout(() => { fill.style.width = fill.dataset.w + '%'; }, 200);
+      });
+      oxyObs.unobserve(e.currentTarget);
+    }
+  });
+}, {threshold:0.3});
+const oxyWrap = document.getElementById('oxyBars');
+if (oxyWrap) oxyObs.observe(oxyWrap.closest('.oxy-wrap'));
+
+/* ── Chart.js defaults ── */
+Chart.defaults.color = 'rgba(138,135,132,0.8)';
+Chart.defaults.borderColor = 'rgba(255,255,255,0.06)';
+Chart.defaults.font.family = "-apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif";
+Chart.defaults.font.size = 11;
+
+const orange = '#d96e28', orangeLt = '#e8884a', orangeDim = 'rgba(217,110,40,0.15)';
+const green = '#4a8c68', red = '#c05050', blue = '#4a6e9a';
+
+/* 1. Sensory Input */
+new Chart('sensoryChart', {type:'bar', data:{
+  labels:['Dog','Horse','Cat','Rabbit','Bearded Dragon','Gecko','Ball Python'],
+  datasets:[{
+    label:'Sensory Load Score',
+    data:[8.5,9.2,6.0,5.5,2.8,2.2,2.5],
+    backgroundColor:[red,red,'rgba(192,80,80,0.6)','rgba(192,80,80,0.5)',orange,orangeLt,'rgba(217,110,40,0.7)'],
+    borderRadius:4,borderSkipped:false,
+  }]
+}, options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+  scales:{y:{max:10,grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'rgba(138,135,132,0.7)'}},
+    x:{grid:{display:false},ticks:{color:'rgba(138,135,132,0.7)'}}}}});
+
+/* 2. Predictability */
+new Chart('predictChart', {type:'bar', data:{
+  labels:['Dog','Horse','Cat','Rabbit','Bearded Dragon','Gecko','Ball Python'],
+  datasets:[{
+    label:'Predictability Score',
+    data:[5.5,5.0,4.2,6.0,8.8,9.0,8.5],
+    backgroundColor:['rgba(74,140,104,0.4)','rgba(74,140,104,0.4)','rgba(74,140,104,0.4)','rgba(74,140,104,0.5)',green,'rgba(74,140,104,0.9)','rgba(74,140,104,0.8)'],
+    borderRadius:4,borderSkipped:false,
+  }]
+}, options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+  scales:{y:{max:10,grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'rgba(138,135,132,0.7)'}},
+    x:{grid:{display:false},ticks:{color:'rgba(138,135,132,0.7)'}}}}});
+
+/* 3. Attitude */
+new Chart('attitudeChart', {type:'doughnut', data:{
+  labels:['Neutral / Curious','Positive','Negative / Fear'],
+  datasets:[{data:[52,28,20],
+    backgroundColor:[orange,'rgba(74,140,104,0.85)',red],
+    borderColor:'rgba(0,0,0,0)',borderWidth:0,hoverOffset:6}]
+}, options:{responsive:true,maintainAspectRatio:false,cutout:'65%',
+  plugins:{legend:{position:'bottom',labels:{padding:16,usePointStyle:true,pointStyle:'circle'}}}}});
+
+/* 4. Ownership barriers */
+new Chart('barrierChart', {type:'bar', data:{
+  labels:['Housing','Cost','Fear','Family','Time','No interest'],
+  datasets:[{
+    data:[38,24,18,12,6,2],
+    backgroundColor:orangeDim, borderColor:orange, borderWidth:1,
+    borderRadius:4,borderSkipped:false,
+  }]
+}, options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
+  plugins:{legend:{display:false}},
+  scales:{x:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'rgba(138,135,132,0.7)'}},
+    y:{grid:{display:false},ticks:{color:'rgba(138,135,132,0.7)'}}}}});
+
+/* 5. Motivations */
+new Chart('motivChart', {type:'polarArea', data:{
+  labels:['Originality','Passion','Aesthetics','Low maintenance','Observation','Exotic appeal'],
+  datasets:[{data:[25,20,18,16,12,9],
+    backgroundColor:[
+      'rgba(217,110,40,0.6)','rgba(217,110,40,0.45)','rgba(217,110,40,0.35)',
+      'rgba(74,140,104,0.5)','rgba(74,110,154,0.5)','rgba(150,80,80,0.45)'],
+    borderColor:'rgba(0,0,0,0)'}]
+}, options:{responsive:true,maintainAspectRatio:false,
+  plugins:{legend:{position:'bottom',labels:{padding:10,usePointStyle:true,pointStyle:'circle',font:{size:10}}}},
+  scales:{r:{grid:{color:'rgba(255,255,255,0.05)'},ticks:{display:false}}}}});
+
+/* 6. Mechanism radar */
+new Chart('mechChart', {type:'radar', data:{
+  labels:['Cortisol ↓','Oxytocin ↑','Attention','Calm','Social ease','Routine'],
+  datasets:[
+    {label:'Before RAT',data:[80,25,40,35,30,45],
+     borderColor:red,backgroundColor:'rgba(192,80,80,0.1)',pointRadius:3,tension:0.3},
+    {label:'After 8wk RAT',data:[40,65,70,72,58,80],
+     borderColor:green,backgroundColor:'rgba(74,140,104,0.15)',pointRadius:3,tension:0.3},
+  ]
+}, options:{responsive:true,maintainAspectRatio:false,
+  plugins:{legend:{position:'bottom',labels:{padding:12,usePointStyle:true,pointStyle:'circle'}}},
+  scales:{r:{min:0,max:100,grid:{color:'rgba(255,255,255,0.05)'},
+    pointLabels:{color:'rgba(138,135,132,0.8)',font:{size:10}},
+    ticks:{display:false}}}}});
+
+/* 7. Session chart */
+new Chart('sessionChart', {type:'bar', data:{
+  labels:['Ph.1','Ph.2','Ph.3','Ph.4','Ph.5'],
+  datasets:[
+    {label:'Sessions / week',data:[1,2,2,3,2],backgroundColor:orangeDim,borderColor:orange,borderWidth:1,borderRadius:4},
+    {label:'Min / session',data:[20,30,40,45,30],backgroundColor:'rgba(74,140,104,0.15)',borderColor:green,borderWidth:1,borderRadius:4},
+  ]
+}, options:{responsive:true,maintainAspectRatio:false,
+  plugins:{legend:{position:'bottom',labels:{padding:12,usePointStyle:true,pointStyle:'circle'}}},
+  scales:{y:{grid:{color:'rgba(255,255,255,0.04)'}},x:{grid:{display:false}}}}});
+
+/* 8. Progress line */
+new Chart('progressChart', {type:'line', data:{
+  labels:['Wk 1','Wk 2','Wk 3','Wk 4','Wk 5','Wk 6','Wk 7','Wk 8','Wk 9','Wk 10','Wk 11','Wk 12'],
+  datasets:[
+    {label:'Emotional Regulation',data:[30,32,35,40,42,50,55,60,64,70,74,78],
+     borderColor:orange,backgroundColor:'rgba(217,110,40,0.08)',fill:true,tension:0.4,pointRadius:3},
+    {label:'Social Engagement',data:[20,21,24,28,32,38,42,48,54,58,62,68],
+     borderColor:green,backgroundColor:'rgba(74,140,104,0.06)',fill:true,tension:0.4,pointRadius:3},
+  ]
+}, options:{responsive:true,maintainAspectRatio:false,
+  plugins:{legend:{position:'bottom',labels:{padding:12,usePointStyle:true,pointStyle:'circle'}}},
+  scales:{y:{min:0,max:100,grid:{color:'rgba(255,255,255,0.04)'}},
+    x:{grid:{display:false}}}}});
+</script>
+</body>
+</html>

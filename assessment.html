@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Psychological Assessments — PetCare Pro</title>
+<link rel="stylesheet" href="shared.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+.score-banner { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:18px; }
+.score-card {
+  background:var(--bg-card-alt); border:1px solid var(--border);
+  border-radius:12px; padding:16px; text-align:center; position:relative; overflow:hidden;
+}
+.score-card::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; }
+.sc-orange::before { background:linear-gradient(90deg,#f59e0b,#fcd34d); }
+.sc-green::before  { background:linear-gradient(90deg,#10b981,#6ee7b7); }
+.sc-blue::before   { background:linear-gradient(90deg,#3b82f6,#93c5fd); }
+.score-num { font-size:34px; font-weight:900; margin:8px 0 4px; }
+.score-name{ font-size:12px; color:#6b7280; }
+.score-pill{ display:inline-block; padding:3px 10px; border-radius:12px; font-size:11px; font-weight:600; margin-top:8px; }
+
+.q-block { padding:14px 0; border-bottom:1px solid rgba(31,41,55,.8); }
+.q-block:last-child { border-bottom:none; }
+.q-text { font-size:14px; font-weight:600; color:#e2e8f0; margin-bottom:4px; }
+.q-hint { font-size:11px; color:#6b7280; margin-bottom:10px; }
+.likert { display:flex; gap:6px; flex-wrap:wrap; }
+.l-opt {
+  padding:5px 14px; border-radius:6px; border:1px solid #1f2937;
+  cursor:pointer; font-size:12px; color:#6b7280;
+  transition:all .15s; user-select:none;
+}
+.l-opt:hover { border-color:#4299e1; color:#e2e8f0; }
+.l-opt.sel { background:rgba(66,153,225,.18); border-color:#4299e1; color:#63b3ed; font-weight:600; }
+
+.dim-row { display:flex; align-items:center; gap:12px; padding:9px 0; border-bottom:1px solid rgba(31,41,55,.6); }
+.dim-row:last-child { border-bottom:none; }
+.dim-name { min-width:130px; font-size:13px; color:#9ca3af; }
+.dim-track { flex:1; background:#1a1f2e; border-radius:5px; height:9px; overflow:hidden; }
+.dim-fill { height:100%; border-radius:5px; transition:width 1.5s ease; }
+.dim-val { min-width:55px; text-align:right; font-size:13px; font-weight:700; }
+
+.history-entry {
+  display:flex; align-items:center; gap:12px; padding:12px;
+  background:#0d111c; border-radius:8px; margin-bottom:8px;
+  border-left:3px solid;
+}
+</style>
+</head>
+<body>
+<div class="app-container">
+  <nav class="sidebar">
+    <div class="sidebar-logo" style="justify-content:center;padding:24px 12px 20px;">
+  <img src="assets/tonitruum-logo-white.png" alt="TONITRUUM"
+       style="width:100%;height:auto;max-width:180px;opacity:0.85;">
+</div>
+    <ul class="nav-list">
+      <li class="nav-section">Monitor</li>
+      <li class="nav-item"><a href="index.html"><span class="nav-icon">⬡</span>Habitat Monitor</a></li>
+      <li class="nav-section">Clinical</li>
+      <li class="nav-item"><a href="autism.html"><span class="nav-icon">♡</span>Patient Care</a></li>
+      <li class="nav-item active"><a href="assessment.html"><span class="nav-icon">≡</span>Assessments</a></li>
+      <li class="nav-item"><a href="parent-form.html"><span class="nav-icon">✎</span>Parent Reports</a></li>
+      <li class="nav-item"><a href="medical.html"><span class="nav-icon">✚</span>Medical Consult</a></li>
+      <li class="nav-section">Strategy</li>
+      <li class="nav-item"><a href="service.html"><span class="nav-icon">◎</span>Service Overview</a></li>
+      <li class="nav-item"><a href="stakeholder.html"><span class="nav-icon">◉</span>Stakeholder Map</a></li>
+      <li class="nav-item"><a href="product.html"><span class="nav-icon">◈</span>Product Design</a></li>
+      <li class="nav-section">Project</li>
+      <li class="nav-item"><a href="phase0.html"><span class="nav-icon">◫</span>Phase 0 Origin</a></li>
+      <li class="nav-item"><a href="phase1.html"><span class="nav-icon">◧</span>Phase 1 Research</a></li>
+      <li class="nav-item"><a href="founder.html"><span class="nav-icon">◐</span>Founder</a></li>
+      <li class="nav-item"><a href="research.html"><span class="nav-icon">◇</span>Reptile Therapy</a></li>
+      <li class="nav-item"><a href="market.html"><span class="nav-icon">◆</span>Business Model</a></li>
+      <li class="nav-section">Play</li>
+      <li class="nav-item"><a href="game.html"><span class="nav-icon">◎</span>Cricket Hunter</a></li>
+    
+    
+    </ul>
+    <div class="sidebar-footer"><div class="sys-status"><span class="status-indicator status-good"></span>All Systems Online</div><div class="sys-time" id="sidebarTime"></div></div>
+  </nav>
+
+  <main class="main-content">
+    <header class="page-header">
+      <div>
+        <h1 class="page-title">Psychological Assessment Center</h1>
+        <p class="page-desc">CARS Scale · AAT Progress Index · Multi-Dimensional Tracking</p>
+      </div>
+      <div class="header-actions">
+        <button class="btn btn-outline" onclick="resetForm()">↺ Reset</button>
+        <button class="btn btn-primary" onclick="submitAssessment()">✓ Submit & Generate Report</button>
+      </div>
+    </header>
+
+    <!-- Score Banner -->
+    <div class="score-banner">
+      <div class="score-card sc-orange">
+        <div class="score-name">CARS Rating Scale</div>
+        <div class="score-num" style="color:#f59e0b;" id="carsScore">32</div>
+        <div class="score-pill" style="background:rgba(245,158,11,.15);color:#fcd34d;border:1px solid rgba(245,158,11,.3);">Mild–Moderate ASD</div>
+      </div>
+      <div class="score-card sc-green">
+        <div class="score-name">AAT Improvement Index</div>
+        <div class="score-num" style="color:#10b981;" id="aatScore">76</div>
+        <div class="score-pill" style="background:rgba(16,185,129,.15);color:#6ee7b7;border:1px solid rgba(16,185,129,.3);">Good Progress</div>
+      </div>
+      <div class="score-card sc-blue">
+        <div class="score-name">Social-Emotional Development</div>
+        <div class="score-num" style="color:#3b82f6;" id="socialScore">58</div>
+        <div class="score-pill" style="background:rgba(59,130,246,.15);color:#93c5fd;border:1px solid rgba(59,130,246,.3);">Steady Improvement</div>
+      </div>
+    </div>
+
+    <div class="content-grid" style="grid-template-columns:1fr 1fr;">
+      <!-- Radar -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">🕸️ Ability Profile — Radar Chart</span>
+          <span class="badge badge-blue">Current vs Previous</span>
+        </div>
+        <div style="position:relative;height:260px;"><canvas id="radarChart"></canvas></div>
+      </div>
+      <!-- Trend -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">📈 8-Session Progress Trend</span>
+          <span class="badge badge-green">8-Week Track</span>
+        </div>
+        <div style="position:relative;height:260px;"><canvas id="trendChart"></canvas></div>
+      </div>
+    </div>
+
+    <!-- Dimension breakdown -->
+    <div class="card" style="margin-top:14px;">
+      <div class="card-header"><span class="card-title">📋 Domain Breakdown</span></div>
+      <div style="columns:2;column-gap:32px;">
+        <div class="dim-row"><div class="dim-name">Social Communication</div><div class="dim-track"><div class="dim-fill" style="width:58%;background:#3b82f6;"></div></div><div class="dim-val" style="color:#63b3ed;">58</div></div>
+        <div class="dim-row"><div class="dim-name">Emotional Regulation</div><div class="dim-track"><div class="dim-fill" style="width:62%;background:#48bb78;"></div></div><div class="dim-val" style="color:#68d391;">62</div></div>
+        <div class="dim-row"><div class="dim-name">Behavior Patterns</div><div class="dim-track"><div class="dim-fill" style="width:45%;background:#ed8936;"></div></div><div class="dim-val" style="color:#f6ad55;">45</div></div>
+        <div class="dim-row"><div class="dim-name">Sensory Integration</div><div class="dim-track"><div class="dim-fill" style="width:70%;background:#805ad5;"></div></div><div class="dim-val" style="color:#b794f4;">70</div></div>
+        <div class="dim-row"><div class="dim-name">Cognitive Development</div><div class="dim-track"><div class="dim-fill" style="width:65%;background:#38b2ac;"></div></div><div class="dim-val" style="color:#76e4f7;">65</div></div>
+        <div class="dim-row"><div class="dim-name">Language Expression</div><div class="dim-track"><div class="dim-fill" style="width:40%;background:#fc8181;"></div></div><div class="dim-val" style="color:#fc8181;">40</div></div>
+        <div class="dim-row"><div class="dim-name">Motor Development</div><div class="dim-track"><div class="dim-fill" style="width:78%;background:#48bb78;"></div></div><div class="dim-val" style="color:#68d391;">78</div></div>
+        <div class="dim-row"><div class="dim-name">Animal Affinity (AAT)</div><div class="dim-track"><div class="dim-fill" style="width:82%;background:#4299e1;"></div></div><div class="dim-val" style="color:#63b3ed;">82</div></div>
+      </div>
+    </div>
+
+    <!-- CARS Form -->
+    <div style="margin-top:20px;">
+      <div class="section-title">📝 CARS Assessment Form — Current Session</div>
+      <div class="alert alert-info" style="margin-bottom:14px;">
+        <span>ℹ️</span><span>Rate each item based on observations from the past two weeks. Select the most accurate descriptor.</span>
+      </div>
+
+      <div class="card" style="margin-bottom:14px;">
+        <div style="font-size:12px;color:#6b7280;text-transform:uppercase;letter-spacing:.7px;margin-bottom:14px;">Part I — Social Relationships</div>
+        <div class="q-block">
+          <div class="q-text">1. Relating to People</div>
+          <div class="q-hint">Observe frequency and quality of social initiations toward therapist and peers</div>
+          <div class="likert">
+            <label class="l-opt"><input type="radio" name="q1" value="1" style="display:none">1 — Age-appropriate</label>
+            <label class="l-opt sel"><input type="radio" name="q1" value="2" checked style="display:none">2 — Mild: Avoids contact</label>
+            <label class="l-opt"><input type="radio" name="q1" value="3" style="display:none">3 — Moderate: Marked withdrawal</label>
+            <label class="l-opt"><input type="radio" name="q1" value="4" style="display:none">4 — Severe: Completely aloof</label>
+          </div>
+        </div>
+        <div class="q-block">
+          <div class="q-text">2. Imitation (verbal & motor)</div>
+          <div class="q-hint">Ability to copy sounds, words, and simple gestures when prompted</div>
+          <div class="likert">
+            <label class="l-opt"><input type="radio" name="q2" value="1" style="display:none">1 — Appropriate imitation</label>
+            <label class="l-opt sel"><input type="radio" name="q2" value="2" checked style="display:none">2 — Imitates most of the time</label>
+            <label class="l-opt"><input type="radio" name="q2" value="3" style="display:none">3 — Imitates occasionally</label>
+            <label class="l-opt"><input type="radio" name="q2" value="4" style="display:none">4 — Never imitates</label>
+          </div>
+        </div>
+        <div class="q-block">
+          <div class="q-text">3. Emotional Response</div>
+          <div class="q-hint">Appropriateness of emotional reactions to social and environmental stimuli</div>
+          <div class="likert">
+            <label class="l-opt"><input type="radio" name="q3" value="1" style="display:none">1 — Age-appropriate</label>
+            <label class="l-opt"><input type="radio" name="q3" value="2" style="display:none">2 — Mildly abnormal</label>
+            <label class="l-opt sel"><input type="radio" name="q3" value="3" checked style="display:none">3 — Moderately abnormal</label>
+            <label class="l-opt"><input type="radio" name="q3" value="4" style="display:none">4 — Severely abnormal</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom:14px;">
+        <div style="font-size:12px;color:#6b7280;text-transform:uppercase;letter-spacing:.7px;margin-bottom:14px;">Part II — Communication</div>
+        <div class="q-block">
+          <div class="q-text">4. Verbal Communication</div>
+          <div class="q-hint">Quality, quantity, and peculiarity of verbal output</div>
+          <div class="likert">
+            <label class="l-opt"><input type="radio" name="q4" value="1" style="display:none">1 — Normal for age</label>
+            <label class="l-opt sel"><input type="radio" name="q4" value="2" checked style="display:none">2 — Limited but intelligible</label>
+            <label class="l-opt"><input type="radio" name="q4" value="3" style="display:none">3 — Echolalic / peculiar</label>
+            <label class="l-opt"><input type="radio" name="q4" value="4" style="display:none">4 — Absent or minimal</label>
+          </div>
+        </div>
+        <div class="q-block">
+          <div class="q-text">5. Non-Verbal Communication</div>
+          <div class="q-hint">Use and comprehension of gestures, eye contact, and facial expression</div>
+          <div class="likert">
+            <label class="l-opt"><input type="radio" name="q5" value="1" style="display:none">1 — Uses appropriately</label>
+            <label class="l-opt"><input type="radio" name="q5" value="2" style="display:none">2 — Mildly reduced</label>
+            <label class="l-opt sel"><input type="radio" name="q5" value="3" checked style="display:none">3 — Limited non-verbal</label>
+            <label class="l-opt"><input type="radio" name="q5" value="4" style="display:none">4 — Rarely uses</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom:14px;">
+        <div style="font-size:12px;color:#6b7280;text-transform:uppercase;letter-spacing:.7px;margin-bottom:14px;">Part III — Behavior Characteristics</div>
+        <div class="q-block">
+          <div class="q-text">6. Activity Level</div>
+          <div class="q-hint">Overall activity — hyperactive, hypoactive, or appropriate range</div>
+          <div class="likert">
+            <label class="l-opt"><input type="radio" name="q6" value="1" style="display:none">1 — Normal</label>
+            <label class="l-opt sel"><input type="radio" name="q6" value="2" checked style="display:none">2 — Slightly overactive</label>
+            <label class="l-opt"><input type="radio" name="q6" value="3" style="display:none">3 — Markedly abnormal</label>
+            <label class="l-opt"><input type="radio" name="q6" value="4" style="display:none">4 — Extremely abnormal</label>
+          </div>
+        </div>
+        <div class="q-block">
+          <div class="q-text">7. Stereotyped / Repetitive Behaviors</div>
+          <div class="q-hint">Frequency and intensity of repetitive motor mannerisms</div>
+          <div class="likert">
+            <label class="l-opt"><input type="radio" name="q7" value="1" style="display:none">1 — Not present</label>
+            <label class="l-opt"><input type="radio" name="q7" value="2" style="display:none">2 — Occasionally present</label>
+            <label class="l-opt sel"><input type="radio" name="q7" value="3" checked style="display:none">3 — Frequently present</label>
+            <label class="l-opt"><input type="radio" name="q7" value="4" style="display:none">4 — Constant / intense</label>
+          </div>
+        </div>
+        <div class="q-block">
+          <div class="q-text">8. AAT Engagement (Supplemental)</div>
+          <div class="q-hint">Willingness and engagement level in animal-assisted therapy sessions</div>
+          <div class="likert">
+            <label class="l-opt"><input type="radio" name="q8" value="1" style="display:none">1 — Highly enthusiastic</label>
+            <label class="l-opt sel"><input type="radio" name="q8" value="2" checked style="display:none">2 — Positively engaged</label>
+            <label class="l-opt"><input type="radio" name="q8" value="3" style="display:none">3 — Neutral</label>
+            <label class="l-opt"><input type="radio" name="q8" value="4" style="display:none">4 — Resistant</label>
+          </div>
+        </div>
+      </div>
+
+      <div id="resultBox" style="display:none;" class="card" style="border-color:rgba(72,187,120,.4);">
+        <div style="font-size:15px;font-weight:700;color:#68d391;margin-bottom:10px;">✅ Assessment Summary</div>
+        <div id="resultText" style="font-size:13px;color:#a0aec0;line-height:1.8;"></div>
+      </div>
+    </div>
+
+    <!-- History -->
+    <div style="margin-top:20px;">
+      <div class="section-title">📅 Assessment History</div>
+      <div class="history-entry" style="border-color:#48bb78;"><div style="min-width:100px;font-size:12px;color:#6b7280;">Mar 24, 2026</div><div style="flex:1;"><div style="font-size:13px;font-weight:600;">Session #8</div><div style="font-size:12px;color:#a0aec0;margin-top:2px;">CARS: 32 · Social: 58 · Language: 40 · Animal Affinity: 82</div></div><span class="badge badge-green">Significant Progress</span></div>
+      <div class="history-entry" style="border-color:#4299e1;"><div style="min-width:100px;font-size:12px;color:#6b7280;">Mar 10, 2026</div><div style="flex:1;"><div style="font-size:13px;font-weight:600;">Session #7</div><div style="font-size:12px;color:#a0aec0;margin-top:2px;">CARS: 34 · Social: 52 · Language: 35 · Animal Affinity: 74</div></div><span class="badge badge-blue">Continued Progress</span></div>
+      <div class="history-entry" style="border-color:#f6ad55;"><div style="min-width:100px;font-size:12px;color:#6b7280;">Feb 24, 2026</div><div style="flex:1;"><div style="font-size:13px;font-weight:600;">Session #6</div><div style="font-size:12px;color:#a0aec0;margin-top:2px;">CARS: 36 · Social: 45 · Language: 30 · Animal Affinity: 65</div></div><span class="badge badge-orange">Stable Progress</span></div>
+      <div class="history-entry" style="border-color:#718096;"><div style="min-width:100px;font-size:12px;color:#6b7280;">Feb 10, 2026</div><div style="flex:1;"><div style="font-size:13px;font-weight:600;">Session #5 — AAT Baseline</div><div style="font-size:12px;color:#a0aec0;margin-top:2px;">CARS: 38 · Social: 38 · Language: 28 · Animal Affinity: 42</div></div><span class="badge badge-gray">Baseline</span></div>
+    </div>
+  </main>
+</div>
+
+<script src="shared.js"></script>
+<script>
+// Radar
+new Chart(document.getElementById('radarChart').getContext('2d'),{
+  type:'radar',
+  data:{
+    labels:['Social Comm.','Emotional Reg.','Behavior','Sensory','Cognition','Language','Motor','Animal Affinity'],
+    datasets:[
+      {label:'Session 8 (Now)', data:[58,62,45,70,65,40,78,82], borderColor:'#4299e1', backgroundColor:'rgba(66,153,225,0.12)', pointBackgroundColor:'#4299e1', borderWidth:2, pointRadius:4},
+      {label:'Session 7', data:[52,55,42,65,60,35,76,74], borderColor:'#718096', backgroundColor:'rgba(113,128,150,0.06)', pointBackgroundColor:'#718096', borderWidth:1.5, borderDash:[4,2], pointRadius:3}
+    ]
+  },
+  options:{responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{labels:{color:'#a0aec0',font:{size:11}}}},
+    scales:{r:{min:0,max:100, ticks:{color:'#6b7280',font:{size:9},stepSize:25,backdropColor:'transparent'}, grid:{color:'#1f2937'}, pointLabels:{color:'#a0aec0',font:{size:11}}}}}
+});
+
+// Trend
+new Chart(document.getElementById('trendChart').getContext('2d'),{
+  type:'line',
+  data:{
+    labels:['#1','#2','#3','#4','#5','#6','#7','#8'],
+    datasets:[
+      {label:'CARS Score ↓', data:[42,41,40,39,38,36,34,32], borderColor:'#f59e0b', tension:.4, pointRadius:4, borderWidth:2, yAxisID:'y'},
+      {label:'Animal Affinity', data:[30,38,45,52,58,65,74,82], borderColor:'#48bb78', tension:.4, pointRadius:4, borderWidth:2, yAxisID:'y2'},
+      {label:'Social Index',   data:[25,28,32,36,38,45,52,58], borderColor:'#4299e1', tension:.4, pointRadius:4, borderWidth:2, yAxisID:'y2'}
+    ]
+  },
+  options:{responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{labels:{color:'#a0aec0',font:{size:10}}}},
+    scales:{
+      x:{ticks:{color:'#6b7280',font:{size:10}},grid:{color:'#1f2937'}},
+      y:{position:'left',min:20,max:50,ticks:{color:'#f59e0b',font:{size:10}},grid:{color:'#1f2937'},title:{display:true,text:'CARS',color:'#f59e0b',font:{size:10}}},
+      y2:{position:'right',min:0,max:100,ticks:{color:'#718096',font:{size:10}},grid:{display:false},title:{display:true,text:'Index',color:'#718096',font:{size:10}}}
+    }}
+});
+
+// Likert
+document.querySelectorAll('.likert').forEach(g=>{
+  g.querySelectorAll('.l-opt').forEach(o=>{
+    o.addEventListener('click',()=>{
+      g.querySelectorAll('.l-opt').forEach(x=>x.classList.remove('sel'));
+      o.classList.add('sel');
+    });
+  });
+});
+
+function submitAssessment(){
+  const box=document.getElementById('resultBox'); const txt=document.getElementById('resultText');
+  box.style.display='block';
+  box.style.borderColor='rgba(72,187,120,.4)';
+  txt.innerHTML=`<strong>Assessment Date:</strong> March 24, 2026 · 15:42<br><strong>Clinician:</strong> Dr. Sarah Lee<br><strong>CARS Total:</strong> <span style="color:#f59e0b;font-weight:700;">32 — Mild to Moderate ASD</span><br><strong>AAT Effectiveness:</strong> <span style="color:#68d391;font-weight:700;">Significant (+40% from baseline)</span><br><br><strong>Key Recommendations:</strong><br>1. Continue AAT 3×/week; introduce guided feeding activity from Week 4<br>2. Focus language therapy on animal-themed vocabulary expansion<br>3. Emotional regulation shows progress — add emotion-recognition games<br>4. Next assessment scheduled: April 7, 2026`;
+  box.scrollIntoView({behavior:'smooth'});
+  showToast('Assessment report generated','success');
+}
+function resetForm(){
+  document.querySelectorAll('.l-opt').forEach(o=>o.classList.remove('sel'));
+  document.getElementById('resultBox').style.display='none';
+  showToast('Form reset','info');
+}
+</script>
+</body>
+</html>

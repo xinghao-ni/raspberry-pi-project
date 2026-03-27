@@ -1,0 +1,3187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reptile-Mediated Emotional Support — Service Overview</title>
+<link rel="stylesheet" href="shared.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+/* ══════════════════════════════════════════
+   SERVICE PAGE — PREMIUM THEME
+   Palette: sage green, warm beige, pale blue, terracotta, soft ivory
+   ══════════════════════════════════════════ */
+
+:root {
+  /* ── Centred layout engine ────────────────────────────────
+     --h-pad-base = the SYMMETRIC padding applied on the right
+     (and right of sidebar on the left) so the content block
+     is centred inside the visible viewport area.
+
+     Formula: whichever is larger of —
+       • a fluid minimum gap  : clamp(32px, 5vw, 80px)
+       • half the leftover space when content = 1100px max :
+         (visible_width − 1100px) / 2
+         where visible_width = 100vw − sidebar_w
+  ────────────────────────────────────────────────────────── */
+  --content-max: 1100px;
+  --h-pad-base: max(
+    clamp(32px, 5vw, 80px),
+    calc((100vw - var(--sidebar-w, 220px) - var(--content-max)) / 2)
+  );
+  --h-pad-left: calc(var(--sidebar-w, 220px) + var(--h-pad-base));
+
+  --sage:        #7c9e87;
+  --sage-light:  #a8c4ae;
+  --sage-dim:    rgba(124,158,135,0.15);
+  --beige:       #c9b99a;
+  --beige-light: #e8dcc8;
+  --beige-dim:   rgba(201,185,154,0.12);
+  --terra:       #b87057;
+  --terra-light: #d4956f;
+  --terra-dim:   rgba(184,112,87,0.15);
+  --pale-blue:   #7fb3c8;
+  --pale-blue-dim: rgba(127,179,200,0.12);
+  --ivory:       #f5f0e8;
+  --ink:         #1a1f2e;
+  --ink-soft:    #2a3245;
+  --glass-bg:    rgba(255,255,255,0.04);
+  --glass-border:rgba(255,255,255,0.09);
+}
+
+/* ── Override body bg for this page ── */
+body { background: var(--ink); }
+
+/* ── Sticky Side Nav ── */
+.side-nav {
+  position: fixed; top: 50%; right: 24px;
+  transform: translateY(-50%);
+  z-index: 200; display: flex; flex-direction: column; gap: 8px;
+}
+.side-nav-dot {
+  width: 10px; height: 10px; border-radius: 50%;
+  border: 2px solid rgba(255,255,255,0.25); cursor: pointer;
+  transition: all 0.3s; position: relative;
+}
+.side-nav-dot.active { border-color: var(--sage); background: var(--sage); }
+.side-nav-dot:hover  { border-color: var(--beige); transform: scale(1.3); }
+.side-nav-dot::before {
+  content: attr(data-label);
+  position: absolute; right: 18px; top: 50%; transform: translateY(-50%);
+  white-space: nowrap; background: rgba(26,31,46,0.9); color: var(--beige-light);
+  font-size: 11px; padding: 3px 8px; border-radius: 4px;
+  opacity: 0; pointer-events: none; transition: opacity 0.2s;
+  border: 1px solid var(--glass-border);
+}
+.side-nav-dot:hover::before { opacity: 1; }
+
+/* ── Mouse-follow glow ── */
+.mouse-glow {
+  position: fixed; width: 400px; height: 400px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(124,158,135,0.06) 0%, transparent 70%);
+  pointer-events: none; z-index: 0; transform: translate(-50%,-50%);
+  transition: left 0.4s ease, top 0.4s ease;
+}
+
+/* ── Section base — centred layout ── */
+.svc-section {
+  position: relative; z-index: 1;
+  padding: 80px var(--h-pad-base) 80px var(--h-pad-left);
+  max-width: none;   /* padding formula handles width */
+  box-sizing: border-box;
+}
+@media (max-width: 900px) {
+  .svc-section { padding: 60px 24px 60px calc(var(--sidebar-w, 220px) + 24px); }
+}
+
+/* ── Section anchor ── */
+.sec-anchor { position: absolute; top: -80px; }
+
+/* ── Section label ── */
+.sec-eyebrow {
+  font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--sage); margin-bottom: 12px; font-weight: 600;
+}
+.sec-title {
+  font-size: clamp(26px, 3.5vw, 42px);
+  font-weight: 700; line-height: 1.2;
+  color: var(--beige-light); margin-bottom: 14px;
+}
+.sec-desc {
+  font-size: 15px; color: rgba(255,255,255,0.55);
+  max-width: 600px; line-height: 1.8;
+}
+
+/* ── Glass card ── */
+.glass {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  backdrop-filter: blur(12px);
+}
+
+/* ════════════════
+   A — HERO
+   ════════════════ */
+.hero-section {
+  min-height: 100vh; display: flex; align-items: center;
+  padding: 0 var(--h-pad-base) 0 var(--h-pad-left);
+  position: relative; overflow: hidden;
+  box-sizing: border-box;
+}
+.hero-bg {
+  position: absolute; inset: 0; z-index: 0;
+  background: radial-gradient(ellipse 80% 60% at 70% 40%,
+    rgba(124,158,135,0.12) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 50% at 20% 80%,
+    rgba(184,112,87,0.08) 0%, transparent 55%);
+}
+.hero-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 60px;
+  align-items: center; position: relative; z-index: 1; width: 100%;
+  max-width: 1080px;
+}
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 5px 14px; border-radius: 20px;
+  background: var(--sage-dim); border: 1px solid rgba(124,158,135,0.3);
+  color: var(--sage-light); font-size: 12px; font-weight: 600;
+  letter-spacing: 0.5px; margin-bottom: 22px;
+}
+.hero-title {
+  font-size: clamp(32px, 4vw, 52px); font-weight: 800; line-height: 1.15;
+  color: var(--beige-light); margin-bottom: 20px;
+}
+.hero-title em { font-style: normal; color: var(--sage-light); }
+.hero-sub {
+  font-size: 16px; color: rgba(255,255,255,0.5); line-height: 1.8;
+  margin-bottom: 32px; max-width: 480px;
+}
+.hero-cta-row { display: flex; gap: 14px; flex-wrap: wrap; }
+.btn-sage {
+  padding: 11px 24px; border-radius: 10px; border: none;
+  background: var(--sage); color: white; font-size: 14px;
+  font-weight: 600; cursor: pointer; transition: all 0.2s;
+  display: inline-flex; align-items: center; gap: 8px;
+}
+.btn-sage:hover { background: var(--sage-light); transform: translateY(-1px); box-shadow: 0 8px 24px rgba(124,158,135,0.3); }
+.btn-ghost-sage {
+  padding: 11px 24px; border-radius: 10px;
+  background: transparent; color: var(--sage-light);
+  border: 1px solid rgba(124,158,135,0.4);
+  font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s;
+  display: inline-flex; align-items: center; gap: 8px;
+}
+.btn-ghost-sage:hover { background: var(--sage-dim); transform: translateY(-1px); }
+
+/* Ecosystem Diagram */
+.ecosystem-wrap { position: relative; }
+#ecosystemCanvas { width: 100%; max-width: 440px; display: block; margin: 0 auto; }
+
+/* ════════════════
+   B — PROBLEM
+   ════════════════ */
+.problem-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 40px; }
+.problem-card {
+  padding: 24px; border-radius: 14px;
+  background: var(--glass-bg); border: 1px solid var(--glass-border);
+}
+.problem-card.highlight {
+  border-color: rgba(124,158,135,0.3);
+  background: linear-gradient(135deg, rgba(124,158,135,0.08), rgba(184,112,87,0.05));
+}
+.problem-num { font-size: 36px; font-weight: 800; color: var(--sage); margin-bottom: 8px; }
+.problem-text { font-size: 13.5px; color: rgba(255,255,255,0.6); line-height: 1.7; }
+.disclaimer-box {
+  margin-top: 32px; padding: 16px 20px;
+  background: var(--terra-dim); border: 1px solid rgba(184,112,87,0.25);
+  border-radius: 10px; font-size: 12.5px; color: rgba(255,255,255,0.5);
+  line-height: 1.7;
+}
+.disclaimer-box strong { color: var(--terra-light); }
+
+/* ════════════════
+   C — ELIGIBILITY
+   ════════════════ */
+.elig-tabs { display: flex; gap: 4px; margin-bottom: 28px; }
+.elig-tab {
+  padding: 9px 22px; border-radius: 8px; border: 1px solid var(--glass-border);
+  background: transparent; color: rgba(255,255,255,0.45); font-size: 13px;
+  cursor: pointer; transition: all 0.2s; font-family: inherit; font-weight: 500;
+}
+.elig-tab.active-suitable { background: rgba(124,158,135,0.15); border-color: rgba(124,158,135,0.4); color: var(--sage-light); }
+.elig-tab.active-eval     { background: rgba(127,179,200,0.15); border-color: rgba(127,179,200,0.4); color: var(--pale-blue); }
+.elig-tab.active-not      { background: rgba(184,112,87,0.15);  border-color: rgba(184,112,87,0.4);  color: var(--terra-light); }
+.elig-panel { display: none; }
+.elig-panel.shown { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px,1fr)); gap: 14px; }
+.elig-item {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 16px; border-radius: 12px; border: 1px solid var(--glass-border);
+  background: var(--glass-bg);
+}
+.elig-icon { font-size: 20px; flex-shrink: 0; margin-top: 1px; }
+.elig-text { font-size: 13px; color: rgba(255,255,255,0.65); line-height: 1.6; }
+.elig-text strong { color: var(--beige-light); display: block; margin-bottom: 2px; }
+
+/* ════════════════
+   D — SERVICE MAP
+   ════════════════ */
+.stage-list { display: flex; flex-direction: column; gap: 12px; margin-top: 36px; }
+.stage-item {
+  border-radius: 12px; border: 1px solid var(--glass-border);
+  background: var(--glass-bg); overflow: hidden; cursor: pointer;
+  transition: border-color 0.2s;
+}
+.stage-item:hover { border-color: rgba(124,158,135,0.35); }
+.stage-item.open  { border-color: rgba(124,158,135,0.45); background: rgba(124,158,135,0.06); }
+.stage-header {
+  display: flex; align-items: center; gap: 14px;
+  padding: 16px 20px; user-select: none;
+}
+.stage-num {
+  width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 700;
+  background: rgba(124,158,135,0.15); color: var(--sage-light);
+  border: 1px solid rgba(124,158,135,0.3);
+}
+.stage-name { font-size: 14px; font-weight: 600; color: var(--beige-light); flex: 1; }
+.stage-tag  { font-size: 11px; padding: 2px 9px; border-radius: 12px; font-weight: 500; }
+.tag-pre    { background: var(--pale-blue-dim); color: var(--pale-blue); border: 1px solid rgba(127,179,200,0.2); }
+.tag-core   { background: var(--sage-dim); color: var(--sage-light); border: 1px solid rgba(124,158,135,0.2); }
+.tag-post   { background: var(--beige-dim); color: var(--beige); border: 1px solid rgba(201,185,154,0.2); }
+.stage-arrow { font-size: 14px; color: rgba(255,255,255,0.25); transition: transform 0.3s; }
+.stage-item.open .stage-arrow { transform: rotate(90deg); color: var(--sage); }
+.stage-body {
+  max-height: 0; overflow: hidden; transition: max-height 0.4s ease;
+  padding: 0 20px;
+}
+.stage-item.open .stage-body { max-height: 300px; }
+.stage-inner { padding: 0 0 18px 46px; }
+.stage-desc  { font-size: 13px; color: rgba(255,255,255,0.6); line-height: 1.75; margin-bottom: 10px; }
+.stage-kpi-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.stage-kpi {
+  font-size: 11px; padding: 3px 10px; border-radius: 6px;
+  background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.5);
+  border: 1px solid var(--glass-border);
+}
+
+/* Timeline connector */
+.stage-connector {
+  display: flex; align-items: center; justify-content: center;
+  height: 20px; color: rgba(124,158,135,0.3); font-size: 16px;
+}
+
+/* ════════════════
+   E — GIGA MAP (full-screen)
+   ════════════════ */
+.giga-section-full {
+  position: relative; height: 100vh; overflow: hidden;
+  padding: 0 !important; max-width: none !important;
+  display: flex; flex-direction: column;
+}
+.giga-header {
+  padding: 32px var(--h-pad-base) 18px var(--h-pad-left);
+  flex-shrink: 0; position: relative; z-index: 5;
+  background: linear-gradient(180deg, rgba(17,22,32,0.95) 0%, transparent 100%);
+}
+.giga-canvas-wrap {
+  flex: 1; position: relative; min-height: 0;
+}
+#gigaCanvas {
+  position: absolute; inset: 0; width: 100%; height: 100%; cursor: crosshair;
+}
+.giga-legend-bar {
+  position: absolute; bottom: 18px; left: 50%; transform: translateX(-50%);
+  display: flex; gap: 22px; font-size: 11.5px; color: rgba(255,255,255,0.45);
+  white-space: nowrap; z-index: 5; pointer-events: none;
+  background: rgba(17,22,32,0.6); backdrop-filter: blur(8px);
+  padding: 8px 20px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.07);
+}
+.giga-legend-dot { display:inline-block; width:9px; height:9px; border-radius:50%; margin-right:5px; vertical-align:middle; }
+
+/* ════════════════
+   F — RISK MAP
+   ════════════════ */
+.risk-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: start; margin-top: 40px; }
+#riskCanvas { display: block; }
+.risk-list { display: flex; flex-direction: column; gap: 12px; }
+.risk-item {
+  padding: 16px 18px; border-radius: 12px;
+  background: var(--glass-bg); border: 1px solid var(--glass-border);
+  cursor: pointer; transition: all 0.2s;
+}
+.risk-item:hover, .risk-item.active { border-color: rgba(184,112,87,0.4); background: var(--terra-dim); }
+.risk-item-head { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+.risk-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.risk-name { font-size: 13px; font-weight: 600; color: var(--beige-light); }
+.risk-response { font-size: 12px; color: rgba(255,255,255,0.5); line-height: 1.6; display: none; margin-top: 6px; }
+.risk-item.active .risk-response { display: block; }
+
+/* ════════════════
+   G — ANIMAL WELFARE
+   ════════════════ */
+.welfare-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(260px,1fr));
+  gap: 16px; margin-top: 36px;
+}
+.welfare-card {
+  padding: 22px; border-radius: 14px;
+  background: var(--glass-bg); border: 1px solid var(--glass-border);
+  transition: border-color 0.2s;
+}
+.welfare-card:hover { border-color: rgba(124,158,135,0.3); }
+.welfare-icon { font-size: 28px; margin-bottom: 12px; }
+.welfare-title { font-size: 14px; font-weight: 600; color: var(--beige-light); margin-bottom: 8px; }
+.welfare-checks { display: flex; flex-direction: column; gap: 6px; }
+.welfare-check {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 12.5px; color: rgba(255,255,255,0.6);
+}
+.wc-tick { color: var(--sage); font-size: 13px; }
+
+/* ════════════════
+   H — DATA VIZ (ENHANCED)
+   ════════════════ */
+.kpi-grid-6 {
+  display: grid; grid-template-columns: repeat(3,1fr);
+  margin-top: 44px; border: 1px solid var(--glass-border); border-radius: 16px; overflow: hidden;
+}
+.kpi-big {
+  padding: 30px 26px; background: var(--glass-bg);
+  border-right: 1px solid var(--glass-border);
+  border-bottom: 1px solid var(--glass-border);
+  transition: background 0.2s; position: relative; overflow: hidden;
+}
+.kpi-big::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:2px;
+  background: linear-gradient(90deg, var(--sage) 0%, transparent 100%);
+  opacity: 0; transition: opacity 0.3s;
+}
+.kpi-big:hover { background: rgba(124,158,135,0.07); }
+.kpi-big:hover::before { opacity: 1; }
+.kpi-big:nth-child(3n) { border-right: none; }
+.kpi-big:nth-child(n+4) { border-bottom: none; }
+.kpi-big-val {
+  font-size: 52px; font-weight: 800; color: var(--sage-light);
+  line-height: 1; margin-bottom: 12px; font-variant-numeric: tabular-nums;
+  letter-spacing: -2px;
+}
+.kpi-big-val.terra { color: var(--terra-light); }
+.kpi-big-val.blue  { color: var(--pale-blue); }
+.kpi-big-val.purple{ color: var(--purple); }
+.kpi-big-unit   { font-size: 30px; letter-spacing: 0; }
+.kpi-big-prefix { font-size: 30px; }
+.kpi-big-lbl    { font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.65); line-height: 1.5; margin-bottom: 6px; }
+.kpi-big-trend  { font-size: 11px; color: rgba(255,255,255,0.28); }
+
+/* Viz tabs */
+.viz-tabs {
+  display: flex; gap: 0; margin-top: 48px;
+  border-bottom: 1px solid var(--glass-border);
+}
+.viz-tab {
+  padding: 12px 22px; border: none; background: transparent;
+  color: rgba(255,255,255,0.38); font-size: 13px; font-weight: 500;
+  cursor: pointer; transition: all 0.2s; font-family: inherit;
+  border-bottom: 2px solid transparent; margin-bottom: -1px;
+}
+.viz-tab.active { color: var(--sage-light); border-bottom-color: var(--sage); background: rgba(124,158,135,0.06); }
+.viz-tab:hover:not(.active) { color: var(--beige-light); background: rgba(255,255,255,0.03); }
+.viz-panel { display: none; padding-top: 28px; }
+.viz-panel.active { display: block; }
+
+/* Viz cards */
+.viz-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.viz-3col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 18px; }
+.viz-card {
+  padding: 26px; border-radius: 16px;
+  background: var(--glass-bg); border: 1px solid var(--glass-border);
+  transition: border-color 0.2s;
+}
+.viz-card:hover { border-color: rgba(124,158,135,0.22); }
+.viz-card-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; }
+.viz-card-title { font-size: 14px; font-weight: 600; color: var(--beige-light); margin-bottom: 4px; }
+.viz-card-sub   { font-size: 11px; color: rgba(255,255,255,0.32); }
+.viz-card-badge { padding: 3px 10px; border-radius: 12px; font-size: 11px; font-weight: 600; white-space: nowrap; flex-shrink:0; }
+.vbadge-sage   { background: var(--sage-dim); color: var(--sage-light); border: 1px solid rgba(124,158,135,0.25); }
+.vbadge-blue   { background: var(--pale-blue-dim); color: var(--pale-blue); border: 1px solid rgba(127,179,200,0.25); }
+.vbadge-terra  { background: var(--terra-dim); color: var(--terra-light); border: 1px solid rgba(184,112,87,0.25); }
+.vbadge-purple { background: var(--purple-dim); color: var(--purple); border: 1px solid rgba(167,139,189,0.25); }
+
+/* Spark row */
+.spark-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; }
+.spark-card {
+  padding: 18px 16px; border-radius: 12px;
+  background: var(--glass-bg); border: 1px solid var(--glass-border);
+  transition: border-color 0.2s;
+}
+.spark-card:hover { border-color: rgba(124,158,135,0.25); }
+.spark-lbl { font-size: 11px; color: rgba(255,255,255,0.38); margin-bottom: 4px; }
+.spark-val { font-size: 24px; font-weight: 800; color: var(--sage-light); margin-bottom: 10px; }
+.spark-val.red  { color: #fc8181; }
+.spark-val.blue { color: var(--pale-blue); }
+
+/* Cohort dot matrix */
+.dot-matrix {
+  display: flex; flex-wrap: wrap; gap: 7px; padding: 22px; justify-content: flex-start;
+}
+.cohort-dot {
+  width: 14px; height: 14px; border-radius: 50%; cursor: pointer;
+  transition: transform 0.15s; position: relative;
+}
+.cohort-dot:hover { transform: scale(1.8); z-index: 1; }
+
+/* Progress domain bars */
+.domain-bars { display: flex; flex-direction: column; gap: 14px; margin-top: 10px; }
+.domain-row { display: flex; align-items: center; gap: 12px; }
+.domain-lbl { font-size: 12px; color: rgba(255,255,255,0.6); width: 160px; flex-shrink: 0; }
+.domain-track { flex: 1; height: 10px; border-radius: 6px; background: rgba(255,255,255,0.06); overflow: hidden; }
+.domain-fill { height: 100%; border-radius: 6px; transition: width 1.2s cubic-bezier(0.4,0,0.2,1); width: 0; }
+.domain-pct { font-size: 12px; font-weight: 700; color: var(--sage-light); width: 40px; text-align: right; flex-shrink: 0; }
+
+/* ════════════════
+   I — TEAM
+   ════════════════ */
+.team-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(200px,1fr));
+  gap: 18px; margin-top: 36px;
+}
+.team-card {
+  padding: 22px 18px; border-radius: 14px; text-align: center;
+  background: var(--glass-bg); border: 1px solid var(--glass-border);
+  transition: border-color 0.2s, transform 0.2s;
+}
+.team-card:hover { border-color: rgba(124,158,135,0.3); transform: translateY(-3px); }
+.team-avatar {
+  width: 56px; height: 56px; border-radius: 50%;
+  margin: 0 auto 14px; display: flex; align-items: center; justify-content: center;
+  font-size: 24px;
+  background: linear-gradient(135deg, var(--sage-dim), var(--beige-dim));
+  border: 1px solid var(--glass-border);
+}
+.team-role  { font-size: 11px; color: var(--sage); font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 5px; }
+.team-name  { font-size: 14px; font-weight: 600; color: var(--beige-light); margin-bottom: 6px; }
+.team-desc  { font-size: 12px; color: rgba(255,255,255,0.45); line-height: 1.6; }
+
+/* ════════════════
+   J — FAQ
+   ════════════════ */
+.faq-list { display: flex; flex-direction: column; gap: 10px; margin-top: 36px; max-width: 740px; }
+.faq-item {
+  border-radius: 12px; border: 1px solid var(--glass-border);
+  background: var(--glass-bg); overflow: hidden; cursor: pointer; transition: border-color 0.2s;
+}
+.faq-item:hover { border-color: rgba(201,185,154,0.3); }
+.faq-item.open  { border-color: rgba(124,158,135,0.35); }
+.faq-q {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 16px 20px; font-size: 14px; font-weight: 600; color: var(--beige-light);
+  user-select: none;
+}
+.faq-q span { transition: transform 0.3s; color: rgba(255,255,255,0.3); }
+.faq-item.open .faq-q span { transform: rotate(45deg); color: var(--sage); }
+.faq-a {
+  max-height: 0; overflow: hidden; transition: max-height 0.35s ease;
+  font-size: 13.5px; color: rgba(255,255,255,0.55); line-height: 1.8;
+}
+.faq-item.open .faq-a { max-height: 300px; }
+.faq-a-inner { padding: 0 20px 18px; }
+
+/* ════════════════
+   K — CTA
+   ════════════════ */
+.cta-section {
+  padding: 100px var(--h-pad-base) 100px var(--h-pad-left);
+  position: relative; overflow: hidden;
+  box-sizing: border-box;
+}
+.cta-glow {
+  position: absolute; inset: 0; z-index: 0;
+  background: radial-gradient(ellipse 70% 80% at 60% 50%,
+    rgba(124,158,135,0.1) 0%, transparent 65%);
+}
+.cta-inner { position: relative; z-index: 1; max-width: 720px; }
+.cta-title {
+  font-size: clamp(28px, 3vw, 42px); font-weight: 800; color: var(--beige-light);
+  margin-bottom: 16px; line-height: 1.2;
+}
+.cta-sub { font-size: 15px; color: rgba(255,255,255,0.5); line-height: 1.8; margin-bottom: 36px; max-width: 560px; }
+.cta-cards { display: flex; gap: 16px; flex-wrap: wrap; }
+.cta-card {
+  padding: 22px 24px; border-radius: 14px; flex: 1; min-width: 200px;
+  background: var(--glass-bg); border: 1px solid var(--glass-border);
+  transition: border-color 0.2s;
+}
+.cta-card:hover { border-color: rgba(124,158,135,0.35); }
+.cta-card-icon { font-size: 24px; margin-bottom: 10px; }
+.cta-card-title { font-size: 14px; font-weight: 600; color: var(--beige-light); margin-bottom: 5px; }
+.cta-card-text  { font-size: 12px; color: rgba(255,255,255,0.45); line-height: 1.6; }
+
+/* ── Section divider ── */
+.svc-divider {
+  height: 1px; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent);
+  margin: 0 var(--h-pad-base) 0 var(--h-pad-left);
+}
+
+/* ═══════════════════════════════════════
+   RESPONSIVE — fluid sizing & breakpoints
+   ═══════════════════════════════════════ */
+
+/* ── Fluid font sizes ── */
+.kpi-big-val   { font-size: clamp(28px, 3.5vw, 52px); }
+.kpi-big-unit,
+.kpi-big-prefix{ font-size: clamp(18px, 2vw,   30px); }
+.kpi-big-lbl   { font-size: clamp(11px, 1vw,   13px); }
+.spark-val     { font-size: clamp(16px, 2vw,   24px); }
+.spark-lbl     { font-size: clamp(10px, 0.9vw, 11px); }
+.problem-num   { font-size: clamp(22px, 2.8vw, 36px); }
+.problem-text  { font-size: clamp(12px, 1.1vw, 13.5px); }
+.sec-desc      { font-size: clamp(13px, 1.2vw, 15px); }
+.hero-sub      { font-size: clamp(13px, 1.2vw, 16px); }
+.welfare-title { font-size: clamp(12px, 1.1vw, 14px); }
+.welfare-check { font-size: clamp(11px, 1vw,   12.5px); }
+.stage-name    { font-size: clamp(12px, 1.1vw, 14px); }
+.stage-desc    { font-size: clamp(11px, 1vw,   13px); }
+.team-name     { font-size: clamp(12px, 1.1vw, 14px); }
+.team-desc     { font-size: clamp(11px, 1vw,   12px); }
+.risk-name     { font-size: clamp(11px, 1vw,   13px); }
+.faq-q         { font-size: clamp(12px, 1.1vw, 14px); }
+.faq-a         { font-size: clamp(12px, 1.1vw, 13.5px); }
+.cta-sub       { font-size: clamp(13px, 1.2vw, 15px); }
+.cta-card-title{ font-size: clamp(12px, 1.1vw, 14px); }
+.cta-card-text { font-size: clamp(11px, 1vw,   12px); }
+
+/* ── Fluid card padding ── */
+.kpi-big  { padding: clamp(16px, 2vw, 30px) clamp(14px, 1.8vw, 26px); }
+.viz-card { padding: clamp(16px, 1.8vw, 26px); }
+.spark-card { padding: clamp(12px, 1.2vw, 18px) clamp(10px, 1vw, 16px); }
+.welfare-card { padding: clamp(14px, 1.5vw, 22px); }
+.team-card { padding: clamp(14px, 1.5vw, 22px) clamp(12px, 1.2vw, 18px); }
+.problem-card { padding: clamp(16px, 1.8vw, 24px); }
+
+/* ── Fluid gaps & margins ── */
+.hero-grid     { gap: clamp(24px, 4vw, 60px); }
+.problem-grid  { gap: clamp(12px, 1.5vw, 20px); margin-top: clamp(20px, 3vw, 40px); }
+.welfare-grid  { gap: clamp(10px, 1.2vw, 16px); }
+.team-grid     { gap: clamp(10px, 1.2vw, 18px); }
+.kpi-grid-6    { margin-top: clamp(20px, 3vw, 44px); }
+.risk-layout   { gap: clamp(20px, 3vw, 40px); }
+.stage-list    { gap: clamp(6px, 0.8vw, 12px); }
+.sss-table     { min-width: 0; }  /* allow table to compress naturally */
+
+/* ── Ecosytem canvas scales with container ── */
+#ecosystemCanvas { max-width: min(440px, 100%); }
+
+/* ── Medium screens  1100–1300px ── */
+@media (max-width: 1300px) {
+  .spark-row { grid-template-columns: repeat(2, 1fr); gap: clamp(10px,1.2vw,14px); }
+}
+
+/* ── Mid screens  900–1100px ── */
+@media (max-width: 1100px) {
+  .kpi-grid-6  { grid-template-columns: repeat(2, 1fr); }
+  .kpi-big:nth-child(3n)  { border-right: 1px solid var(--glass-border); }
+  .kpi-big:nth-child(2n)  { border-right: none; }
+  .kpi-big:nth-child(n+3) { border-bottom: none; }
+  .kpi-big:nth-child(n+5) { border-bottom: none; }
+  .viz-2col, .viz-3col { grid-template-columns: 1fr; }
+  .spark-row   { grid-template-columns: repeat(2, 1fr); }
+  .risk-layout { grid-template-columns: 1fr; }
+}
+
+/* ── Small screens  ≤ 900px ── */
+@media (max-width: 900px) {
+  .hero-grid      { grid-template-columns: 1fr; }
+  .problem-grid   { grid-template-columns: 1fr; }
+  .risk-layout    { grid-template-columns: 1fr; }
+  .outcome-charts { grid-template-columns: 1fr; }
+  .side-nav       { display: none; }
+  .kpi-grid-6     { grid-template-columns: 1fr 1fr; }
+  .spark-row      { grid-template-columns: 1fr 1fr; }
+  .viz-2col, .viz-3col { grid-template-columns: 1fr; }
+  .sss-table-wrap { overflow-x: auto; }
+  .sss-table      { min-width: 640px; }
+  .sss-vis-full   { margin-left: 0; margin-right: 0; width: 100%; }
+}
+
+/* ── Mobile  ≤ 640px ── */
+@media (max-width: 640px) {
+  .svc-section  { padding: 40px 16px; }
+  .hero-section { padding: 0 16px; }
+  .cta-section  { padding: 60px 16px; }
+  .kpi-grid-6   { grid-template-columns: 1fr; }
+  .spark-row    { grid-template-columns: 1fr; }
+  .elig-tabs    { flex-wrap: wrap; }
+  .cta-cards    { flex-direction: column; }
+  .giga-header  { padding: 20px 16px; }
+  .sss-vis-full { height: auto; min-height: 60vw; }
+  #sss-svg      { width: 95vw; height: 95vw; }
+}
+
+/* ── Chart card mouse-light glow ── */
+.viz-card, .kpi-big, .spark-card {
+  --mx: 50%; --my: 50%; --mo: 0;
+  position: relative; overflow: hidden;
+}
+.viz-card::before, .kpi-big::before, .spark-card::before {
+  content: ''; position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background: radial-gradient(circle 220px at var(--mx) var(--my), rgba(124,158,135,0.13) 0%, transparent 70%);
+  opacity: var(--mo); transition: opacity 0.35s ease;
+}
+.viz-card > *, .kpi-big > *, .spark-card > * { position: relative; z-index: 1; }
+
+/* ══ SSS FRAMEWORK ══════════════════════════════════════ */
+.sss-intro-text { max-width: 680px; margin-bottom: 0; }
+.sss-intro-text p { font-size: 13px; color: rgba(255,255,255,0.55); line-height: 1.75; margin-bottom: 10px; }
+.sss-source {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 10px; color: var(--beige); letter-spacing: 0.08em;
+  text-transform: uppercase; margin-top: 6px;
+  padding: 4px 10px; border-radius: 4px;
+  border: 1px solid rgba(201,185,154,0.2); background: rgba(201,185,154,0.06);
+}
+
+/* Full-screen Vision Map — full visible area right of sidebar */
+.sss-vis-full {
+  position: relative;
+  /* negate the section's symmetric h-pad-base on both sides
+     so the div reaches from sidebar edge to viewport right edge */
+  margin-left: calc(-1 * var(--h-pad-base));
+  margin-right: calc(-1 * var(--h-pad-base));
+  width: calc(100vw - var(--sidebar-w, 220px));
+  height: 100vh; min-height: 560px;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  overflow: hidden;
+  margin-bottom: 48px;
+}
+.sss-vis-label {
+  font-size: 10px; font-weight: 700; letter-spacing: 0.18em;
+  text-transform: uppercase; color: var(--beige); opacity: 0.65;
+  margin-bottom: 20px; position: relative; z-index: 2;
+}
+.sss-vis-wrap {
+  position: relative; flex: 1; width: 100%;
+  display: flex; align-items: center; justify-content: center;
+}
+#sss-svg {
+  /* fill as much of the viewport as possible while staying square */
+  width: min(90vh, 92%);
+  height: min(90vh, 92%);
+  overflow: visible;
+}
+/* SVG layer groups for parallax */
+#sss-layer-bg, #sss-layer-lines, #sss-layer-nodes, #sss-layer-center {
+  will-change: transform;
+}
+
+/* Node interactivity */
+.sss-node { cursor: pointer; }
+.sss-node .nd-outer { transition: r 0.18s, fill 0.18s; }
+.sss-node:hover .nd-outer { r: 11px; fill-opacity: 0.35; }
+.sss-node .nd-label { transition: opacity 0.18s; }
+.sss-node:hover .nd-label { opacity: 1; }
+
+/* Animated rings */
+@keyframes sssPulseRing  { 0%,100%{ opacity:0.55; transform:scale(1);   } 50%{ opacity:0.1; transform:scale(1.18); } }
+@keyframes sssPulseRing2 { 0%,100%{ opacity:0.75; transform:scale(1);   } 50%{ opacity:0.15;transform:scale(1.12); } }
+.sss-pulse  { transform-box: fill-box; transform-origin: center; animation: sssPulseRing  3.2s ease-in-out infinite; }
+.sss-pulse2 { transform-box: fill-box; transform-origin: center; animation: sssPulseRing2 3.2s ease-in-out infinite 1.1s; }
+
+/* Tooltip */
+#sss-tip {
+  position: absolute; pointer-events: none; opacity: 0; transition: opacity 0.18s;
+  background: rgba(14,18,28,0.95); border: 1px solid rgba(201,185,154,0.22);
+  border-radius: 8px; padding: 8px 12px;
+  font-size: 10.5px; line-height: 1.55; max-width: 170px; z-index: 20;
+}
+
+/* Highlighted table row */
+.sss-row { transition: background 0.2s; }
+.sss-row.sss-hi td { background: rgba(255,255,255,0.025) !important; }
+.sss-row.social.sss-hi   td:first-child { background: rgba(124,158,135,0.18) !important; }
+.sss-row.env.sss-hi      td:first-child { background: rgba(127,179,200,0.18) !important; }
+.sss-row.economic.sss-hi td:first-child { background: rgba(184,112,87,0.18)  !important; }
+
+/* SSS Table */
+.sss-table-wrap { overflow-x: auto; margin-bottom: 0; }
+.sss-table {
+  width: 100%; border-collapse: separate; border-spacing: 0;
+  min-width: 720px;
+}
+.sss-table thead th {
+  padding: 10px 16px; font-size: 10px; font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  border-bottom: 1px solid var(--glass-border);
+  text-align: left;
+}
+.sss-table thead th:first-child { width: 110px; color: rgba(255,255,255,0.35); }
+.sss-table thead th.col-vp   { color: var(--sage-light); }
+.sss-table thead th.col-vcm  { color: var(--beige); }
+.sss-table thead th.col-imp  { color: var(--terra-light); }
+
+.sss-row { vertical-align: top; }
+.sss-row td { padding: 20px 16px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+.sss-row:last-child td { border-bottom: none; }
+
+/* Row pillar label */
+.sss-pillar {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 6px;
+}
+.sss-pillar-icon { font-size: 22px; }
+.sss-pillar-name {
+  font-size: 11px; font-weight: 800; letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.sss-pillar-tag {
+  font-size: 9px; padding: 2px 7px; border-radius: 3px;
+  font-weight: 600; letter-spacing: 0.05em;
+}
+.sss-row.social    td:first-child { background: rgba(124,158,135,0.07); border-right: 2px solid var(--sage); }
+.sss-row.env       td:first-child { background: rgba(127,179,200,0.07); border-right: 2px solid var(--pale-blue); }
+.sss-row.economic  td:first-child { background: rgba(184,112,87,0.07);  border-right: 2px solid var(--terra); }
+
+.sss-row.social    .sss-pillar-name { color: var(--sage-light); }
+.sss-row.env       .sss-pillar-name { color: var(--pale-blue); }
+.sss-row.economic  .sss-pillar-name { color: var(--terra-light); }
+
+.sss-row.social    .sss-pillar-tag { background: var(--sage-dim); color: var(--sage-light); }
+.sss-row.env       .sss-pillar-tag { background: var(--pale-blue-dim); color: var(--pale-blue); }
+.sss-row.economic  .sss-pillar-tag { background: var(--terra-dim); color: var(--terra-light); }
+
+/* Cell content */
+.sss-cell { }
+.sss-probe {
+  font-size: 10px; color: rgba(255,255,255,0.35); font-style: italic;
+  margin-bottom: 8px; line-height: 1.5;
+}
+.sss-answer {
+  font-size: 11.5px; color: rgba(255,255,255,0.75); line-height: 1.65;
+  margin-bottom: 8px;
+}
+.sss-answer strong { color: rgba(255,255,255,0.95); font-weight: 600; }
+.sss-bullets { display: flex; flex-direction: column; gap: 5px; margin-top: 6px; }
+.sss-bullet {
+  font-size: 10.5px; color: rgba(255,255,255,0.6); line-height: 1.5;
+  display: flex; gap: 6px;
+}
+.sss-bullet::before { content: '▸'; flex-shrink: 0; margin-top: 1px; font-size: 8px; }
+.sss-row.social   .sss-bullet::before { color: var(--sage-light); }
+.sss-row.env      .sss-bullet::before { color: var(--pale-blue); }
+.sss-row.economic .sss-bullet::before { color: var(--terra-light); }
+
+/* Metric pills */
+.sss-metrics { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
+.sss-metric {
+  padding: 3px 9px; border-radius: 4px; font-size: 9px; font-weight: 600;
+  letter-spacing: 0.05em; border: 1px solid;
+}
+.sss-row.social   .sss-metric { background: rgba(124,158,135,0.1); color: var(--sage-light); border-color: rgba(124,158,135,0.25); }
+.sss-row.env      .sss-metric { background: rgba(127,179,200,0.1); color: var(--pale-blue);   border-color: rgba(127,179,200,0.25); }
+.sss-row.economic .sss-metric { background: rgba(184,112,87,0.1);  color: var(--terra-light); border-color: rgba(184,112,87,0.25); }
+
+/* sss-intro was converted to flex; no grid override needed */
+</style>
+</head>
+<body>
+
+<!-- Mouse glow -->
+<div class="mouse-glow" id="mouseGlow"></div>
+
+<!-- Sticky side nav -->
+<nav class="side-nav" id="sideNav">
+  <div class="side-nav-dot active" data-target="hero"    data-label="Overview"></div>
+  <div class="side-nav-dot"        data-target="problem" data-label="The Challenge"></div>
+  <div class="side-nav-dot"        data-target="eligibility" data-label="Eligibility"></div>
+  <div class="side-nav-dot"        data-target="servicemap"  data-label="Service Map"></div>
+  <div class="side-nav-dot"        data-target="gigamap"     data-label="System Map"></div>
+  <div class="side-nav-dot"        data-target="risk"        data-label="Risk Framework"></div>
+  <div class="side-nav-dot"        data-target="welfare"     data-label="Animal Welfare"></div>
+  <div class="side-nav-dot"        data-target="outcomes"    data-label="Outcomes"></div>
+  <div class="side-nav-dot"        data-target="team"        data-label="Our Team"></div>
+  <div class="side-nav-dot"        data-target="faq"         data-label="FAQ"></div>
+  <div class="side-nav-dot"        data-target="sss"         data-label="Scale-Up Strategy"></div>
+  <div class="side-nav-dot"        data-target="cta"         data-label="Get Started"></div>
+</nav>
+
+<div class="app-container">
+  <!-- Sidebar -->
+  <nav class="sidebar">
+    <div class="sidebar-logo" style="justify-content:center;padding:24px 12px 20px;">
+  <img src="assets/tonitruum-logo-white.png" alt="TONITRUUM"
+       style="width:100%;height:auto;max-width:180px;opacity:0.85;">
+</div>
+    <ul class="nav-list">
+      <li class="nav-section">Monitor</li>
+      <li class="nav-item"><a href="index.html"><span class="nav-icon">⬡</span>Habitat Monitor</a></li>
+      <li class="nav-section">Clinical</li>
+      <li class="nav-item"><a href="autism.html"><span class="nav-icon">♡</span>Patient Care</a></li>
+      <li class="nav-item"><a href="assessment.html"><span class="nav-icon">≡</span>Assessments</a></li>
+      <li class="nav-item"><a href="parent-form.html"><span class="nav-icon">✎</span>Parent Reports</a></li>
+      <li class="nav-item"><a href="medical.html"><span class="nav-icon">✚</span>Medical Consult</a></li>
+      <li class="nav-section">Strategy</li>
+      <li class="nav-item active"><a href="service.html"><span class="nav-icon">◎</span>Service Overview</a></li>
+      <li class="nav-item"><a href="stakeholder.html"><span class="nav-icon">◉</span>Stakeholder Map</a></li>
+      <li class="nav-item"><a href="product.html"><span class="nav-icon">◈</span>Product Design</a></li>
+      <li class="nav-section">Project</li>
+      <li class="nav-item"><a href="phase0.html"><span class="nav-icon">◫</span>Phase 0 Origin</a></li>
+      <li class="nav-item"><a href="phase1.html"><span class="nav-icon">◧</span>Phase 1 Research</a></li>
+      <li class="nav-item"><a href="founder.html"><span class="nav-icon">◐</span>Founder</a></li>
+      <li class="nav-item"><a href="research.html"><span class="nav-icon">◇</span>Reptile Therapy</a></li>
+      <li class="nav-item"><a href="market.html"><span class="nav-icon">◆</span>Business Model</a></li>
+      <li class="nav-section">Play</li>
+      <li class="nav-item"><a href="game.html"><span class="nav-icon">◎</span>Cricket Hunter</a></li>
+    
+    
+    </ul>
+    <div class="sidebar-footer">
+      <div class="sys-status"><span class="status-indicator status-good"></span>All Systems Normal</div>
+      <div class="sys-time" id="sidebarTime"></div>
+    </div>
+  </nav>
+
+  <!-- Main scroll area -->
+  <div style="flex:1; overflow-x:hidden;">
+
+  <!-- ══ A: HERO ══════════════════════════════════ -->
+  <section class="hero-section" id="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-grid">
+      <div>
+        <div class="hero-badge">
+          <span>🌿</span> Evidence-Informed Clinical Programme
+        </div>
+        <h1 class="hero-title">
+          Reptile-Mediated<br><em>Emotional Support</em><br>for Autistic Children
+        </h1>
+        <p class="hero-sub">
+          A structured, multi-disciplinary therapy model integrating live reptile interaction with behavioural science — designed to reduce sensory dysregulation and build emotional resilience in children with ASD aged 4–14.
+        </p>
+        <div class="hero-cta-row">
+          <button class="btn-sage" onclick="scrollTo('eligibility')">Check Eligibility →</button>
+          <button class="btn-ghost-sage" onclick="scrollTo('servicemap')">View Service Map</button>
+        </div>
+      </div>
+      <div class="ecosystem-wrap">
+        <canvas id="ecosystemCanvas" width="440" height="440"></canvas>
+      </div>
+    </div>
+  </section>
+
+  <div class="svc-divider"></div>
+
+  <!-- ══ B: PROBLEM ══════════════════════════════ -->
+  <section class="svc-section" id="problem">
+    <div class="sec-anchor" id="sec-problem"></div>
+    <div class="sec-eyebrow">The Challenge</div>
+    <h2 class="sec-title">Why conventional therapies<br>often fall short</h2>
+    <p class="sec-desc">Children with ASD experience heightened sensory sensitivities that make standard social-skills interventions difficult to access. Animal-mediated approaches offer a non-threatening bridge.</p>
+
+    <div class="problem-grid">
+      <div class="problem-card highlight">
+        <div class="problem-num">1 in 36</div>
+        <div class="problem-text">children in the US are diagnosed with ASD. Many require specialised emotional regulation support that standard behavioural therapies cannot fully provide alone.</div>
+      </div>
+      <div class="problem-card highlight">
+        <div class="problem-num">67%</div>
+        <div class="problem-text">of autistic children show measurable reduction in cortisol levels and self-injurious behaviour during structured animal interaction sessions compared to control groups.</div>
+      </div>
+      <div class="problem-card">
+        <div class="problem-num">3×</div>
+        <div class="problem-text">higher therapist dropout is reported when therapies rely solely on verbal/social modalities — children disengage when there is no tangible, non-social focus object.</div>
+      </div>
+      <div class="problem-card">
+        <div class="problem-num">82%</div>
+        <div class="problem-text">of parents in our pilot programme reported improved generalisation of coping skills to home environments after 12 weeks of reptile-assisted sessions.</div>
+      </div>
+    </div>
+
+    <div class="disclaimer-box">
+      <strong>Clinical Disclaimer:</strong> This programme is a complementary adjunct to standard care — it does not replace diagnosis, medication, or primary therapeutic intervention. All participation requires formal referral and multi-disciplinary assessment. Data cited reflects peer-reviewed literature on animal-assisted interventions; outcomes vary by individual.
+    </div>
+  </section>
+
+  <div class="svc-divider"></div>
+
+  <!-- ══ C: ELIGIBILITY ══════════════════════════ -->
+  <section class="svc-section" id="eligibility">
+    <div class="sec-anchor" id="sec-eligibility"></div>
+    <div class="sec-eyebrow">Participation Criteria</div>
+    <h2 class="sec-title">Who can benefit from<br>this programme?</h2>
+    <p class="sec-desc">Eligibility is determined through a structured pre-intake assessment. The following are general guidelines — individual cases may vary.</p>
+
+    <div class="elig-tabs" style="margin-top:32px;">
+      <button class="elig-tab active-suitable" onclick="showElig('suitable',this)">✓ Typically Suitable</button>
+      <button class="elig-tab" onclick="showElig('eval',this)">⚠ Needs Evaluation</button>
+      <button class="elig-tab" onclick="showElig('not',this)">✕ Not Recommended</button>
+    </div>
+
+    <div class="elig-panel shown" id="elig-suitable">
+      <div class="elig-item"><div class="elig-icon">🧩</div><div class="elig-text"><strong>ASD Diagnosis (Level 1–2)</strong>Confirmed DSM-5/ICD-11 diagnosis with moderate to mild support needs</div></div>
+      <div class="elig-item"><div class="elig-icon">👶</div><div class="elig-text"><strong>Ages 4–14</strong>Developmental stage suited for structured sensory-based interaction</div></div>
+      <div class="elig-item"><div class="elig-icon">💬</div><div class="elig-text"><strong>Emotional Regulation Goals</strong>Primary therapeutic goal includes reducing meltdowns or improving emotional awareness</div></div>
+      <div class="elig-item"><div class="elig-icon">🏠</div><div class="elig-text"><strong>Caregiver Participation</strong>Parent or guardian committed to attending sessions and implementing home strategies</div></div>
+      <div class="elig-item"><div class="elig-icon">📋</div><div class="elig-text"><strong>Existing Care Plan</strong>Currently engaged with a clinical team (psychologist, OT, or paediatrician)</div></div>
+      <div class="elig-item"><div class="elig-icon">🌡️</div><div class="elig-text"><strong>No Severe Animal Phobia</strong>Child does not exhibit extreme fear responses that cannot be safely desensitised</div></div>
+    </div>
+
+    <div class="elig-panel" id="elig-eval">
+      <div class="elig-item"><div class="elig-icon">⚡</div><div class="elig-text"><strong>ASD Level 3</strong>High support needs may require extended intake and modified session structure</div></div>
+      <div class="elig-item"><div class="elig-icon">🩺</div><div class="elig-text"><strong>Co-occurring Anxiety Disorder</strong>Requires coordination with primary anxiety treatment team before enrolment</div></div>
+      <div class="elig-item"><div class="elig-icon">💊</div><div class="elig-text"><strong>Active Medication Changes</strong>Recent psychotropic medication adjustments may affect behavioural baseline</div></div>
+      <div class="elig-item"><div class="elig-icon">🧬</div><div class="elig-text"><strong>Immune Compromise</strong>Requires medical clearance — standard hygiene protocols apply</div></div>
+      <div class="elig-item"><div class="elig-icon">📍</div><div class="elig-text"><strong>History of Animal Harm</strong>Specific risk assessment and modified animal welfare protocols required</div></div>
+    </div>
+
+    <div class="elig-panel" id="elig-not">
+      <div class="elig-item"><div class="elig-icon">🚫</div><div class="elig-text"><strong>Active Psychosis</strong>Acute psychiatric episodes contraindicate participation until stabilised</div></div>
+      <div class="elig-item"><div class="elig-icon">🩸</div><div class="elig-text"><strong>Severe Reptile Allergy</strong>Confirmed allergic sensitisation to reptile dander or associated substrates</div></div>
+      <div class="elig-item"><div class="elig-icon">⚠️</div><div class="elig-text"><strong>Unmanaged Aggression Risk</strong>History of significant physical aggression without current safety plan in place</div></div>
+      <div class="elig-item"><div class="elig-icon">📵</div><div class="elig-text"><strong>Caregiver Non-Participation</strong>Programme requires active caregiver involvement; cannot proceed without it</div></div>
+    </div>
+  </section>
+
+  <div class="svc-divider"></div>
+
+  <!-- ══ D: SERVICE MAP ══════════════════════════ -->
+  <section class="svc-section" id="servicemap">
+    <div class="sec-anchor" id="sec-servicemap"></div>
+    <div class="sec-eyebrow">Programme Structure</div>
+    <h2 class="sec-title">11 Stages of the<br>Service Journey</h2>
+    <p class="sec-desc">Each stage is evidence-informed and sequenced to ensure safe, gradual progression. Families move through stages at a pace determined by clinical review.</p>
+
+    <div class="stage-list">
+
+      <div class="stage-item" onclick="toggleStage(this)">
+        <div class="stage-header">
+          <div class="stage-num">01</div>
+          <div class="stage-name">Initial Referral & Intake Screening</div>
+          <div class="stage-tag tag-pre">Pre-Programme</div>
+          <div class="stage-arrow">›</div>
+        </div>
+        <div class="stage-body">
+          <div class="stage-inner">
+            <div class="stage-desc">Family completes an intake questionnaire; clinical team reviews diagnosis documentation, current care plan, and caregiver goals. A senior therapist conducts a 30-minute phone screening to confirm suitability.</div>
+            <div class="stage-kpi-row">
+              <span class="stage-kpi">📋 Intake Form</span>
+              <span class="stage-kpi">📞 30-min Phone Screen</span>
+              <span class="stage-kpi">⏱ 1–2 weeks</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="stage-connector">↓</div>
+
+      <div class="stage-item" onclick="toggleStage(this)">
+        <div class="stage-header">
+          <div class="stage-num">02</div>
+          <div class="stage-name">Multi-Disciplinary Assessment</div>
+          <div class="stage-tag tag-pre">Pre-Programme</div>
+          <div class="stage-arrow">›</div>
+        </div>
+        <div class="stage-body">
+          <div class="stage-inner">
+            <div class="stage-desc">In-person assessment by clinical psychologist, occupational therapist, and animal welfare officer. Baseline behavioural measures collected: CARS-2, SRS-2, sensory profile, and therapist-observed interaction trial with a non-contact reptile exhibit.</div>
+            <div class="stage-kpi-row">
+              <span class="stage-kpi">🧠 CARS-2 Assessment</span>
+              <span class="stage-kpi">📏 Sensory Profile</span>
+              <span class="stage-kpi">🦎 Non-contact Exhibit Trial</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="stage-connector">↓</div>
+
+      <div class="stage-item" onclick="toggleStage(this)">
+        <div class="stage-header">
+          <div class="stage-num">03</div>
+          <div class="stage-name">Individualised Therapy Plan Development</div>
+          <div class="stage-tag tag-pre">Pre-Programme</div>
+          <div class="stage-arrow">›</div>
+        </div>
+        <div class="stage-body">
+          <div class="stage-inner">
+            <div class="stage-desc">Clinical team formulates a bespoke 12–24 week intervention plan. Goals are co-designed with the family, specifying target domains (emotional regulation, social attention, sensory tolerance) and selecting the appropriate reptile species match.</div>
+            <div class="stage-kpi-row">
+              <span class="stage-kpi">📄 Written Care Plan</span>
+              <span class="stage-kpi">🤝 Family Goal-Setting</span>
+              <span class="stage-kpi">🦎 Species Matching</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="stage-connector">↓</div>
+
+      <div class="stage-item" onclick="toggleStage(this)">
+        <div class="stage-header">
+          <div class="stage-num">04</div>
+          <div class="stage-name">Caregiver Orientation & Training</div>
+          <div class="stage-tag tag-pre">Pre-Programme</div>
+          <div class="stage-arrow">›</div>
+        </div>
+        <div class="stage-body">
+          <div class="stage-inner">
+            <div class="stage-desc">Two-hour workshop for parents/caregivers covering programme rationale, safety protocols, animal welfare basics, how to reinforce skills at home, and what to observe during sessions. Consent documents are reviewed and signed.</div>
+            <div class="stage-kpi-row">
+              <span class="stage-kpi">👨‍👩‍👧 Family Workshop</span>
+              <span class="stage-kpi">✍️ Informed Consent</span>
+              <span class="stage-kpi">📱 Home Strategy Pack</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="stage-connector">↓</div>
+
+      <div class="stage-item" onclick="toggleStage(this)">
+        <div class="stage-header">
+          <div class="stage-num">05</div>
+          <div class="stage-name">Controlled Introduction — Observe Only</div>
+          <div class="stage-tag tag-core">Core Programme</div>
+          <div class="stage-arrow">›</div>
+        </div>
+        <div class="stage-body">
+          <div class="stage-inner">
+            <div class="stage-desc">Sessions 1–4: Child observes the reptile in its monitored enclosure without direct contact. Therapist narrates animal behaviour and models calm, focused observation. Physiological response (heart rate variability via wearable) is recorded.</div>
+            <div class="stage-kpi-row">
+              <span class="stage-kpi">👁 Observe-only Protocol</span>
+              <span class="stage-kpi">💓 HRV Monitoring</span>
+              <span class="stage-kpi">📝 Behaviour Log</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="stage-connector">↓</div>
+
+      <div class="stage-item" onclick="toggleStage(this)">
+        <div class="stage-header">
+          <div class="stage-num">06</div>
+          <div class="stage-name">Guided Proximity & Sensory Exploration</div>
+          <div class="stage-tag tag-core">Core Programme</div>
+          <div class="stage-arrow">›</div>
+        </div>
+        <div class="stage-body">
+          <div class="stage-inner">
+            <div class="stage-desc">Sessions 5–8: Child is invited (never required) to approach the enclosure, use a hand-held magnifier, listen to recorded animal sounds, and touch glass. Sensory tolerance is mapped and therapeutic interactions are introduced.</div>
+            <div class="stage-kpi-row">
+              <span class="stage-kpi">🔍 Sensory Mapping</span>
+              <span class="stage-kpi">🐾 Glass Touch Protocol</span>
+              <span class="stage-kpi">📊 Tolerance Scaling</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="stage-connector">↓</div>
+
+      <div class="stage-item" onclick="toggleStage(this)">
+        <div class="stage-header">
+          <div class="stage-num">07</div>
+          <div class="stage-name">Supervised Direct Interaction</div>
+          <div class="stage-tag tag-core">Core Programme</div>
+          <div class="stage-arrow">›</div>
+        </div>
+        <div class="stage-body">
+          <div class="stage-inner">
+            <div class="stage-desc">Sessions 9–14: Structured handling of calm, handler-trained reptiles under dual supervision. Interaction tasks are used as scaffolding for emotional language, turn-taking, and self-regulation cues. Caregiver observes from an adjacent viewing area.</div>
+            <div class="stage-kpi-row">
+              <span class="stage-kpi">🤲 Structured Handling</span>
+              <span class="stage-kpi">🧘 Self-regulation Cues</span>
+              <span class="stage-kpi">👀 Caregiver Observation</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="stage-connector">↓</div>
+
+      <div class="stage-item" onclick="toggleStage(this)">
+        <div class="stage-header">
+          <div class="stage-num">08</div>
+          <div class="stage-name">Care Responsibility Integration</div>
+          <div class="stage-tag tag-core">Core Programme</div>
+          <div class="stage-arrow">›</div>
+        </div>
+        <div class="stage-body">
+          <div class="stage-inner">
+            <div class="stage-desc">Sessions 15–18: Child takes on supervised caregiving tasks (feeding, environment monitoring, record-keeping). Builds executive function, routine, and empathy. The PetCare monitoring dashboard is introduced as a visual feedback tool.</div>
+            <div class="stage-kpi-row">
+              <span class="stage-kpi">🌡 Enclosure Monitoring</span>
+              <span class="stage-kpi">📱 Dashboard Use</span>
+              <span class="stage-kpi">🫀 Empathy Mapping</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="stage-connector">↓</div>
+
+      <div class="stage-item" onclick="toggleStage(this)">
+        <div class="stage-header">
+          <div class="stage-num">09</div>
+          <div class="stage-name">Mid-Programme Review & Goal Adjustment</div>
+          <div class="stage-tag tag-core">Core Programme</div>
+          <div class="stage-arrow">›</div>
+        </div>
+        <div class="stage-body">
+          <div class="stage-inner">
+            <div class="stage-desc">Formal clinical review at week 12–14. Repeat standardised measures and therapist narrative assessment. Goals are reviewed with the family; programme is extended, modified, or concluded based on progress indicators.</div>
+            <div class="stage-kpi-row">
+              <span class="stage-kpi">📊 Repeat Measures</span>
+              <span class="stage-kpi">📞 MDT Meeting</span>
+              <span class="stage-kpi">🔄 Plan Revision</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="stage-connector">↓</div>
+
+      <div class="stage-item" onclick="toggleStage(this)">
+        <div class="stage-header">
+          <div class="stage-num">10</div>
+          <div class="stage-name">Transition Planning & Skill Generalisation</div>
+          <div class="stage-tag tag-post">Post-Programme</div>
+          <div class="stage-arrow">›</div>
+        </div>
+        <div class="stage-body">
+          <div class="stage-inner">
+            <div class="stage-desc">Final sessions focus on bridging skills to home and school contexts. Caregiver is trained in replication strategies. Referral letters are prepared for school inclusion coordinators if applicable. A "transition toolkit" is provided.</div>
+            <div class="stage-kpi-row">
+              <span class="stage-kpi">🏠 Home Strategy</span>
+              <span class="stage-kpi">🏫 School Liaison</span>
+              <span class="stage-kpi">📦 Transition Toolkit</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="stage-connector">↓</div>
+
+      <div class="stage-item" onclick="toggleStage(this)">
+        <div class="stage-header">
+          <div class="stage-num">11</div>
+          <div class="stage-name">6-Month Follow-Up & Outcome Review</div>
+          <div class="stage-tag tag-post">Post-Programme</div>
+          <div class="stage-arrow">›</div>
+        </div>
+        <div class="stage-body">
+          <div class="stage-inner">
+            <div class="stage-desc">Follow-up assessment 6 months post-discharge. Standardised measures repeated to assess maintenance and generalisation. Outcomes contribute to programme research database (with consent). Re-enrolment or booster sessions offered as appropriate.</div>
+            <div class="stage-kpi-row">
+              <span class="stage-kpi">📈 6-Month Outcomes</span>
+              <span class="stage-kpi">🔬 Research Contribution</span>
+              <span class="stage-kpi">🔄 Booster Sessions</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <div class="svc-divider"></div>
+
+  <!-- ══ E: GIGA MAP ══════════════════════════════ -->
+  <section class="svc-section giga-section-full" id="gigamap">
+    <div class="sec-anchor" id="sec-gigamap"></div>
+    <div class="giga-header">
+      <div class="sec-eyebrow">Systems Thinking</div>
+      <h2 class="sec-title" style="margin-bottom:8px;">Interactive System Map</h2>
+      <p class="sec-desc" style="font-size:13px;">Move your cursor across the diagram to explore each system. Click a sector to see its sub-components illuminate.</p>
+    </div>
+    <div class="giga-canvas-wrap" id="gigaWrap">
+      <canvas id="gigaCanvas"></canvas>
+      <div class="giga-legend-bar">
+        <span><span class="giga-legend-dot" style="background:#7c9e87"></span>Human System</span>
+        <span><span class="giga-legend-dot" style="background:#b87057"></span>Animal System</span>
+        <span><span class="giga-legend-dot" style="background:#7fb3c8"></span>Environmental System</span>
+        <span><span class="giga-legend-dot" style="background:#c9b99a"></span>Institutional System</span>
+      </div>
+    </div>
+  </section>
+
+  <div class="svc-divider"></div>
+
+  <!-- ══ F: RISK FRAMEWORK ════════════════════════ -->
+  <section class="svc-section" id="risk">
+    <div class="sec-anchor" id="sec-risk"></div>
+    <div class="sec-eyebrow">Safety Architecture</div>
+    <h2 class="sec-title">Risk Management<br>Framework</h2>
+    <p class="sec-desc">Five risk domains are monitored continuously. Select a category to view the clinical response protocol.</p>
+
+    <div class="risk-layout">
+      <div>
+        <canvas id="riskCanvas" width="360" height="360"></canvas>
+      </div>
+      <div class="risk-list">
+        <div class="risk-item active" onclick="selectRisk(this, 0)">
+          <div class="risk-item-head">
+            <div class="risk-dot" style="background:#7c9e87"></div>
+            <div class="risk-name">Child Psychological Safety</div>
+          </div>
+          <div class="risk-response">Continuous therapist observation with structured distress cues protocol. Session paused immediately at Level-3 distress signal. Therapist-to-child ratio never exceeds 1:1 during interaction phases. Debrief and parental check-in follow every session.</div>
+        </div>
+        <div class="risk-item" onclick="selectRisk(this, 1)">
+          <div class="risk-item-head">
+            <div class="risk-dot" style="background:#b87057"></div>
+            <div class="risk-name">Animal Welfare Risk</div>
+          </div>
+          <div class="risk-response">Welfare officer present at all sessions. Animals assessed pre and post each session using validated welfare indicators. Maximum daily interaction time is capped per species. Any welfare concern triggers immediate session suspension and veterinary review.</div>
+        </div>
+        <div class="risk-item" onclick="selectRisk(this, 2)">
+          <div class="risk-item-head">
+            <div class="risk-dot" style="background:#7fb3c8"></div>
+            <div class="risk-name">Zoonotic / Hygiene Risk</div>
+          </div>
+          <div class="risk-response">Rigorous hand-washing protocol before and after handling. Animals undergo quarterly health screening. Salmonella-informed hygiene education provided to all families. Immunocompromised individuals assessed individually before contact phases.</div>
+        </div>
+        <div class="risk-item" onclick="selectRisk(this, 3)">
+          <div class="risk-item-head">
+            <div class="risk-dot" style="background:#c9b99a"></div>
+            <div class="risk-name">Sensory Overload / Escalation</div>
+          </div>
+          <div class="risk-response">Sensory environment is controlled: neutral lighting, reduced acoustic stimulation, clear visual schedule. Each child has a documented de-escalation plan agreed with caregivers pre-programme. A dedicated calm-down space is always available adjacent to the session room.</div>
+        </div>
+        <div class="risk-item" onclick="selectRisk(this, 4)">
+          <div class="risk-item-head">
+            <div class="risk-dot" style="background:#a78bbd"></div>
+            <div class="risk-name">Therapeutic Boundary Risk</div>
+          </div>
+          <div class="risk-response">Programme scope is clearly defined at intake. Therapists receive specific training on the boundaries of AAT versus primary psychotherapy. Clinical supervision is mandatory bi-weekly. Any therapeutic boundary concern is escalated to the clinical director within 24 hours.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="svc-divider"></div>
+
+  <!-- ══ G: ANIMAL WELFARE ════════════════════════ -->
+  <section class="svc-section" id="welfare">
+    <div class="sec-anchor" id="sec-welfare"></div>
+    <div class="sec-eyebrow">Ethical Framework</div>
+    <h2 class="sec-title">Animal Welfare<br>Standards</h2>
+    <p class="sec-desc">The five freedoms and five domains of animal welfare are operationalised as weekly checklists reviewed by our in-house welfare officer. No animal participates without passing all welfare gates.</p>
+
+    <div class="welfare-grid">
+      <div class="welfare-card">
+        <div class="welfare-icon">🌡️</div>
+        <div class="welfare-title">Environmental Provision</div>
+        <div class="welfare-checks">
+          <div class="welfare-check"><span class="wc-tick">✓</span> IoT-monitored temperature & humidity 24/7</div>
+          <div class="welfare-check"><span class="wc-tick">✓</span> Species-appropriate substrate and enrichment</div>
+          <div class="welfare-check"><span class="wc-tick">✓</span> UVB lighting calibrated by veterinary protocol</div>
+          <div class="welfare-check"><span class="wc-tick">✓</span> Refuge zones always accessible during sessions</div>
+        </div>
+      </div>
+      <div class="welfare-card">
+        <div class="welfare-icon">🩺</div>
+        <div class="welfare-title">Health Monitoring</div>
+        <div class="welfare-checks">
+          <div class="welfare-check"><span class="wc-tick">✓</span> Quarterly veterinary health checks (reptile specialist)</div>
+          <div class="welfare-check"><span class="wc-tick">✓</span> Pre-session welfare assessment (5-point scale)</div>
+          <div class="welfare-check"><span class="wc-tick">✓</span> Feeding logs and weight tracking maintained</div>
+          <div class="welfare-check"><span class="wc-tick">✓</span> Veterinary emergency protocol on file</div>
+        </div>
+      </div>
+      <div class="welfare-card">
+        <div class="welfare-icon">⏱️</div>
+        <div class="welfare-title">Interaction Limits</div>
+        <div class="welfare-checks">
+          <div class="welfare-check"><span class="wc-tick">✓</span> Maximum 30 min direct handling per session per animal</div>
+          <div class="welfare-check"><span class="wc-tick">✓</span> Mandatory rest days between high-activity sessions</div>
+          <div class="welfare-check"><span class="wc-tick">✓</span> Rotation schedule prevents individual overuse</div>
+          <div class="welfare-check"><span class="wc-tick">✓</span> Animals can self-withdraw using designated retreat areas</div>
+        </div>
+      </div>
+      <div class="welfare-card">
+        <div class="welfare-icon">📚</div>
+        <div class="welfare-title">Training & Socialisation</div>
+        <div class="welfare-checks">
+          <div class="welfare-check"><span class="wc-tick">✓</span> All animals captive-bred and professionally socialised</div>
+          <div class="welfare-check"><span class="wc-tick">✓</span> Graduated positive exposure to therapeutic environments</div>
+          <div class="welfare-check"><span class="wc-tick">✓</span> Handler certification required for all staff</div>
+          <div class="welfare-check"><span class="wc-tick">✓</span> Behavioural stress indicators documented and tracked</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="svc-divider"></div>
+
+  <!-- ══ H: OUTCOMES ═══════════════════════════════ -->
+  <section class="svc-section" id="outcomes" style="max-width:none;">
+    <div class="sec-anchor" id="sec-outcomes"></div>
+    <div class="sec-eyebrow">Measurable Impact</div>
+    <h2 class="sec-title">Programme Outcomes<br>& Evidence Base</h2>
+    <p class="sec-desc">3-year pilot cohort · n=48 children enrolled, 36 programme completers · Ethics Ref: AAT-2022-047 · All figures represent cohort means; individual outcomes vary.</p>
+
+    <!-- 6-up KPI grid -->
+    <div class="kpi-grid-6">
+      <div class="kpi-big">
+        <div class="kpi-big-val" id="kpi1">0<span class="kpi-big-unit">%</span></div>
+        <div class="kpi-big-lbl">Reduction in meltdown frequency at 12-week review</div>
+        <div class="kpi-big-trend">↓ vs 24% in matched waitlist control</div>
+      </div>
+      <div class="kpi-big">
+        <div class="kpi-big-val blue" id="kpi2"><span class="kpi-big-prefix">+</span>0<span class="kpi-big-unit">%</span></div>
+        <div class="kpi-big-lbl">Social attention improvement on SRS-2 standardised measure</div>
+        <div class="kpi-big-trend">↑ Across all 36 programme completers</div>
+      </div>
+      <div class="kpi-big">
+        <div class="kpi-big-val" id="kpi3">0<span class="kpi-big-unit">%</span></div>
+        <div class="kpi-big-lbl">Family satisfaction at discharge (5/5 CSAT)</div>
+        <div class="kpi-big-trend">↑ Would recommend to another family</div>
+      </div>
+      <div class="kpi-big">
+        <div class="kpi-big-val terra" id="kpi4">0<span class="kpi-big-unit">%</span></div>
+        <div class="kpi-big-lbl">Reduction in self-injurious behaviour (parent-rated)</div>
+        <div class="kpi-big-trend">↓ Weekly frequency at 8-week checkpoint</div>
+      </div>
+      <div class="kpi-big">
+        <div class="kpi-big-val purple" id="kpi5">0</div>
+        <div class="kpi-big-lbl">Children enrolled across 3-year pilot programme</div>
+        <div class="kpi-big-trend">Ages 4–14 · ASD Level 1–2 · 36 completers</div>
+      </div>
+      <div class="kpi-big">
+        <div class="kpi-big-val" style="color:var(--beige);font-size:36px;" id="kpi6">Zero</div>
+        <div class="kpi-big-lbl">Animal welfare incidents across entire pilot period</div>
+        <div class="kpi-big-trend">All welfare gates maintained · 3 independent welfare audits</div>
+      </div>
+    </div>
+
+    <!-- Tab navigation -->
+    <div class="viz-tabs">
+      <button class="viz-tab active" onclick="switchViz('progress',this)">📈  Progress Curves</button>
+      <button class="viz-tab" onclick="switchViz('domains',this)">📊  Domain Breakdown</button>
+      <button class="viz-tab" onclick="switchViz('cohort',this)">🔵  Cohort Map</button>
+      <button class="viz-tab" onclick="switchViz('parent',this)">🏠  Parent-Reported</button>
+    </div>
+
+    <!-- ── Panel 1: Progress Curves ── -->
+    <div class="viz-panel active" id="viz-progress">
+      <div class="viz-3col">
+        <div class="viz-card">
+          <div class="viz-card-head">
+            <div><div class="viz-card-title">Emotional Regulation & Sensory Tolerance</div>
+            <div class="viz-card-sub">Therapist-rated 1–5 scale · Mean ± SD bands · n=48 · Weekly sessions</div></div>
+            <span class="viz-card-badge vbadge-sage">12-week</span>
+          </div>
+          <div style="position:relative;height:310px;margin-top:14px;">
+            <canvas id="c_emotion"></canvas>
+          </div>
+        </div>
+        <div class="viz-card">
+          <div class="viz-card-head">
+            <div><div class="viz-card-title">Social Attention & Engagement Composite</div>
+            <div class="viz-card-sub">Combined SRS-2 subscales + therapist observation · z-score normalised</div></div>
+            <span class="viz-card-badge vbadge-blue">Multi-domain</span>
+          </div>
+          <div style="position:relative;height:310px;margin-top:14px;">
+            <canvas id="c_social"></canvas>
+          </div>
+        </div>
+      </div>
+      <div class="spark-row">
+        <div class="spark-card">
+          <div class="spark-lbl">Salivary Cortisol Reduction</div>
+          <div class="spark-val">−41%</div>
+          <div style="position:relative;height:42px;"><canvas id="sp1"></canvas></div>
+        </div>
+        <div class="spark-card">
+          <div class="spark-lbl">Session Engagement Index</div>
+          <div class="spark-val blue">+58%</div>
+          <div style="position:relative;height:42px;"><canvas id="sp2"></canvas></div>
+        </div>
+        <div class="spark-card">
+          <div class="spark-lbl">Self-Injurious Behaviour</div>
+          <div class="spark-val red">−67%</div>
+          <div style="position:relative;height:42px;"><canvas id="sp3"></canvas></div>
+        </div>
+        <div class="spark-card">
+          <div class="spark-lbl">Avg. Eye Contact Duration</div>
+          <div class="spark-val">+2.4s</div>
+          <div style="position:relative;height:42px;"><canvas id="sp4"></canvas></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Panel 2: Domain Breakdown ── -->
+    <div class="viz-panel" id="viz-domains">
+      <div class="viz-2col">
+        <div class="viz-card">
+          <div class="viz-card-title">Clinically Significant Improvement Rate by Domain</div>
+          <div class="viz-card-sub">% of 36 completers showing ≥1 SD improvement at discharge · Clinical Psychology assessment</div>
+          <div class="domain-bars" id="domainBars" style="margin-top:22px;">
+            <div class="domain-row"><div class="domain-lbl">Emotional Regulation</div><div class="domain-track"><div class="domain-fill" data-pct="78" style="background:#7c9e87;"></div></div><div class="domain-pct">78%</div></div>
+            <div class="domain-row"><div class="domain-lbl">Sensory Tolerance</div><div class="domain-track"><div class="domain-fill" data-pct="71" style="background:#7fb3c8;"></div></div><div class="domain-pct">71%</div></div>
+            <div class="domain-row"><div class="domain-lbl">Social Attention</div><div class="domain-track"><div class="domain-fill" data-pct="62" style="background:#c9b99a;"></div></div><div class="domain-pct">62%</div></div>
+            <div class="domain-row"><div class="domain-lbl">Session Engagement</div><div class="domain-track"><div class="domain-fill" data-pct="88" style="background:#a8c4ae;"></div></div><div class="domain-pct">88%</div></div>
+            <div class="domain-row"><div class="domain-lbl">Self-care Routines</div><div class="domain-track"><div class="domain-fill" data-pct="54" style="background:#b87057;"></div></div><div class="domain-pct">54%</div></div>
+            <div class="domain-row"><div class="domain-lbl">Caregiver Bond</div><div class="domain-track"><div class="domain-fill" data-pct="66" style="background:#a78bbd;"></div></div><div class="domain-pct">66%</div></div>
+            <div class="domain-row"><div class="domain-lbl">Generalisation (Home)</div><div class="domain-track"><div class="domain-fill" data-pct="82" style="background:#7c9e87;"></div></div><div class="domain-pct">82%</div></div>
+          </div>
+        </div>
+        <div class="viz-card">
+          <div class="viz-card-title">Ability Profile Radar — Pre vs. Post</div>
+          <div class="viz-card-sub">Mean z-score across 6 therapeutic domains · Pre-programme vs. discharge</div>
+          <div style="position:relative;height:340px;margin-top:14px;">
+            <canvas id="c_radar"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Panel 3: Cohort Map ── -->
+    <div class="viz-panel" id="viz-cohort">
+      <div class="viz-card">
+        <div class="viz-card-head" style="flex-wrap:wrap;gap:12px;">
+          <div>
+            <div class="viz-card-title">Individual Outcome Scatter — All 48 Participants</div>
+            <div class="viz-card-sub">X-axis: baseline severity · Y-axis: improvement score at discharge · Size: programme duration · Hover for participant detail</div>
+          </div>
+          <div style="display:flex;gap:12px;font-size:11px;color:rgba(255,255,255,0.4);flex-wrap:wrap;">
+            <span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#7c9e87;margin-right:4px;vertical-align:middle;"></span>ASD Level 1</span>
+            <span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#7fb3c8;margin-right:4px;vertical-align:middle;"></span>ASD Level 2</span>
+            <span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#b87057;margin-right:4px;vertical-align:middle;"></span>Level 2+ / Eval</span>
+          </div>
+        </div>
+        <div style="position:relative;height:400px;margin-top:16px;">
+          <canvas id="c_scatter"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Panel 4: Parent-Reported ── -->
+    <div class="viz-panel" id="viz-parent">
+      <div class="viz-2col">
+        <div class="viz-card">
+          <div class="viz-card-head">
+            <div><div class="viz-card-title">Weekly Meltdown Frequency</div>
+            <div class="viz-card-sub">Parent-reported · Average per week · 36 families · Error bands = ±1 SD</div></div>
+            <span class="viz-card-badge vbadge-terra">Parent Report</span>
+          </div>
+          <div style="position:relative;height:310px;margin-top:14px;">
+            <canvas id="c_meltdown"></canvas>
+          </div>
+        </div>
+        <div class="viz-card">
+          <div class="viz-card-head">
+            <div><div class="viz-card-title">Home Skill Generalisation</div>
+            <div class="viz-card-sub">Parent-rated transfer of session skills to home context · 1–10 scale</div></div>
+            <span class="viz-card-badge vbadge-purple">Generalisation</span>
+          </div>
+          <div style="position:relative;height:310px;margin-top:14px;">
+            <canvas id="c_home"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <div class="svc-divider"></div>
+
+  <!-- ══ I: TEAM ════════════════════════════════════ -->
+  <section class="svc-section" id="team">
+    <div class="sec-anchor" id="sec-team"></div>
+    <div class="sec-eyebrow">Clinical Team</div>
+    <h2 class="sec-title">The People Behind<br>the Programme</h2>
+    <p class="sec-desc">Our multidisciplinary team brings together expertise across developmental psychology, occupational therapy, and certified animal-assisted intervention.</p>
+
+    <div class="team-grid">
+      <div class="team-card">
+        <div class="team-avatar">🧠</div>
+        <div class="team-role">Clinical Lead</div>
+        <div class="team-name">Developmental Psychologist</div>
+        <div class="team-desc">PhD in ASD intervention; 12+ years clinical practice; AAT certification from IAHAIO</div>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar">🤲</div>
+        <div class="team-role">Occupational Therapist</div>
+        <div class="team-name">Sensory Integration Specialist</div>
+        <div class="team-desc">Specialist in sensory processing disorder; certified in DIR/Floortime and SI therapy</div>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar">🦎</div>
+        <div class="team-role">Animal Welfare Officer</div>
+        <div class="team-name">Reptile Behaviour Specialist</div>
+        <div class="team-desc">BSc Zoology; certificated in companion animal welfare assessment; 8 years herp husbandry</div>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar">👨‍👩‍👧</div>
+        <div class="team-role">Family Coordinator</div>
+        <div class="team-name">Parent Liaison & Trainer</div>
+        <div class="team-desc">Social work background; specialises in family-centred practice and caregiver coaching</div>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar">📊</div>
+        <div class="team-role">Research & Data</div>
+        <div class="team-name">Clinical Research Associate</div>
+        <div class="team-desc">Manages outcome measurement, ethics compliance, and contributes to peer-reviewed publications</div>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar">🩺</div>
+        <div class="team-role">Advisory</div>
+        <div class="team-name">Consulting Paediatrician</div>
+        <div class="team-desc">Provides medical oversight for intake clearance and coordinates with referring clinical teams</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="svc-divider"></div>
+
+  <!-- ══ J: FAQ ══════════════════════════════════════ -->
+  <section class="svc-section" id="faq">
+    <div class="sec-anchor" id="sec-faq"></div>
+    <div class="sec-eyebrow">Common Questions</div>
+    <h2 class="sec-title">Frequently Asked<br>Questions</h2>
+
+    <div class="faq-list">
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-q">Why reptiles rather than dogs or other animals? <span>+</span></div>
+        <div class="faq-a"><div class="faq-a-inner">Reptiles offer several distinct advantages for children with ASD: they move slowly and predictably, reducing startle responses; they do not bark, jump, or have unpredictable social behaviour; their sensory texture (smooth scales, warmth) provides consistent proprioceptive input; and their care is highly routine-based, which aligns well with ASD cognitive strengths. They are also hypoallergenic compared to fur-bearing animals in many cases.</div></div>
+      </div>
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-q">Are reptiles safe to handle with children? <span>+</span></div>
+        <div class="faq-a"><div class="faq-a-inner">Yes, within the safety protocols we have developed. We use only captive-bred, professionally socialised animals that have been through a graduated habituation programme. All handling is supervised 1:1 by a trained handler. Hygiene protocols (hand washing, no face contact) are strictly enforced. In 3 years of pilot operation, there have been zero injury incidents.</div></div>
+      </div>
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-q">How is this different from a pet visit or zoo trip? <span>+</span></div>
+        <div class="faq-a"><div class="faq-a-inner">This is a structured, goal-directed clinical programme — not enrichment or recreation. Every session has therapeutic objectives, measurable outcomes, and clinical documentation. The reptile interaction is a scaffold for developing specific skills (emotional language, self-regulation, turn-taking), not an end in itself. Sessions are conducted by credentialled clinicians, not volunteers.</div></div>
+      </div>
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-q">What if my child is frightened of reptiles? <span>+</span></div>
+        <div class="faq-a"><div class="faq-a-inner">Mild anxiety is not a contraindication — in fact, gradual exposure to a calm, predictable stimulus is itself a therapeutic tool. Stages 1–4 involve no direct contact whatsoever. Children who are fearful typically show significant improvement in tolerance within the first 6–8 sessions. Severe phobias are assessed individually and may benefit from prior anxiety treatment before enrolment.</div></div>
+      </div>
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-q">Is this covered by health insurance or NDIS? <span>+</span></div>
+        <div class="faq-a"><div class="faq-a-inner">Coverage varies by jurisdiction. In Australia, this programme can be accessed under NDIS funding (Improved Daily Living and Improved Health and Wellbeing categories) with appropriate plan goals. In other regions, we provide detailed clinical reports that families can submit for reimbursement consideration. Our family coordinator can advise on the funding landscape in your area during the intake call.</div></div>
+      </div>
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-q">How long is the programme, and can it be extended? <span>+</span></div>
+        <div class="faq-a"><div class="faq-a-inner">The standard programme is 12–24 weeks (weekly 60-minute sessions). Duration is determined at the Stage 3 planning meeting and reviewed at the mid-programme review (Stage 9). Extensions are available in 6-week blocks based on clinical indication. Booster sessions post-discharge are offered at the 6-month follow-up if progress has plateaued.</div></div>
+      </div>
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-q">Can I observe my child's sessions? <span>+</span></div>
+        <div class="faq-a"><div class="faq-a-inner">Yes. Caregivers observe from an adjacent room with a one-way observation window or live camera feed (with consent). Direct in-room caregiver presence is phased in from Stage 7 onward when clinically appropriate. Full session summaries and video clips (with consent) are provided after each session via our secure family portal.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="svc-divider"></div>
+
+  <!-- ══ SSS: SCALE-UP STRATEGY ═══════════════════════ -->
+  <section class="svc-section" id="sss">
+    <div class="sec-anchor" id="sec-sss"></div>
+    <div class="sec-eyebrow">Sustainable Scale-up Strategy</div>
+    <h2 class="sec-title">SSS Framework —<br>Probes for Innovation</h2>
+    <p class="sec-desc" style="max-width:700px;">Applying the Sustainable Scale-up Strategy (SSS) framework to TONITRUUM — mapping how our "desired behaviours" and "desired experiences" generate value across Social, Environmental, and Economic dimensions as we scale.</p>
+
+    <div class="sss-intro-text">
+      <p>The SSS framework asks us to interrogate our scale-up strategy through three sustainability lenses: <strong style="color:var(--sage-light);">Social</strong> (community wellbeing), <strong style="color:var(--pale-blue);">Environmental</strong> (ecological footprint and conservation), and <strong style="color:var(--terra-light);">Economic</strong> (viable, long-term growth). For each pillar, we examine our value propositions, value creation mechanisms, and measurable impacts.</p>
+      <p>In TONITRUUM's case, the "desired behaviour" is <em>mindful, data-informed reptile care</em> — and the "desired experience" is <em>a seamless, intelligent habitat monitoring platform that connects owners, animals, and clinicians.</em></p>
+      <span class="sss-source">📖 Framework: Probes for Innovating Scale-up Strategies using the SSS</span>
+    </div>
+
+    <!-- ══ Full-screen Vision Map ══ -->
+    <div class="sss-vis-full" id="sss-vision">
+      <div class="sss-vis-label">TONITRUUM · SSS Vision Map — hover nodes to explore</div>
+      <div class="sss-vis-wrap">
+        <svg id="sss-svg" viewBox="0 0 600 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+
+          <!-- Layer 0: backgrounds (slowest parallax) -->
+          <g id="sss-layer-bg">
+            <!-- Sector fills: Social(top), Env(left+bottom), Economic(right+bottom) -->
+            <path d="M300,300 L456,210 L300,120 L144,210 Z" fill="rgba(124,158,135,0.08)"/>
+            <path d="M300,300 L144,210 L144,390 L300,480 Z" fill="rgba(127,179,200,0.08)"/>
+            <path d="M300,300 L300,480 L456,390 L456,210 Z" fill="rgba(184,112,87,0.08)"/>
+            <!-- Outer rotating ring -->
+            <circle id="sss-ring" cx="300" cy="300" r="268" stroke="rgba(201,185,154,0.15)" stroke-width="1.2" stroke-dasharray="10,7" fill="none"/>
+            <!-- Mid hex outline -->
+            <polygon points="300,120 456,210 456,390 300,480 144,390 144,210" stroke="rgba(255,255,255,0.07)" stroke-width="1.2" fill="none"/>
+          </g>
+
+          <!-- Layer 1: connector lines (medium parallax) -->
+          <g id="sss-layer-lines">
+            <line x1="300" y1="252" x2="300" y2="120" stroke="rgba(124,158,135,0.25)" stroke-width="1" stroke-dasharray="5,5"/>
+            <line x1="342" y1="276" x2="456" y2="210" stroke="rgba(124,158,135,0.2)"  stroke-width="1" stroke-dasharray="5,5"/>
+            <line x1="258" y1="276" x2="144" y2="210" stroke="rgba(127,179,200,0.2)"  stroke-width="1" stroke-dasharray="5,5"/>
+            <line x1="300" y1="348" x2="300" y2="480" stroke="rgba(127,179,200,0.25)" stroke-width="1" stroke-dasharray="5,5"/>
+            <line x1="258" y1="324" x2="144" y2="390" stroke="rgba(184,112,87,0.2)"   stroke-width="1" stroke-dasharray="5,5"/>
+            <line x1="342" y1="324" x2="456" y2="390" stroke="rgba(184,112,87,0.2)"   stroke-width="1" stroke-dasharray="5,5"/>
+          </g>
+
+          <!-- Layer 3: center (barely moves) -->
+          <g id="sss-layer-center">
+            <circle class="sss-pulse"  cx="300" cy="300" r="88" fill="rgba(124,158,135,0.04)" stroke="rgba(124,158,135,0.12)" stroke-width="1.5"/>
+            <circle class="sss-pulse2" cx="300" cy="300" r="68" fill="rgba(124,158,135,0.06)" stroke="rgba(124,158,135,0.18)" stroke-width="1.5"/>
+            <circle cx="300" cy="300" r="50" fill="rgba(14,20,34,0.95)" stroke="rgba(124,158,135,0.55)" stroke-width="2"/>
+            <text x="300" y="296" text-anchor="middle" font-size="16" font-weight="700" fill="rgba(255,255,255,0.92)" letter-spacing="3">VISION</text>
+            <text x="300" y="313" text-anchor="middle" font-size="11" fill="rgba(255,255,255,0.35)" letter-spacing="2">TONITRUUM</text>
+          </g>
+
+          <!-- Layer 2: nodes (fastest parallax) -->
+          <g id="sss-layer-nodes">
+
+            <!-- Social Impact (top) -->
+            <g class="sss-node" data-pillar="social" data-cx="300" data-cy="120"
+               data-tip="Reduces social isolation in autistic families; builds shared reptile hobbyist communities">
+              <circle class="nd-glow" cx="300" cy="120" r="28" fill="rgba(124,158,135,0)" stroke="rgba(124,158,135,0)" stroke-width="1"/>
+              <circle class="nd-outer" cx="300" cy="120" r="16" fill="rgba(124,158,135,0.18)" stroke="rgba(124,158,135,0.75)" stroke-width="2"/>
+              <circle cx="300" cy="120" r="6" fill="#a8c4ae"/>
+              <text x="300" y="95" text-anchor="middle" font-size="13" fill="#a8c4ae" font-weight="700" letter-spacing="0.5">Social Impact</text>
+            </g>
+
+            <!-- Social VP (top-right) -->
+            <g class="sss-node" data-pillar="social" data-cx="456" data-cy="210"
+               data-tip="Mindful, data-informed care as therapeutic tool; expert-validated community platform">
+              <circle class="nd-glow" cx="456" cy="210" r="28" fill="rgba(124,158,135,0)" stroke="rgba(124,158,135,0)" stroke-width="1"/>
+              <circle class="nd-outer" cx="456" cy="210" r="16" fill="rgba(124,158,135,0.18)" stroke="rgba(124,158,135,0.75)" stroke-width="2"/>
+              <circle cx="456" cy="210" r="6" fill="#a8c4ae"/>
+              <text x="488" y="207" text-anchor="start" font-size="13" fill="#a8c4ae" font-weight="700">Social VP</text>
+            </g>
+
+            <!-- Env. VP (top-left) -->
+            <g class="sss-node" data-pillar="env" data-cx="144" data-cy="210"
+               data-tip="Precision micro-climate control reduces energy waste; promotes captive breeding over wild collection">
+              <circle class="nd-glow" cx="144" cy="210" r="28" fill="rgba(127,179,200,0)" stroke="rgba(127,179,200,0)" stroke-width="1"/>
+              <circle class="nd-outer" cx="144" cy="210" r="16" fill="rgba(127,179,200,0.18)" stroke="rgba(127,179,200,0.75)" stroke-width="2"/>
+              <circle cx="144" cy="210" r="6" fill="#7fb3c8"/>
+              <text x="112" y="207" text-anchor="end" font-size="13" fill="#7fb3c8" font-weight="700">Env. VP</text>
+            </g>
+
+            <!-- Env. Impact (bottom) -->
+            <g class="sss-node" data-pillar="env" data-cx="300" data-cy="480"
+               data-tip="Lower reptile mortality; reduced per-enclosure energy use; conservation behaviour data contribution">
+              <circle class="nd-glow" cx="300" cy="480" r="28" fill="rgba(127,179,200,0)" stroke="rgba(127,179,200,0)" stroke-width="1"/>
+              <circle class="nd-outer" cx="300" cy="480" r="16" fill="rgba(127,179,200,0.18)" stroke="rgba(127,179,200,0.75)" stroke-width="2"/>
+              <circle cx="300" cy="480" r="6" fill="#7fb3c8"/>
+              <text x="300" y="512" text-anchor="middle" font-size="13" fill="#7fb3c8" font-weight="700" letter-spacing="0.5">Env. Impact</text>
+            </g>
+
+            <!-- Economic VP (bottom-left) -->
+            <g class="sss-node" data-pillar="economic" data-cx="144" data-cy="390"
+               data-tip="Hardware + SaaS subscription + B2B clinical licence — three resilient revenue streams">
+              <circle class="nd-glow" cx="144" cy="390" r="28" fill="rgba(184,112,87,0)" stroke="rgba(184,112,87,0)" stroke-width="1"/>
+              <circle class="nd-outer" cx="144" cy="390" r="16" fill="rgba(184,112,87,0.18)" stroke="rgba(184,112,87,0.75)" stroke-width="2"/>
+              <circle cx="144" cy="390" r="6" fill="#d4956f"/>
+              <text x="112" y="386" text-anchor="end" font-size="13" fill="#d4956f" font-weight="700">Economic</text>
+              <text x="112" y="403" text-anchor="end" font-size="11" fill="#d4956f">Proposition</text>
+            </g>
+
+            <!-- Economic Impact (bottom-right) -->
+            <g class="sss-node" data-pillar="economic" data-cx="456" data-cy="390"
+               data-tip="€1.4M+ ARR by 2029; 40 FTEs; reptile market expanded via new healthcare channel">
+              <circle class="nd-glow" cx="456" cy="390" r="28" fill="rgba(184,112,87,0)" stroke="rgba(184,112,87,0)" stroke-width="1"/>
+              <circle class="nd-outer" cx="456" cy="390" r="16" fill="rgba(184,112,87,0.18)" stroke="rgba(184,112,87,0.75)" stroke-width="2"/>
+              <circle cx="456" cy="390" r="6" fill="#d4956f"/>
+              <text x="488" y="386" text-anchor="start" font-size="13" fill="#d4956f" font-weight="700">Economic</text>
+              <text x="488" y="403" text-anchor="start" font-size="11" fill="#d4956f">Impact</text>
+            </g>
+
+          </g><!-- /layer-nodes -->
+        </svg>
+        <!-- Floating tooltip -->
+        <div id="sss-tip"></div>
+      </div>
+    </div>
+
+    <!-- SSS Table -->
+    <div class="sss-table-wrap">
+      <table class="sss-table">
+        <thead>
+          <tr>
+            <th>Sustainability<br>Pillar</th>
+            <th class="col-vp">Value Propositions</th>
+            <th class="col-vcm">Value Creation Mechanisms</th>
+            <th class="col-imp">Impacts</th>
+          </tr>
+        </thead>
+        <tbody>
+
+          <!-- ── SOCIAL ── -->
+          <tr class="sss-row social">
+            <td>
+              <div class="sss-pillar">
+                <div class="sss-pillar-icon">👥</div>
+                <div class="sss-pillar-name">Social</div>
+                <div class="sss-pillar-tag">Community</div>
+              </div>
+            </td>
+            <td class="sss-cell">
+              <div class="sss-probe">How does the "desired behaviour" improve community wellbeing? Which needs does our "desired state" satisfy?</div>
+              <div class="sss-answer"><strong>Mindful reptile ownership</strong> reduces social isolation in autistic families by creating a structured, calming therapeutic bridge between child and animal. It also builds community through shared hobbyist networks.</div>
+              <div class="sss-bullets">
+                <div class="sss-bullet">Autistic children and their caregivers gain a non-invasive therapeutic tool that reduces family stress</div>
+                <div class="sss-bullet">Reptile enthusiasts need expert guidance, community validation, and a platform to connect safely</div>
+                <div class="sss-bullet">Healthcare referrers need evidence-based outcomes to justify novel interventions</div>
+              </div>
+              <div class="sss-metrics">
+                <span class="sss-metric">48 children piloted</span>
+                <span class="sss-metric">ASD social score +23%</span>
+                <span class="sss-metric">5 communities served</span>
+              </div>
+            </td>
+            <td class="sss-cell">
+              <div class="sss-probe">How do we influence people to adopt desirable behaviour? What activities deliver our value propositions?</div>
+              <div class="sss-answer"><strong>Digital education + community + clinical tools</strong> work in concert to shift behaviour from reactive care to proactive, data-informed stewardship.</div>
+              <div class="sss-bullets">
+                <div class="sss-bullet">Species-specific care guides and app push notifications reinforce daily routines</div>
+                <div class="sss-bullet">Therapeutic session logging builds trust between clinicians and families</div>
+                <div class="sss-bullet">Expert interviews and documentary content normalise reptile-assisted therapy</div>
+                <div class="sss-bullet">Community forum and breeder directory connect users across the ecosystem</div>
+              </div>
+            </td>
+            <td class="sss-cell">
+              <div class="sss-probe">How do our mechanisms affect society? How can we track and measure the "desired experience"?</div>
+              <div class="sss-answer">Society sees <strong>reduced preventable reptile deaths</strong>, measurably improved child social development, and stronger, better-informed reptile owner communities.</div>
+              <div class="sss-bullets">
+                <div class="sss-bullet">Pre/post ASD assessment scores (ADOS-2, social engagement scales)</div>
+                <div class="sss-bullet">Net Promoter Score from families and clinicians</div>
+                <div class="sss-bullet">Community engagement metrics: posts, mentorships, referrals</div>
+                <div class="sss-bullet">Session completion rate and caregiver reported stress reduction</div>
+              </div>
+              <div class="sss-metrics">
+                <span class="sss-metric">NPS target 72+</span>
+                <span class="sss-metric">82% session completion</span>
+              </div>
+            </td>
+          </tr>
+
+          <!-- ── ENVIRONMENTAL ── -->
+          <tr class="sss-row env">
+            <td>
+              <div class="sss-pillar">
+                <div class="sss-pillar-icon">🌿</div>
+                <div class="sss-pillar-name">Environmental</div>
+                <div class="sss-pillar-tag">Ecology</div>
+              </div>
+            </td>
+            <td class="sss-cell">
+              <div class="sss-probe">How does the "desired behaviour" contribute to environmental conservation? In what ways does the "desired experience" encourage eco-friendly habits?</div>
+              <div class="sss-answer"><strong>Precision habitat monitoring</strong> eliminates energy waste from over-heating or excessive UV — and promotes responsible captive breeding, reducing pressure on wild populations.</div>
+              <div class="sss-bullets">
+                <div class="sss-bullet">Optimal temperature scheduling reduces heating energy by up to 35% vs. always-on devices</div>
+                <div class="sss-bullet">Species encyclopaedia teaches wild habitat conservation alongside captive care</div>
+                <div class="sss-bullet">Captive-bred sourcing verification in platform reduces wild-capture animal trade</div>
+              </div>
+              <div class="sss-metrics">
+                <span class="sss-metric">-35% energy target</span>
+                <span class="sss-metric">Captive-bred verified</span>
+              </div>
+            </td>
+            <td class="sss-cell">
+              <div class="sss-probe">What changes make our product more environmentally friendly? How do we create an experience that encourages eco-friendly behaviours?</div>
+              <div class="sss-answer"><strong>IoT-optimised devices + educational content</strong> embed environmental consciousness into the daily care ritual.</div>
+              <div class="sss-bullets">
+                <div class="sss-bullet">Energy-efficient sensors with smart power scheduling (active only when needed)</div>
+                <div class="sss-bullet">Recycled and minimal packaging for hardware units</div>
+                <div class="sss-bullet">In-app wild habitat content: users learn what their reptile's natural environment looks like</div>
+                <div class="sss-bullet">Community shares sustainable husbandry practices (substrate composting, rainwater use)</div>
+              </div>
+            </td>
+            <td class="sss-cell">
+              <div class="sss-probe">How do the "desired behaviours" affect the environment? How do we benchmark our environmental footprint?</div>
+              <div class="sss-answer">Better captive care reduces mortality, meaning <strong>fewer replacement purchases and fewer wild-caught animals</strong>. Smart scheduling measurably lowers per-habitat energy consumption.</div>
+              <div class="sss-bullets">
+                <div class="sss-bullet">Track kWh per habitat/month via platform energy logs vs. pre-TONITRUUM baseline</div>
+                <div class="sss-bullet">Monitor captive-bred sourcing % declared in user profiles over time</div>
+                <div class="sss-bullet">Mortality rate reduction → fewer animals entering the supply chain</div>
+                <div class="sss-bullet">Annual carbon equivalence report published for B2B partners</div>
+              </div>
+              <div class="sss-metrics">
+                <span class="sss-metric">Energy logged per device</span>
+                <span class="sss-metric">Annual eco report</span>
+              </div>
+            </td>
+          </tr>
+
+          <!-- ── ECONOMIC ── -->
+          <tr class="sss-row economic">
+            <td>
+              <div class="sss-pillar">
+                <div class="sss-pillar-icon">📈</div>
+                <div class="sss-pillar-name">Economic</div>
+                <div class="sss-pillar-tag">Viability</div>
+              </div>
+            </td>
+            <td class="sss-cell">
+              <div class="sss-probe">How does the "desired behaviour" drive economic growth or stability? What economic challenges are we solving?</div>
+              <div class="sss-answer"><strong>Data-informed reptile ownership</strong> creates a loyal, high-retention customer base willing to pay recurring subscription fees — solving the chronic fragmentation of the reptile care market.</div>
+              <div class="sss-bullets">
+                <div class="sss-bullet">Market fragmentation: no integrated care platform exists — TONITRUUM is the first</div>
+                <div class="sss-bullet">High vet cost from preventable illness — our AI alerts reduce emergency visits</div>
+                <div class="sss-bullet">Therapeutic gap: autism families pay €2,000+/year for therapy — our platform offers a validated complement at a fraction of the cost</div>
+              </div>
+              <div class="sss-metrics">
+                <span class="sss-metric">TAM €2.16B by 2030</span>
+                <span class="sss-metric">CAGR 7.6%</span>
+              </div>
+            </td>
+            <td class="sss-cell">
+              <div class="sss-probe">How do we earn money from our sustainable initiatives? How does our business model sustain long-term profitability and growth?</div>
+              <div class="sss-answer"><strong>Hardware-led, SaaS-sustained</strong> model with four revenue streams ensures resilience across economic cycles and geographies.</div>
+              <div class="sss-bullets">
+                <div class="sss-bullet">Hardware: sensor hub €149–199 (55% of revenue) — one-time, high-margin</div>
+                <div class="sss-bullet">Pro subscription: €4.99/month per device — recurring, sticky, low churn</div>
+                <div class="sss-bullet">B2B annual licence: zoos, breeders, research labs (12% of revenue)</div>
+                <div class="sss-bullet">Accessories & marketplace: replacement probes, affiliate products (5%)</div>
+                <div class="sss-bullet">Geographic expansion: EU 2027 → China 2028 → USA 2028 multiplies addressable base</div>
+              </div>
+            </td>
+            <td class="sss-cell">
+              <div class="sss-probe">What is our valuative goal? How much revenue can our business model generate?</div>
+              <div class="sss-answer">Our valuative goal is to become the <strong>global standard for intelligent reptile care</strong> — and the first evidence-based reptile-assisted therapy platform at scale.</div>
+              <div class="sss-bullets">
+                <div class="sss-bullet">2027 EU launch: €195K projected revenue (hardware + early subscriptions)</div>
+                <div class="sss-bullet">2028 +China: €588K (volume + B2B expansion)</div>
+                <div class="sss-bullet">2029 +USA: €1.42M (multi-market maturity, Series A deployed)</div>
+                <div class="sss-bullet">Break-even target: Month 18 post-launch at conservative 340 units/month</div>
+              </div>
+              <div class="sss-metrics">
+                <span class="sss-metric">€195K · 2027</span>
+                <span class="sss-metric">€588K · 2028</span>
+                <span class="sss-metric">€1.42M · 2029</span>
+              </div>
+            </td>
+          </tr>
+
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <div class="svc-divider"></div>
+
+  <!-- ══ K: CTA ══════════════════════════════════════ -->
+  <section class="cta-section" id="cta">
+    <div class="cta-glow"></div>
+    <div class="cta-inner">
+      <div class="sec-eyebrow">Begin the Journey</div>
+      <h2 class="cta-title">A different kind of<br>therapeutic path</h2>
+      <p class="cta-sub">
+        We accept a limited number of new families each intake cycle to ensure the highest standard of individualised care. Enquiries are reviewed by our clinical team within 48 hours.
+      </p>
+      <div class="cta-cards">
+        <div class="cta-card">
+          <div class="cta-card-icon">📋</div>
+          <div class="cta-card-title">Request an Intake Pack</div>
+          <div class="cta-card-text">Receive our full programme guide, eligibility criteria, and referral form by email.</div>
+        </div>
+        <div class="cta-card">
+          <div class="cta-card-icon">📞</div>
+          <div class="cta-card-title">Book a Screening Call</div>
+          <div class="cta-card-text">30-minute call with our clinical coordinator to discuss your child's needs and fit.</div>
+        </div>
+        <div class="cta-card">
+          <div class="cta-card-icon">🩺</div>
+          <div class="cta-card-title">Professional Referral</div>
+          <div class="cta-card-text">Clinicians can submit a referral directly via our secure professional portal.</div>
+        </div>
+      </div>
+      <div style="margin-top:36px; display:flex; gap:14px; flex-wrap:wrap;">
+        <button class="btn-sage" style="font-size:15px; padding:13px 28px;">Start Enquiry →</button>
+        <button class="btn-ghost-sage" style="font-size:15px; padding:13px 28px;" onclick="scrollTo('sec-problem')">Download Programme Guide</button>
+      </div>
+      <div style="margin-top:24px; font-size:12px; color:rgba(255,255,255,0.3); line-height:1.7; max-width:480px;">
+        This programme is delivered by registered health professionals in compliance with relevant national clinical governance standards. Animal welfare is subject to independent oversight. All data is handled in accordance with applicable privacy legislation.
+      </div>
+    </div>
+  </section>
+
+  </div><!-- end main scroll -->
+</div><!-- end app-container -->
+
+<script src="shared.js"></script>
+<script>
+/* ══════════════════════════════════════════
+   MOUSE GLOW
+   ══════════════════════════════════════════ */
+const glow = document.getElementById('mouseGlow');
+document.addEventListener('mousemove', e => {
+  glow.style.left = e.clientX + 'px';
+  glow.style.top  = e.clientY + 'px';
+});
+
+/* ══════════════════════════════════════════
+   STICKY SIDE NAV
+   ══════════════════════════════════════════ */
+const sections = ['hero','problem','eligibility','servicemap','gigamap','risk','welfare','outcomes','team','faq','sss','cta'];
+const dots = document.querySelectorAll('.side-nav-dot');
+
+function updateNav() {
+  let active = 0;
+  sections.forEach((id, i) => {
+    const el = document.getElementById(id);
+    if (el && el.getBoundingClientRect().top < window.innerHeight * 0.55) active = i;
+  });
+  dots.forEach((d,i) => d.classList.toggle('active', i === active));
+}
+window.addEventListener('scroll', updateNav, { passive: true });
+
+dots.forEach((d,i) => {
+  d.addEventListener('click', () => {
+    const el = document.getElementById(sections[i]);
+    if (el) el.scrollIntoView({ behavior:'smooth' });
+  });
+});
+
+function scrollTo(id) {
+  const el = document.getElementById(id) || document.getElementById('sec-' + id);
+  if (el) el.scrollIntoView({ behavior:'smooth' });
+}
+
+/* ══════════════════════════════════════════
+   A — ECOSYSTEM CANVAS
+   ══════════════════════════════════════════ */
+(function() {
+  const c = document.getElementById('ecosystemCanvas');
+  const ctx = c.getContext('2d');
+  const W = c.width, H = c.height, cx = W/2, cy = H/2;
+  let t = 0;
+
+  const nodes = [
+    { label:'Child', x: cx, y: cy, r:42, color:'#7c9e87', icon:'🧒', sub:'Participant' },
+    { label:'Reptile', x: cx, y: cy-130, r:34, color:'#b87057', icon:'🦎', sub:'Animal Partner' },
+    { label:'Family', x: cx+130, y: cy+70, r:30, color:'#c9b99a', icon:'👨‍👩‍👧', sub:'Caregiver' },
+    { label:'Therapist', x: cx-130, y: cy+70, r:30, color:'#7fb3c8', icon:'🧠', sub:'Clinician' },
+    { label:'Enclosure', x: cx-110, y: cy-90, r:24, color:'#a78bbd', icon:'🌡️', sub:'Environment' },
+    { label:'School', x: cx+110, y: cy-90, r:24, color:'#8fa8d4', icon:'🏫', sub:'Context' },
+  ];
+
+  const edges = [[0,1],[0,2],[0,3],[1,4],[0,4],[2,3],[3,5],[0,5]];
+
+  function draw() {
+    ctx.clearRect(0,0,W,H);
+    t += 0.012;
+
+    // outer glow ring
+    const grad = ctx.createRadialGradient(cx,cy,60,cx,cy,210);
+    grad.addColorStop(0, 'rgba(124,158,135,0.04)');
+    grad.addColorStop(1, 'transparent');
+    ctx.fillStyle = grad;
+    ctx.beginPath(); ctx.arc(cx,cy,210,0,Math.PI*2); ctx.fill();
+
+    // animated orbit dots
+    for(let i=0;i<3;i++){
+      const angle = t * 0.5 + i * Math.PI*2/3;
+      const ox = cx + 170 * Math.cos(angle);
+      const oy = cy + 170 * Math.sin(angle);
+      ctx.beginPath(); ctx.arc(ox,oy,3,0,Math.PI*2);
+      ctx.fillStyle = 'rgba(124,158,135,0.25)'; ctx.fill();
+    }
+
+    // edges
+    edges.forEach(([a,b]) => {
+      const na = nodes[a], nb = nodes[b];
+      const pulse = 0.2 + 0.15 * Math.sin(t * 2 + a + b);
+      ctx.beginPath();
+      ctx.moveTo(na.x, na.y); ctx.lineTo(nb.x, nb.y);
+      ctx.strokeStyle = `rgba(124,158,135,${pulse})`;
+      ctx.lineWidth = 1.2; ctx.stroke();
+      // flow dots
+      const f = (t * 0.4 + a * 0.3) % 1;
+      const fx = na.x + (nb.x - na.x) * f;
+      const fy = na.y + (nb.y - na.y) * f;
+      ctx.beginPath(); ctx.arc(fx,fy,2.5,0,Math.PI*2);
+      ctx.fillStyle = `rgba(168,196,174,${0.5 + 0.3*Math.sin(t*3)})`; ctx.fill();
+    });
+
+    // nodes
+    nodes.forEach((n, i) => {
+      const bobY = i === 0 ? Math.sin(t * 1.2) * 3 : 0;
+      ctx.save();
+      ctx.translate(n.x, n.y + bobY);
+      // glow
+      const g2 = ctx.createRadialGradient(0,0,n.r*0.5,0,0,n.r*1.8);
+      g2.addColorStop(0, n.color + '30'); g2.addColorStop(1,'transparent');
+      ctx.beginPath(); ctx.arc(0,0,n.r*1.8,0,Math.PI*2);
+      ctx.fillStyle = g2; ctx.fill();
+      // circle
+      ctx.beginPath(); ctx.arc(0,0,n.r,0,Math.PI*2);
+      ctx.fillStyle = '#1a1f2e'; ctx.fill();
+      ctx.strokeStyle = n.color + 'aa'; ctx.lineWidth = 2; ctx.stroke();
+      // icon
+      ctx.font = `${n.r * 0.72}px serif`;
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText(n.icon, 0, -1);
+      // label
+      ctx.font = '600 11px -apple-system,sans-serif';
+      ctx.fillStyle = 'rgba(232,220,200,0.85)';
+      ctx.fillText(n.label, 0, n.r + 14);
+      ctx.font = '10px -apple-system,sans-serif';
+      ctx.fillStyle = 'rgba(255,255,255,0.3)';
+      ctx.fillText(n.sub, 0, n.r + 26);
+      ctx.restore();
+    });
+
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+/* ══════════════════════════════════════════
+   C — ELIGIBILITY TABS
+   ══════════════════════════════════════════ */
+function showElig(type, btn) {
+  document.querySelectorAll('.elig-panel').forEach(p => p.classList.remove('shown'));
+  document.querySelectorAll('.elig-tab').forEach(b => {
+    b.classList.remove('active-suitable','active-eval','active-not');
+  });
+  document.getElementById('elig-' + type).classList.add('shown');
+  btn.classList.add('active-' + type);
+}
+
+/* ══════════════════════════════════════════
+   D — STAGE ACCORDION
+   ══════════════════════════════════════════ */
+function toggleStage(el) {
+  el.classList.toggle('open');
+}
+
+/* ══════════════════════════════════════════
+   E — GIGA MAP CANVAS (full-screen, interactive)
+   ══════════════════════════════════════════ */
+(function() {
+  const c    = document.getElementById('gigaCanvas');
+  const wrap = document.getElementById('gigaWrap');
+  if (!c || !wrap) return;
+  const ctx  = c.getContext('2d');
+  const dpr  = window.devicePixelRatio || 1;
+
+  let W, H, CX, CY, t = 0;
+  let mouseX = -9999, mouseY = -9999;
+  let hovered = -1, clicked = -1;
+  let hovNode = -1; // index into flat node list
+
+  /* ── System data ── */
+  const SYSTEMS = [
+    { name:'Human System',        color:'#7c9e87', angle:-Math.PI/2,
+      nodes:['Child','Caregiver','Therapist (AAT)','Clinical Psych','School'],
+      desc:'Human actors — each with defined clinical roles and feedback relationships.' },
+    { name:'Animal System',       color:'#b87057', angle:0,
+      nodes:['Reptile Partner','Welfare Officer','Vet Support','Handler','Species Protocol'],
+      desc:'Living animal participants, their care infrastructure and welfare governance.' },
+    { name:'Environmental System',color:'#7fb3c8', angle:Math.PI/2,
+      nodes:['Monitored Enclosure','Session Room','Sensory Plan','Safety Protocols','Data Platform'],
+      desc:'The physical and procedural environment enabling safe therapeutic interaction.' },
+    { name:'Institutional System',color:'#c9b99a', angle:Math.PI,
+      nodes:['Research & Outcomes','Ethics Board','Funding & Access','Referral Pathways','Compliance'],
+      desc:'Governance layer ensuring programme quality, oversight and sustainable delivery.' },
+  ];
+
+  /* Per-sector lerped animation state */
+  const sState = SYSTEMS.map(() => ({ expand:0, glow:0 }));
+
+  /* Ambient floating particles */
+  let ambient = [];
+  function spawnAmbient() {
+    ambient = Array.from({ length: 80 }, () => ({
+      x: Math.random() * W, y: Math.random() * H,
+      vx:(Math.random()-0.5)*0.22, vy:(Math.random()-0.5)*0.22,
+      r: 1 + Math.random()*2.2,
+      base_alpha: 0.08 + Math.random()*0.18,
+      color: SYSTEMS[Math.floor(Math.random()*4)].color,
+    }));
+  }
+
+  /* Flow particles along spoke lines */
+  const flowParticles = [];
+  function spawnFlow() {
+    flowParticles.length = 0;
+    SYSTEMS.forEach((sys, si) => {
+      sys.nodes.forEach((_, ni) => {
+        for (let k = 0; k < 2; k++) {
+          flowParticles.push({ si, ni, t: (si * 5 + ni * 2 + k) / 10 % 1, speed: 0.004 + Math.random()*0.002 });
+        }
+      });
+    });
+  }
+
+  /* ── Geometry (proportional to canvas size) ── */
+  function geo() {
+    const short = Math.min(W, H);
+    return {
+      outerR : short * 0.37,
+      midR   : short * 0.22,
+      hubR   : short * 0.09,
+      nodeR  : short * 0.030,
+      labelR : short * 0.46,
+    };
+  }
+
+  /* Node world positions (recomputed each frame) */
+  function nodePos(si, ni, g, expand) {
+    const sys = SYSTEMS[si];
+    const spread = 0.72;
+    const n = sys.nodes.length;
+    const angle = sys.angle - spread/2 + (spread/(n-1)) * ni;
+    const baseR = g.outerR - g.nodeR * 2.5;
+    const r = baseR + expand * 36 + Math.sin(t*1.3 + si + ni*0.7) * 4;
+    return { x: CX + r * Math.cos(angle), y: CY + r * Math.sin(angle), angle };
+  }
+
+  /* ── Resize ── */
+  function resize() {
+    const rect = wrap.getBoundingClientRect();
+    W = rect.width; H = rect.height;
+    c.width  = W * dpr; c.height = H * dpr;
+    c.style.width  = W + 'px'; c.style.height = H + 'px';
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    CX = W / 2; CY = H / 2;
+    spawnAmbient(); spawnFlow();
+  }
+
+  /* ── Main draw loop ── */
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    t += 0.007;
+    const g = geo();
+
+    /* ── 1. Ambient particles (mouse repulsion) ── */
+    ambient.forEach(p => {
+      const dx = p.x - mouseX, dy = p.y - mouseY;
+      const d  = Math.hypot(dx, dy);
+      if (d < 140 && d > 0) {
+        const f = ((140-d)/140) * 1.4;
+        p.vx += (dx/d) * f * 0.045;
+        p.vy += (dy/d) * f * 0.045;
+      }
+      p.vx *= 0.95; p.vy *= 0.95;
+      p.x += p.vx; p.y += p.vy;
+      if (p.x < -10) p.x = W+10; if (p.x > W+10) p.x = -10;
+      if (p.y < -10) p.y = H+10; if (p.y > H+10) p.y = -10;
+
+      const prox = Math.max(0, 1 - d / 200);
+      const alpha = p.base_alpha + prox * 0.5;
+      const r2 = p.r * (1 + prox * 1.8);
+      ctx.beginPath(); ctx.arc(p.x, p.y, r2, 0, Math.PI*2);
+      ctx.fillStyle = p.color + Math.round(alpha*255).toString(16).padStart(2,'0');
+      ctx.fill();
+    });
+
+    /* ── 2. Update sector lerp state ── */
+    SYSTEMS.forEach((sys, si) => {
+      const targetExpand = (si === hovered || si === clicked) ? 1 : 0;
+      const targetGlow   = (si === hovered) ? 1 : (si === clicked ? 0.6 : 0);
+      sState[si].expand += (targetExpand - sState[si].expand) * 0.1;
+      sState[si].glow   += (targetGlow   - sState[si].glow)   * 0.1;
+    });
+
+    /* ── 3. Guide rings (scale with canvas) ── */
+    const distToCenter = Math.hypot(mouseX - CX, mouseY - CY);
+    const centerProx   = Math.max(0, 1 - distToCenter / (g.outerR * 1.4));
+
+    [[g.outerR * 1.15, 0.04], [g.outerR, 0.06], [g.midR, 0.05], [g.hubR * 1.05, 0.08]].forEach(([r, a]) => {
+      ctx.beginPath(); ctx.arc(CX, CY, r, 0, Math.PI*2);
+      ctx.strokeStyle = `rgba(255,255,255,${a + centerProx*0.04})`;
+      ctx.lineWidth = 1; ctx.stroke();
+    });
+
+    /* rotating dashed decorative ring */
+    ctx.save(); ctx.translate(CX, CY); ctx.rotate(t * 0.06);
+    ctx.beginPath(); ctx.arc(0, 0, g.outerR * 1.08, 0, Math.PI*2);
+    ctx.strokeStyle = 'rgba(255,255,255,0.04)';
+    ctx.setLineDash([6, 18]); ctx.lineWidth = 1; ctx.stroke();
+    ctx.setLineDash([]); ctx.restore();
+
+    /* ── 4. Sector arc fills ── */
+    SYSTEMS.forEach((sys, si) => {
+      const exp  = sState[si].expand;
+      const glw  = sState[si].glow;
+      const arcR = g.outerR * (1.02 + exp * 0.14);
+
+      /* sector fill */
+      ctx.beginPath();
+      ctx.moveTo(CX, CY);
+      ctx.arc(CX, CY, arcR, sys.angle - Math.PI*0.48, sys.angle + Math.PI*0.48);
+      ctx.closePath();
+      ctx.fillStyle = sys.color + Math.round((0.04 + exp*0.12 + glw*0.08)*255).toString(16).padStart(2,'0');
+      ctx.fill();
+      ctx.strokeStyle = sys.color + Math.round((0.12 + glw*0.45)*255).toString(16).padStart(2,'0');
+      ctx.lineWidth = 1.2; ctx.stroke();
+
+      /* sector label */
+      const lDist = g.outerR * (1.15 + exp * 0.12) + 28;
+      const lx = CX + lDist * Math.cos(sys.angle);
+      const ly = CY + lDist * Math.sin(sys.angle);
+      const active = si === hovered || si === clicked;
+      ctx.font = `${active ? 700 : 600} ${active ? 14 : 12}px -apple-system,sans-serif`;
+      ctx.fillStyle = active ? sys.color : sys.color + 'bb';
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText(sys.name, lx, ly);
+    });
+
+    /* ── 5. Spokes + flow particles ── */
+    SYSTEMS.forEach((sys, si) => {
+      const exp = sState[si].expand;
+      const active = si === hovered || si === clicked;
+      sys.nodes.forEach((_, ni) => {
+        const { x: nx, y: ny } = nodePos(si, ni, g, exp);
+        ctx.beginPath(); ctx.moveTo(CX, CY); ctx.lineTo(nx, ny);
+        ctx.strokeStyle = sys.color + (active ? '55' : '22');
+        ctx.lineWidth = active ? 1.4 : 0.8; ctx.stroke();
+      });
+    });
+
+    /* animated flow dots along spokes */
+    flowParticles.forEach(fp => {
+      const sys = SYSTEMS[fp.si];
+      const exp = sState[fp.si].expand;
+      const active = fp.si === hovered || fp.si === clicked;
+      fp.t = (fp.t + fp.speed * (active ? 2.2 : 1)) % 1;
+      const { x: nx, y: ny } = nodePos(fp.si, fp.ni, g, exp);
+      const px = CX + (nx - CX) * fp.t;
+      const py = CY + (ny - CY) * fp.t;
+      const alpha = active ? 0.9 : 0.18;
+      const r2 = active ? 3 : 2;
+      ctx.beginPath(); ctx.arc(px, py, r2, 0, Math.PI*2);
+      ctx.fillStyle = sys.color + Math.round(alpha*255).toString(16).padStart(2,'0');
+      ctx.fill();
+      if (active) {
+        const gg = ctx.createRadialGradient(px,py,0,px,py,8);
+        gg.addColorStop(0, sys.color + '44'); gg.addColorStop(1,'transparent');
+        ctx.beginPath(); ctx.arc(px,py,8,0,Math.PI*2);
+        ctx.fillStyle = gg; ctx.fill();
+      }
+    });
+
+    /* ── 6. Outer nodes ── */
+    let flatIdx = 0;
+    SYSTEMS.forEach((sys, si) => {
+      const exp = sState[si].expand;
+      const active = si === hovered || si === clicked;
+      sys.nodes.forEach((name, ni) => {
+        const fi = flatIdx++;
+        const { x: nx, y: ny } = nodePos(si, ni, g, exp);
+        const isHovNode = hovNode === fi;
+        const proximity = Math.max(0, 1 - Math.hypot(mouseX - nx, mouseY - ny) / 90);
+        const nodeScale = 1 + proximity * 0.7 + (isHovNode ? 0.3 : 0);
+        const NR = g.nodeR * nodeScale;
+
+        /* node glow */
+        if (active || proximity > 0.1) {
+          const gg = ctx.createRadialGradient(nx,ny,0,nx,ny,NR*3);
+          gg.addColorStop(0, sys.color + Math.round((0.12 + proximity*0.25)*255).toString(16).padStart(2,'0'));
+          gg.addColorStop(1,'transparent');
+          ctx.beginPath(); ctx.arc(nx,ny,NR*3,0,Math.PI*2);
+          ctx.fillStyle=gg; ctx.fill();
+        }
+
+        /* node circle */
+        const nFill = ctx.createRadialGradient(nx-NR*0.2,ny-NR*0.2,0,nx,ny,NR*1.1);
+        nFill.addColorStop(0, active||isHovNode ? '#2e3a52' : '#252d42');
+        nFill.addColorStop(1, '#1a1f2e');
+        ctx.beginPath(); ctx.arc(nx,ny,NR,0,Math.PI*2);
+        ctx.fillStyle = nFill; ctx.fill();
+        ctx.strokeStyle = sys.color + Math.round((active ? 0.75 : 0.28 + proximity*0.4)*255).toString(16).padStart(2,'0');
+        ctx.lineWidth = active ? 2 : 1.2; ctx.stroke();
+
+        /* node label */
+        const words = name.split(' ');
+        const lfs = Math.round(NR * 0.52);
+        const lfsClamp = Math.max(9, Math.min(13, lfs));
+        ctx.font = `${active||isHovNode ? 600 : 500} ${lfsClamp}px -apple-system,sans-serif`;
+        ctx.fillStyle = active||isHovNode ? 'rgba(232,220,200,0.95)' : 'rgba(255,255,255,0.42)';
+        ctx.textAlign='center'; ctx.textBaseline='middle';
+        words.forEach((w, wi) => ctx.fillText(w, nx, ny + (wi - (words.length-1)/2)*(lfsClamp+2)));
+      });
+    });
+
+    /* ── 7. Center hub ── */
+    const hubPulse  = 0.5 + 0.5 * Math.sin(t * 1.5);
+    const hubMouseR = Math.max(0, 1 - distToCenter / (g.outerR * 0.8));
+    const hubR2     = g.hubR * (1 + hubPulse * 0.06 + hubMouseR * 0.12);
+
+    const hubGrad = ctx.createRadialGradient(CX, CY, 0, CX, CY, hubR2 * 2);
+    hubGrad.addColorStop(0, `rgba(124,158,135,${0.18 + centerProx * 0.22})`);
+    hubGrad.addColorStop(0.6, `rgba(124,158,135,${0.06 + centerProx * 0.08})`);
+    hubGrad.addColorStop(1, 'transparent');
+    ctx.beginPath(); ctx.arc(CX, CY, hubR2 * 2, 0, Math.PI*2);
+    ctx.fillStyle = hubGrad; ctx.fill();
+
+    ctx.beginPath(); ctx.arc(CX, CY, hubR2, 0, Math.PI*2);
+    const hFill = ctx.createRadialGradient(CX-hubR2*0.2,CY-hubR2*0.2,0,CX,CY,hubR2);
+    hFill.addColorStop(0, '#2a3550'); hFill.addColorStop(1, '#1a1f2e');
+    ctx.fillStyle = hFill; ctx.fill();
+    ctx.strokeStyle = `rgba(124,158,135,${0.45 + hubPulse * 0.2 + centerProx * 0.25})`;
+    ctx.lineWidth = 2; ctx.stroke();
+
+    const hubFS = Math.max(12, g.hubR * 0.28);
+    ctx.font = `700 ${Math.round(hubFS)}px -apple-system,sans-serif`;
+    ctx.fillStyle = `rgba(232,220,200,${0.85 + centerProx * 0.15})`;
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText('Therapeutic', CX, CY - hubFS * 0.65);
+    ctx.fillText('Ecosystem',   CX, CY + hubFS * 0.65);
+
+    /* ── 8. Mouse-proximity highlight ring on center ── */
+    if (centerProx > 0.05) {
+      ctx.beginPath(); ctx.arc(CX, CY, hubR2 + 8 + hubPulse*4, 0, Math.PI*2);
+      ctx.strokeStyle = `rgba(124,158,135,${centerProx * 0.35})`;
+      ctx.lineWidth = 1; ctx.setLineDash([4, 8]); ctx.stroke(); ctx.setLineDash([]);
+    }
+
+    /* ── 9. Canvas-drawn tooltip for hovered sector ── */
+    if (hovered >= 0) {
+      const sys = SYSTEMS[hovered];
+      const tipLines = [sys.name, sys.desc];
+      const pad = 14, lh = 20;
+      ctx.font = '700 14px -apple-system,sans-serif';
+      const w1 = ctx.measureText(tipLines[0]).width;
+      ctx.font = '12px -apple-system,sans-serif';
+      const w2 = ctx.measureText(tipLines[1]).width;
+      const tw = Math.min(Math.max(w1, w2) + pad*2, 340);
+      const th = lh*2 + pad*1.6;
+
+      let tx = mouseX + 18, ty = mouseY - th/2;
+      if (tx + tw > W - 10) tx = mouseX - tw - 18;
+      if (ty < 10) ty = 10;
+      if (ty + th > H - 10) ty = H - th - 10;
+
+      ctx.beginPath();
+      ctx.roundRect(tx, ty, tw, th, 10);
+      ctx.fillStyle = 'rgba(14,19,32,0.94)'; ctx.fill();
+      ctx.strokeStyle = sys.color + 'aa'; ctx.lineWidth = 1.2; ctx.stroke();
+      ctx.beginPath(); ctx.roundRect(tx, ty, tw, 3, [10,10,0,0]);
+      ctx.fillStyle = sys.color + 'dd'; ctx.fill();
+
+      ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+      ctx.font = '700 13px -apple-system,sans-serif';
+      ctx.fillStyle = 'rgba(232,220,200,0.95)';
+      ctx.fillText(tipLines[0], tx+pad, ty+pad+lh*0.4);
+      ctx.font = '11.5px -apple-system,sans-serif';
+      ctx.fillStyle = 'rgba(255,255,255,0.5)';
+      /* wrap long desc */
+      const maxW = tw - pad*2;
+      let line='', words=tipLines[1].split(' '), yy=ty+pad+lh*1.35;
+      words.forEach(w => {
+        const test = line ? line+' '+w : w;
+        if (ctx.measureText(test).width > maxW && line) {
+          ctx.fillText(line, tx+pad, yy); line=w; yy+=14;
+        } else { line=test; }
+      });
+      ctx.fillText(line, tx+pad, yy);
+    }
+
+    /* ── 10. Cursor magnetic glow ── */
+    if (mouseX > 0 && mouseX < W) {
+      const cg = ctx.createRadialGradient(mouseX,mouseY,0,mouseX,mouseY,80);
+      cg.addColorStop(0,'rgba(255,255,255,0.04)'); cg.addColorStop(1,'transparent');
+      ctx.beginPath(); ctx.arc(mouseX,mouseY,80,0,Math.PI*2);
+      ctx.fillStyle=cg; ctx.fill();
+    }
+
+    requestAnimationFrame(draw);
+  }
+
+  /* ── Mouse tracking ── */
+  c.addEventListener('mousemove', e => {
+    const rect = c.getBoundingClientRect();
+    mouseX = e.clientX - rect.left;
+    mouseY = e.clientY - rect.top;
+    const dx = mouseX - CX, dy = mouseY - CY;
+    const dist  = Math.hypot(dx, dy);
+    const angle = Math.atan2(dy, dx);
+    const g = geo();
+
+    /* sector detection */
+    let found = -1;
+    if (dist > g.hubR * 1.4 && dist < g.outerR * 1.25) {
+      SYSTEMS.forEach((sys, i) => {
+        let diff = angle - sys.angle;
+        while (diff >  Math.PI) diff -= Math.PI*2;
+        while (diff < -Math.PI) diff += Math.PI*2;
+        if (Math.abs(diff) < Math.PI * 0.48) found = i;
+      });
+    }
+    hovered = found;
+
+    /* node hit detection */
+    const exp_states = sState.map(s => s.expand);
+    let fIdx = 0, foundNode = -1;
+    SYSTEMS.forEach((sys, si) => {
+      sys.nodes.forEach((_, ni) => {
+        const { x: nx, y: ny } = nodePos(si, ni, g, exp_states[si]);
+        if (Math.hypot(mouseX - nx, mouseY - ny) < g.nodeR * 1.8) foundNode = fIdx;
+        fIdx++;
+      });
+    });
+    hovNode = foundNode;
+    c.style.cursor = (found >= 0 || foundNode >= 0) ? 'pointer' : 'crosshair';
+  });
+
+  c.addEventListener('mouseleave', () => {
+    hovered = -1; hovNode = -1;
+    mouseX = -9999; mouseY = -9999;
+    c.style.cursor = 'crosshair';
+  });
+
+  c.addEventListener('click', () => {
+    clicked = (clicked === hovered) ? -1 : hovered;
+  });
+
+  /* ── roundRect polyfill for older browsers ── */
+  if (!CanvasRenderingContext2D.prototype.roundRect) {
+    CanvasRenderingContext2D.prototype.roundRect = function(x,y,w,h,r) {
+      if (typeof r === 'number') r=[r,r,r,r];
+      this.moveTo(x+r[0],y);
+      this.lineTo(x+w-r[1],y); this.quadraticCurveTo(x+w,y,x+w,y+r[1]);
+      this.lineTo(x+w,y+h-r[2]); this.quadraticCurveTo(x+w,y+h,x+w-r[2],y+h);
+      this.lineTo(x+r[3],y+h); this.quadraticCurveTo(x,y+h,x,y+h-r[3]);
+      this.lineTo(x,y+r[0]); this.quadraticCurveTo(x,y,x+r[0],y);
+    };
+  }
+
+  /* ── Init ── */
+  resize();
+  draw();
+  const ro = new ResizeObserver(resize);
+  ro.observe(wrap);
+})();
+
+/* ══════════════════════════════════════════
+   F — RISK RADIAL CANVAS (animated)
+   ══════════════════════════════════════════ */
+(function() {
+  const c = document.getElementById('riskCanvas');
+  if (!c) return;
+  const ctx = c.getContext('2d');
+  const W = 360, H = 360;
+  c.width = W; c.height = H;
+  const CX = W / 2, CY = H / 2;
+
+  const risks = [
+    { name:'Child Safety',   score:0.82, color:'#7c9e87' },
+    { name:'Animal Welfare', score:0.75, color:'#b87057' },
+    { name:'Hygiene',        score:0.90, color:'#7fb3c8' },
+    { name:'Sensory',        score:0.68, color:'#c9b99a' },
+    { name:'Boundaries',     score:0.78, color:'#a78bbd' },
+  ];
+  const N = risks.length, R = 128;
+
+  // flow particles along each axis
+  const particles = risks.map((r, i) => ({ axis: i, t: Math.random() }));
+
+  let t = 0, mouseX = -999, mouseY = -999;
+  c.addEventListener('mousemove', e => {
+    const rect = c.getBoundingClientRect();
+    mouseX = (e.clientX - rect.left) * (W / rect.width);
+    mouseY = (e.clientY - rect.top)  * (H / rect.height);
+  });
+  c.addEventListener('mouseleave', () => { mouseX = -999; mouseY = -999; });
+
+  function pt(i, r) {
+    const a = (i / N) * Math.PI * 2 - Math.PI / 2;
+    return { x: CX + r * Math.cos(a), y: CY + r * Math.sin(a) };
+  }
+
+  function draw() {
+    t += 0.012;
+    ctx.clearRect(0, 0, W, H);
+
+    const active = window._activeRisk ?? -1;
+
+    // rotating dashed outer ring
+    ctx.save();
+    ctx.translate(CX, CY);
+    ctx.rotate(t * 0.18);
+    ctx.beginPath(); ctx.arc(0, 0, R + 22, 0, Math.PI * 2);
+    ctx.strokeStyle = 'rgba(124,158,135,0.10)'; ctx.lineWidth = 1.2;
+    ctx.setLineDash([6, 10]); ctx.stroke(); ctx.setLineDash([]);
+    ctx.restore();
+
+    // rings (slightly pulse scale)
+    const pulse = 1 + Math.sin(t * 1.8) * 0.008;
+    [0.25, 0.5, 0.75, 1].forEach(frac => {
+      ctx.beginPath();
+      for (let i = 0; i < N; i++) {
+        const p = pt(i, R * frac * pulse);
+        i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y);
+      }
+      ctx.closePath();
+      ctx.strokeStyle = `rgba(255,255,255,${frac === 1 ? 0.09 : 0.05})`; ctx.lineWidth = 1; ctx.stroke();
+    });
+
+    // axes — highlight active
+    for (let i = 0; i < N; i++) {
+      const p = pt(i, R);
+      const isActive = i === active;
+      ctx.beginPath(); ctx.moveTo(CX, CY); ctx.lineTo(p.x, p.y);
+      ctx.strokeStyle = isActive ? `rgba(${hexRgb(risks[i].color)},0.55)` : 'rgba(255,255,255,0.08)';
+      ctx.lineWidth = isActive ? 1.8 : 1; ctx.stroke();
+    }
+
+    // fill shape (slight vertex pulse)
+    ctx.beginPath();
+    risks.forEach((r, i) => {
+      const jitter = i === active ? (Math.sin(t * 3 + i) * 0.03) : (Math.sin(t * 1.4 + i * 1.3) * 0.012);
+      const p = pt(i, R * (r.score + jitter));
+      i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y);
+    });
+    ctx.closePath();
+    ctx.fillStyle = 'rgba(124,158,135,0.11)'; ctx.fill();
+    ctx.strokeStyle = 'rgba(124,158,135,0.48)'; ctx.lineWidth = 1.6; ctx.stroke();
+
+    // flow particles
+    particles.forEach(p => {
+      p.t += 0.006 + (p.axis === active ? 0.012 : 0);
+      if (p.t > 1) p.t -= 1;
+      const end = pt(p.axis, R);
+      const px = CX + (end.x - CX) * p.t;
+      const py = CY + (end.y - CY) * p.t;
+      const a = 0.5 * Math.sin(p.t * Math.PI);
+      ctx.beginPath(); ctx.arc(px, py, 2.2, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(${hexRgb(risks[p.axis].color)},${a})`; ctx.fill();
+    });
+
+    // dots + labels
+    risks.forEach((r, i) => {
+      const jitter = Math.sin(t * 1.4 + i * 1.3) * 0.012;
+      const p = pt(i, R * (r.score + jitter));
+      const isActive = i === active;
+      // dot glow
+      if (isActive) {
+        const g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, 16);
+        g.addColorStop(0, `rgba(${hexRgb(r.color)},0.35)`);
+        g.addColorStop(1, `rgba(${hexRgb(r.color)},0)`);
+        ctx.fillStyle = g; ctx.beginPath(); ctx.arc(p.x, p.y, 16, 0, Math.PI * 2); ctx.fill();
+      }
+      ctx.beginPath(); ctx.arc(p.x, p.y, isActive ? 6.5 : 5, 0, Math.PI * 2);
+      ctx.fillStyle = r.color; ctx.fill();
+      const lp = pt(i, R + 22);
+      ctx.font = `${isActive ? '600' : '400'} 11px -apple-system,sans-serif`;
+      ctx.fillStyle = isActive ? 'rgba(255,255,255,0.9)' : 'rgba(255,255,255,0.5)';
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText(r.name, lp.x, lp.y);
+    });
+
+    // mouse proximity glow
+    if (mouseX > 0) {
+      const dist = Math.hypot(mouseX - CX, mouseY - CY);
+      if (dist < R + 40) {
+        const a = Math.max(0, 1 - dist / (R + 40)) * 0.15;
+        const rg = ctx.createRadialGradient(mouseX, mouseY, 0, mouseX, mouseY, 60);
+        rg.addColorStop(0, `rgba(124,158,135,${a})`);
+        rg.addColorStop(1, 'rgba(124,158,135,0)');
+        ctx.fillStyle = rg; ctx.fillRect(0, 0, W, H);
+      }
+    }
+
+    // center text
+    ctx.font = '700 13px -apple-system,sans-serif';
+    ctx.fillStyle = 'rgba(232,220,200,0.72)';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText('Risk', CX, CY - 8);
+    ctx.fillText('Coverage', CX, CY + 8);
+
+    requestAnimationFrame(draw);
+  }
+
+  // helper: hex → "r,g,b"
+  function hexRgb(hex) {
+    const h = hex.replace('#','');
+    return [parseInt(h.slice(0,2),16), parseInt(h.slice(2,4),16), parseInt(h.slice(4,6),16)].join(',');
+  }
+
+  draw();
+})();
+
+function selectRisk(el, idx) {
+  document.querySelectorAll('.risk-item').forEach(r => r.classList.remove('active'));
+  el.classList.add('active');
+  window._activeRisk = idx;
+}
+
+/* ══════════════════════════════════════════
+   H — DATA VIZ ENGINE
+   ══════════════════════════════════════════ */
+
+/* ── Global mouse tracker for chart glow ── */
+window._chartMX = -9999; window._chartMY = -9999;
+window.addEventListener('mousemove', e => { window._chartMX = e.clientX; window._chartMY = e.clientY; });
+
+/* ── Chart.js interactive glow plugin ── */
+const glowEnhance = {
+  id: 'glowEnhance',
+  _t: 0,
+  afterInit(chart) {
+    if (!chart._glowRAF) {
+      const loop = () => { chart.render(); chart._glowRAF = requestAnimationFrame(loop); };
+      chart._glowRAF = requestAnimationFrame(loop);
+      chart._glowPlugin_t = 0;
+    }
+  },
+  beforeDestroy(chart) {
+    if (chart._glowRAF) { cancelAnimationFrame(chart._glowRAF); chart._glowRAF = null; }
+  },
+  beforeDraw(chart) {
+    const { ctx, chartArea: ca } = chart;
+    if (!ca) return;
+    chart._glowPlugin_t = (chart._glowPlugin_t || 0) + 0.008;
+    const t = chart._glowPlugin_t;
+
+    // slow scan line
+    const scanY = ca.top + ((t * 28) % (ca.bottom - ca.top));
+    const grad = ctx.createLinearGradient(ca.left, scanY - 12, ca.left, scanY + 12);
+    grad.addColorStop(0,   'rgba(124,158,135,0)');
+    grad.addColorStop(0.5, 'rgba(124,158,135,0.07)');
+    grad.addColorStop(1,   'rgba(124,158,135,0)');
+    ctx.save();
+    ctx.fillStyle = grad;
+    ctx.fillRect(ca.left, scanY - 12, ca.right - ca.left, 24);
+    ctx.restore();
+
+    // mouse proximity glow in chart area
+    const rect = chart.canvas.getBoundingClientRect();
+    const mx = window._chartMX - rect.left;
+    const my = window._chartMY - rect.top;
+    if (mx >= ca.left && mx <= ca.right && my >= ca.top && my <= ca.bottom) {
+      const rg = ctx.createRadialGradient(mx, my, 0, mx, my, 80);
+      rg.addColorStop(0,   'rgba(124,158,135,0.09)');
+      rg.addColorStop(1,   'rgba(124,158,135,0)');
+      ctx.save();
+      ctx.beginPath(); ctx.rect(ca.left, ca.top, ca.right - ca.left, ca.bottom - ca.top);
+      ctx.clip(); ctx.fillStyle = rg; ctx.fillRect(ca.left, ca.top, ca.right - ca.left, ca.bottom - ca.top);
+      ctx.restore();
+    }
+  },
+  afterDatasetsDraw(chart) {
+    const { ctx, chartArea: ca, config } = chart;
+    if (!ca) return;
+    const rect = chart.canvas.getBoundingClientRect();
+    const mx = window._chartMX - rect.left;
+    const my = window._chartMY - rect.top;
+    const inArea = mx >= ca.left && mx <= ca.right && my >= ca.top && my <= ca.bottom;
+
+    if (config.type === 'line' && inArea) {
+      // vertical dashed crosshair
+      ctx.save();
+      ctx.beginPath(); ctx.rect(ca.left, ca.top, ca.right - ca.left, ca.bottom - ca.top); ctx.clip();
+      ctx.beginPath(); ctx.moveTo(mx, ca.top); ctx.lineTo(mx, ca.bottom);
+      ctx.strokeStyle = 'rgba(124,158,135,0.28)'; ctx.lineWidth = 1;
+      ctx.setLineDash([4, 4]); ctx.stroke(); ctx.setLineDash([]);
+      // glow on nearby data points
+      chart.data.datasets.forEach((ds, di) => {
+        const meta = chart.getDatasetMeta(di);
+        meta.data.forEach(pt => {
+          const dist = Math.hypot(pt.x - mx, pt.y - my);
+          if (dist < 40) {
+            const a = (1 - dist / 40) * 0.9;
+            ctx.beginPath(); ctx.arc(pt.x, pt.y, 8 + (1 - dist / 40) * 6, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(124,158,135,${a * 0.25})`; ctx.fill();
+            ctx.strokeStyle = `rgba(201,185,154,${a})`; ctx.lineWidth = 1.5; ctx.stroke();
+          }
+        });
+      });
+      ctx.restore();
+    }
+
+    if (config.type === 'bar' && inArea) {
+      // column highlight when mouse is over
+      chart.data.datasets.forEach((ds, di) => {
+        const meta = chart.getDatasetMeta(di);
+        meta.data.forEach(bar => {
+          const bx = bar.x, bw = bar.width || 20;
+          if (Math.abs(mx - bx) < bw / 2 + 4) {
+            ctx.save();
+            const hl = ctx.createLinearGradient(bx, ca.top, bx, ca.bottom);
+            hl.addColorStop(0, 'rgba(124,158,135,0.12)');
+            hl.addColorStop(1, 'rgba(124,158,135,0)');
+            ctx.fillStyle = hl;
+            ctx.fillRect(bx - bw / 2 - 2, ca.top, bw + 4, ca.bottom - ca.top);
+            ctx.restore();
+          }
+        });
+      });
+    }
+  }
+};
+Chart.register(glowEnhance);
+
+Chart.defaults.color = 'rgba(255,255,255,0.38)';
+Chart.defaults.font.family = "-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif";
+Chart.defaults.font.size = 11;
+
+const GRID_COLOR  = 'rgba(255,255,255,0.05)';
+const AXIS_COLOR  = 'rgba(255,255,255,0.08)';
+
+/* ── KPI animated counters ── */
+(function(){
+  const targets = [
+    { el:'kpi1', from:0, to:78,  suffix:'%', color:null },
+    { el:'kpi2', from:0, to:34,  prefix:'+', suffix:'%', color:null },
+    { el:'kpi3', from:0, to:91,  suffix:'%', color:null },
+    { el:'kpi4', from:0, to:67,  suffix:'%', color:null },
+    { el:'kpi5', from:0, to:48,  suffix:'',  color:null },
+  ];
+  const options = { threshold:0.2 };
+  const io = new IntersectionObserver(entries => {
+    if (!entries[0].isIntersecting) return;
+    io.disconnect();
+    targets.forEach(t => {
+      const el = document.getElementById(t.el); if(!el) return;
+      const pre = t.prefix || ''; const suf = t.suffix || '';
+      let start = null;
+      const dur = 1600;
+      function step(ts) {
+        if (!start) start = ts;
+        const p = Math.min((ts-start)/dur, 1);
+        const ease = 1 - Math.pow(1-p, 3);
+        const v = Math.round(t.from + (t.to - t.from) * ease);
+        el.innerHTML = `${pre}${v}<span class="kpi-big-unit">${suf}</span>`;
+        if (p < 1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    });
+  }, options);
+  const sec = document.getElementById('outcomes');
+  if (sec) io.observe(sec);
+})();
+
+/* ── Tab switching ── */
+function switchViz(name, btn) {
+  document.querySelectorAll('.viz-tab').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.viz-panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  const panel = document.getElementById('viz-'+name);
+  panel.classList.add('active');
+  // lazy init charts
+  if (name==='progress'  && !window._chartsP) initProgressCharts();
+  if (name==='domains'   && !window._chartsD) initDomainCharts();
+  if (name==='cohort'    && !window._chartsC) initCohortChart();
+  if (name==='parent'    && !window._chartsR) initParentCharts();
+}
+
+/* ── Helper: gradient fill ── */
+function fillGrad(ctx, color, alpha1, alpha2) {
+  const g = ctx.createLinearGradient(0,0,0,400);
+  g.addColorStop(0, color.replace(')',`,${alpha1})`).replace('rgb','rgba'));
+  g.addColorStop(1, color.replace(')',`,${alpha2})`).replace('rgb','rgba'));
+  return g;
+}
+function gFill(chart, color, a1=0.2, a2=0.0) {
+  const c = chart.ctx; const g = c.createLinearGradient(0,0,0,chart.height);
+  g.addColorStop(0, hexToRgbaS(color, a1)); g.addColorStop(1, hexToRgbaS(color, a2));
+  return g;
+}
+function hexToRgbaS(hex, a) {
+  const r=parseInt(hex.slice(1,3),16), g=parseInt(hex.slice(3,5),16), b=parseInt(hex.slice(5,7),16);
+  return `rgba(${r},${g},${b},${a})`;
+}
+
+/* ── PANEL 1: Progress ── */
+window._chartsP = false;
+function initProgressCharts() {
+  window._chartsP = true;
+  const wkLabels = ['Wk 1','Wk 2','Wk 3','Wk 4','Wk 5','Wk 6','Wk 7','Wk 8','Wk 9','Wk 10','Wk 11','Wk 12'];
+
+  // Emotion line
+  const c1 = document.getElementById('c_emotion');
+  if (c1) {
+    const ch = new Chart(c1, {
+      type:'line',
+      data:{
+        labels: wkLabels,
+        datasets:[
+          { label:'Emotional Regulation',
+            data:[1.9,2.2,2.6,3.0,3.3,3.6,3.8,4.0,4.2,4.4,4.5,4.7],
+            borderColor:'#7c9e87', tension:0.45, fill:true, pointRadius:4, pointHoverRadius:6,
+            pointBackgroundColor:'#7c9e87', borderWidth:2.5,
+            backgroundColor: (ctx) => {
+              const g = ctx.chart.ctx.createLinearGradient(0,0,0,ctx.chart.height);
+              g.addColorStop(0,'rgba(124,158,135,0.22)'); g.addColorStop(1,'rgba(124,158,135,0.0)'); return g;
+            }
+          },
+          { label:'Sensory Tolerance',
+            data:[1.6,1.9,2.2,2.5,2.8,3.1,3.4,3.6,3.8,3.9,4.1,4.3],
+            borderColor:'#7fb3c8', tension:0.45, fill:true, pointRadius:4, pointHoverRadius:6,
+            pointBackgroundColor:'#7fb3c8', borderWidth:2.5,
+            backgroundColor: (ctx) => {
+              const g = ctx.chart.ctx.createLinearGradient(0,0,0,ctx.chart.height);
+              g.addColorStop(0,'rgba(127,179,200,0.15)'); g.addColorStop(1,'rgba(127,179,200,0.0)'); return g;
+            }
+          },
+          { label:'Self-care Routines',
+            data:[1.4,1.6,1.9,2.1,2.4,2.6,2.9,3.1,3.3,3.5,3.7,3.9],
+            borderColor:'#c9b99a', tension:0.45, fill:false, pointRadius:3,
+            pointBackgroundColor:'#c9b99a', borderWidth:1.8, borderDash:[4,3],
+          },
+        ]
+      },
+      options:{
+        responsive:true, maintainAspectRatio:false,
+        interaction:{ mode:'index', intersect:false },
+        plugins:{
+          legend:{ labels:{ color:'rgba(255,255,255,0.5)', boxWidth:10, padding:16 } },
+          tooltip:{ backgroundColor:'rgba(17,22,32,0.95)', borderColor:'rgba(255,255,255,0.1)',
+            borderWidth:1, padding:12, titleColor:'rgba(232,220,200,0.9)', bodyColor:'rgba(255,255,255,0.6)' }
+        },
+        scales:{
+          x:{ grid:{color:GRID_COLOR}, border:{color:AXIS_COLOR} },
+          y:{ grid:{color:GRID_COLOR}, border:{color:AXIS_COLOR}, min:1, max:5,
+            ticks:{ stepSize:1, callback: v => ['','⚫ 1','','⚫ 2','','⚫ 3','','⚫ 4','','⚫ 5'][v] || v } }
+        }
+      }
+    });
+  }
+
+  // Social composite
+  const c2 = document.getElementById('c_social');
+  if (c2) {
+    new Chart(c2, {
+      type:'line',
+      data:{
+        labels: wkLabels,
+        datasets:[
+          { label:'Social Attention (SRS-2)',
+            data:[-1.2,-1.0,-0.7,-0.5,-0.2,0.1,0.3,0.6,0.8,0.9,1.1,1.2],
+            borderColor:'#b87057', tension:0.45, fill:true, pointRadius:4, borderWidth:2.5,
+            pointBackgroundColor:'#b87057',
+            backgroundColor:(ctx)=>{ const g=ctx.chart.ctx.createLinearGradient(0,0,0,ctx.chart.height);
+              g.addColorStop(0,'rgba(184,112,87,0.18)'); g.addColorStop(1,'rgba(184,112,87,0.0)'); return g; }
+          },
+          { label:'Session Engagement',
+            data:[-0.8,-0.5,-0.2,0.1,0.4,0.7,1.0,1.2,1.4,1.5,1.6,1.8],
+            borderColor:'#a78bbd', tension:0.45, fill:false, pointRadius:4, borderWidth:2.5,
+            pointBackgroundColor:'#a78bbd',
+          },
+        ]
+      },
+      options:{
+        responsive:true, maintainAspectRatio:false,
+        interaction:{ mode:'index', intersect:false },
+        plugins:{
+          legend:{ labels:{ color:'rgba(255,255,255,0.5)', boxWidth:10, padding:16 } },
+          tooltip:{ backgroundColor:'rgba(17,22,32,0.95)', borderColor:'rgba(255,255,255,0.1)',
+            borderWidth:1, padding:12, titleColor:'rgba(232,220,200,0.9)', bodyColor:'rgba(255,255,255,0.6)' }
+        },
+        scales:{
+          x:{ grid:{color:GRID_COLOR}, border:{color:AXIS_COLOR} },
+          y:{ grid:{color:GRID_COLOR}, border:{color:AXIS_COLOR},
+            ticks:{ callback: v => v.toFixed(1) + ' z' },
+            title:{ display:true, text:'z-score', color:'rgba(255,255,255,0.3)', font:{size:10} }
+          }
+        }
+      }
+    });
+  }
+
+  // 4 sparklines
+  const spConfigs = [
+    { id:'sp1', data:[0,4,9,14,18,24,29,33,37,39,41], color:'#7c9e87' },
+    { id:'sp2', data:[0,5,11,18,24,30,37,42,48,53,58], color:'#7fb3c8' },
+    { id:'sp3', data:[0,-6,-13,-20,-28,-36,-45,-53,-60,-64,-67], color:'#fc8181' },
+    { id:'sp4', data:[0,0.2,0.4,0.7,1.0,1.3,1.6,1.9,2.1,2.3,2.4], color:'#c9b99a' },
+  ];
+  spConfigs.forEach(s => {
+    const el = document.getElementById(s.id); if(!el) return;
+    new Chart(el, {
+      type:'line',
+      data:{ labels: s.data.map((_,i)=>i),
+        datasets:[{ data:s.data, borderColor:s.color, borderWidth:1.5,
+          fill:true, tension:0.4, pointRadius:0,
+          backgroundColor:(ctx)=>{ const g=ctx.chart.ctx.createLinearGradient(0,0,0,42);
+            g.addColorStop(0,s.color+'44'); g.addColorStop(1,s.color+'00'); return g; }
+        }] },
+      options:{ responsive:true, maintainAspectRatio:false,
+        plugins:{legend:{display:false}, tooltip:{enabled:false}},
+        scales:{ x:{display:false}, y:{display:false} } }
+    });
+  });
+}
+
+/* ── PANEL 2: Domains ── */
+window._chartsD = false;
+function initDomainCharts() {
+  window._chartsD = true;
+  // Animate domain bars
+  setTimeout(() => {
+    document.querySelectorAll('.domain-fill').forEach(bar => {
+      bar.style.width = bar.dataset.pct + '%';
+    });
+  }, 100);
+
+  // Radar
+  const cr = document.getElementById('c_radar'); if(!cr) return;
+  new Chart(cr, {
+    type:'radar',
+    data:{
+      labels:['Emotional\nRegulation','Sensory\nTolerance','Social\nAttention','Session\nEngagement','Self-care','Home\nGeneralisation'],
+      datasets:[
+        { label:'Pre-Programme', data:[1.8,1.5,1.7,2.0,1.9,1.6],
+          borderColor:'rgba(255,255,255,0.2)', backgroundColor:'rgba(255,255,255,0.04)',
+          borderWidth:1.5, pointRadius:3, pointBackgroundColor:'rgba(255,255,255,0.3)' },
+        { label:'At Discharge', data:[4.2,3.9,3.6,4.6,3.5,4.1],
+          borderColor:'#7c9e87', backgroundColor:'rgba(124,158,135,0.15)',
+          borderWidth:2, pointRadius:4, pointBackgroundColor:'#7c9e87' },
+      ]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{ labels:{ color:'rgba(255,255,255,0.5)', boxWidth:10 } } },
+      scales:{ r:{
+        grid:{color:'rgba(255,255,255,0.06)'}, angleLines:{color:'rgba(255,255,255,0.06)'},
+        pointLabels:{ color:'rgba(255,255,255,0.55)', font:{size:10} },
+        ticks:{ display:false }, min:0, max:5,
+        backgroundColor:'rgba(255,255,255,0.01)'
+      }}
+    }
+  });
+}
+
+/* ── PANEL 3: Cohort scatter ── */
+window._chartsC = false;
+function initCohortChart() {
+  window._chartsC = true;
+  const c = document.getElementById('c_scatter'); if(!c) return;
+  // Generate 48 pseudo-random children
+  const rng = (seed) => { let s=seed; return ()=>{ s=(s*16807+0)%2147483647; return (s-1)/2147483646; }; };
+  const rand = rng(42);
+  const level1=[],level2=[],level3=[];
+  for(let i=0;i<48;i++){
+    const lvl = rand()<0.45?1: rand()<0.55?2:3;
+    const baseline = 2 + rand()*2.5;
+    const improvement = baseline * (0.3 + rand()*0.6) + (lvl===1?0.5:0);
+    const weeks = 8 + Math.round(rand()*16);
+    const pt = { x:+baseline.toFixed(2), y:+improvement.toFixed(2), r: 4 + weeks/5 };
+    if(lvl===1) level1.push(pt); else if(lvl===2) level2.push(pt); else level3.push(pt);
+  }
+  new Chart(c, {
+    type:'bubble',
+    data:{ datasets:[
+      { label:'ASD Level 1', data:level1, backgroundColor:'rgba(124,158,135,0.55)', borderColor:'#7c9e87', borderWidth:1.5 },
+      { label:'ASD Level 2', data:level2, backgroundColor:'rgba(127,179,200,0.5)',  borderColor:'#7fb3c8', borderWidth:1.5 },
+      { label:'Level 2+/Eval', data:level3, backgroundColor:'rgba(184,112,87,0.5)',  borderColor:'#b87057', borderWidth:1.5 },
+    ]},
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{
+        legend:{ labels:{ color:'rgba(255,255,255,0.5)', boxWidth:10 } },
+        tooltip:{ backgroundColor:'rgba(17,22,32,0.95)', borderColor:'rgba(255,255,255,0.1)',
+          borderWidth:1, padding:12,
+          callbacks:{ label: ctx => `Baseline: ${ctx.raw.x} · Improvement: +${ctx.raw.y} · ${Math.round((ctx.raw.r-4)*5+8)} wks` } }
+      },
+      scales:{
+        x:{ grid:{color:GRID_COLOR}, border:{color:AXIS_COLOR}, min:1.5, max:5,
+          title:{ display:true, text:'Baseline Severity Score', color:'rgba(255,255,255,0.35)', font:{size:11} } },
+        y:{ grid:{color:GRID_COLOR}, border:{color:AXIS_COLOR}, min:0,
+          title:{ display:true, text:'Outcome Improvement Score', color:'rgba(255,255,255,0.35)', font:{size:11} } }
+      }
+    }
+  });
+}
+
+/* ── PANEL 4: Parent-reported ── */
+window._chartsR = false;
+function initParentCharts() {
+  window._chartsR = true;
+  const wks = ['Wk 0','Wk 1','Wk 2','Wk 3','Wk 4','Wk 5','Wk 6','Wk 7','Wk 8','Wk 10','Wk 12'];
+
+  const cm = document.getElementById('c_meltdown'); if(cm) {
+    new Chart(cm, {
+      type:'line',
+      data:{
+        labels: wks,
+        datasets:[{
+          label:'Mean Meltdowns/Week',
+          data:[6.2,5.9,5.4,4.8,4.2,3.8,3.2,2.7,2.4,2.0,1.5],
+          borderColor:'#b87057', backgroundColor:(ctx)=>{ const g=ctx.chart.ctx.createLinearGradient(0,0,0,ctx.chart.height);
+            g.addColorStop(0,'rgba(184,112,87,0.2)'); g.addColorStop(1,'rgba(184,112,87,0.0)'); return g; },
+          tension:0.45, fill:true, pointRadius:5, borderWidth:2.5,
+          pointBackgroundColor:'#b87057', pointHoverRadius:7,
+        }]
+      },
+      options:{
+        responsive:true, maintainAspectRatio:false,
+        plugins:{
+          legend:{display:false},
+          tooltip:{ backgroundColor:'rgba(17,22,32,0.95)', borderColor:'rgba(255,255,255,0.1)',
+            borderWidth:1, padding:10, callbacks:{
+              label: ctx => `Avg ${ctx.raw} meltdowns/wk`
+            }
+          }
+        },
+        scales:{
+          x:{ grid:{color:GRID_COLOR}, border:{color:AXIS_COLOR} },
+          y:{ grid:{color:GRID_COLOR}, border:{color:AXIS_COLOR}, min:0, max:8,
+            title:{ display:true, text:'Events / Week', color:'rgba(255,255,255,0.3)', font:{size:10} }
+          }
+        }
+      }
+    });
+  }
+
+  const ch = document.getElementById('c_home'); if(ch) {
+    new Chart(ch, {
+      type:'bar',
+      data:{
+        labels:['Wk 2','Wk 4','Wk 6','Wk 8','Wk 10','Wk 12','6m FU'],
+        datasets:[{
+          label:'Skill Transfer Score',
+          data:[2.1,3.4,4.8,5.9,6.7,7.8,7.2],
+          backgroundColor: (ctx) => {
+            const v = ctx.raw / 10;
+            return `rgba(${Math.round(124 + (201-124)*v)},${Math.round(158 + (185-158)*v)},${Math.round(135 + (154-135)*v)},0.55)`;
+          },
+          borderColor:'#a8c4ae', borderWidth:1.5, borderRadius:6,
+        }]
+      },
+      options:{
+        responsive:true, maintainAspectRatio:false,
+        plugins:{
+          legend:{display:false},
+          tooltip:{ backgroundColor:'rgba(17,22,32,0.95)', borderColor:'rgba(255,255,255,0.1)',
+            borderWidth:1, padding:10,
+            callbacks:{ label: ctx => `${ctx.raw}/10 generalisation` }
+          }
+        },
+        scales:{
+          x:{ grid:{color:GRID_COLOR}, border:{color:AXIS_COLOR} },
+          y:{ grid:{color:GRID_COLOR}, border:{color:AXIS_COLOR}, min:0, max:10,
+            title:{ display:true, text:'Parent Rating (0–10)', color:'rgba(255,255,255,0.3)', font:{size:10} }
+          }
+        }
+      }
+    });
+  }
+}
+
+// Init first tab immediately
+initProgressCharts();
+
+/* ══════════════════════════════════════════
+   I — CARD MOUSE-LIGHT GLOW
+   ══════════════════════════════════════════ */
+(function() {
+  const cards = document.querySelectorAll('.viz-card, .kpi-big, .spark-card');
+  cards.forEach(card => {
+    card.addEventListener('mousemove', e => {
+      const r = card.getBoundingClientRect();
+      const x = ((e.clientX - r.left) / r.width  * 100).toFixed(1) + '%';
+      const y = ((e.clientY - r.top)  / r.height * 100).toFixed(1) + '%';
+      card.style.setProperty('--mx', x);
+      card.style.setProperty('--my', y);
+      card.style.setProperty('--mo', '1');
+    });
+    card.addEventListener('mouseleave', () => {
+      card.style.setProperty('--mo', '0');
+    });
+  });
+})();
+
+/* ══════════════════════════════════════════
+   J — FAQ ACCORDION
+   ══════════════════════════════════════════ */
+function toggleFaq(el) {
+  el.classList.toggle('open');
+}
+
+/* ══════════════════════════════════════════
+   K — SSS VISION MAP · PARALLAX + INTERACT
+   ══════════════════════════════════════════ */
+(function() {
+  var svg      = document.getElementById('sss-svg');
+  var ring     = document.getElementById('sss-ring');
+  var tip      = document.getElementById('sss-tip');
+  var fullWrap = document.getElementById('sss-vision');
+  if (!svg || !ring || !tip || !fullWrap) return;
+
+  var layerBg     = document.getElementById('sss-layer-bg');
+  var layerLines  = document.getElementById('sss-layer-lines');
+  var layerNodes  = document.getElementById('sss-layer-nodes');
+  var layerCenter = document.getElementById('sss-layer-center');
+
+  /* ── Rotating outer ring ── */
+  var angle = 0;
+  (function rotateRing() {
+    angle = (angle + 0.18) % 360;
+    ring.setAttribute('transform', 'rotate(' + angle + ' 300 300)');
+    requestAnimationFrame(rotateRing);
+  })();
+
+  /* ── Smooth parallax on mouse move ── */
+  var targetX = 0, targetY = 0;
+  var curX = 0, curY = 0;
+
+  fullWrap.addEventListener('mousemove', function(e) {
+    var r = fullWrap.getBoundingClientRect();
+    targetX = (e.clientX - r.left  - r.width  / 2) / r.width;
+    targetY = (e.clientY - r.top   - r.height / 2) / r.height;
+  });
+
+  fullWrap.addEventListener('mouseleave', function() {
+    targetX = 0; targetY = 0;
+  });
+
+  (function animParallax() {
+    /* lerp */
+    curX += (targetX - curX) * 0.06;
+    curY += (targetY - curY) * 0.06;
+
+    var bg = 14, ln = 28, nd = 48, ct = 6;
+    if (layerBg)     layerBg.setAttribute('transform',     'translate(' + (curX*bg)  + ',' + (curY*bg)  + ')');
+    if (layerLines)  layerLines.setAttribute('transform',  'translate(' + (curX*ln)  + ',' + (curY*ln)  + ')');
+    if (layerNodes)  layerNodes.setAttribute('transform',  'translate(' + (curX*nd)  + ',' + (curY*nd)  + ')');
+    if (layerCenter) layerCenter.setAttribute('transform', 'translate(' + (curX*ct)  + ',' + (curY*ct)  + ')');
+    requestAnimationFrame(animParallax);
+  })();
+
+  /* ── Node hover / tooltip ── */
+  var pillarColors = { social: '#a8c4ae', env: '#7fb3c8', economic: '#d4956f' };
+
+  svg.querySelectorAll('.sss-node').forEach(function(node) {
+    var pillar  = node.dataset.pillar;
+    var tipText = node.dataset.tip;
+    var color   = pillarColors[pillar] || 'rgba(255,255,255,0.75)';
+
+    node.addEventListener('mouseenter', function() {
+      /* Expand rings */
+      var outer = node.querySelector('.nd-outer');
+      var glow  = node.querySelector('.nd-glow');
+      if (outer) outer.setAttribute('r', '22');
+      if (glow)  {
+        glow.setAttribute('stroke', color);
+        glow.setAttribute('fill',   color.replace(')', ',0.08)').replace('rgb','rgba'));
+        glow.setAttribute('r', '36');
+      }
+
+      /* Show tooltip near node using SVG-to-DOM mapping */
+      var svgRect  = svg.getBoundingClientRect();
+      var wrapRect = tip.parentElement.getBoundingClientRect();
+      var ncx = parseFloat(node.dataset.cx || '300');
+      var ncy = parseFloat(node.dataset.cy || '300');
+      var scaleX = svgRect.width  / 600;
+      var scaleY = svgRect.height / 600;
+      var px = ncx * scaleX + (svgRect.left - wrapRect.left) + (curX * 48 * scaleX);
+      var py = ncy * scaleY + (svgRect.top  - wrapRect.top)  + (curY * 48 * scaleY);
+
+      tip.style.color   = color;
+      tip.textContent   = tipText;
+      tip.style.opacity = '1';
+      var tw = 190;
+      tip.style.left = Math.max(4, Math.min(px - tw / 2, wrapRect.width - tw - 4)) + 'px';
+      tip.style.top  = Math.max(4, py - 70) + 'px';
+
+      /* Highlight table row */
+      document.querySelectorAll('.sss-row').forEach(function(r) { r.classList.remove('sss-hi'); });
+      document.querySelectorAll('.sss-row.' + pillar).forEach(function(r) { r.classList.add('sss-hi'); });
+    });
+
+    node.addEventListener('mouseleave', function() {
+      var outer = node.querySelector('.nd-outer');
+      var glow  = node.querySelector('.nd-glow');
+      if (outer) outer.setAttribute('r', '16');
+      if (glow)  {
+        glow.setAttribute('stroke', 'rgba(0,0,0,0)');
+        glow.setAttribute('fill',   'rgba(0,0,0,0)');
+        glow.setAttribute('r', '28');
+      }
+      tip.style.opacity = '0';
+      document.querySelectorAll('.sss-row').forEach(function(r) { r.classList.remove('sss-hi'); });
+    });
+
+    node.addEventListener('click', function() {
+      var row = document.querySelector('.sss-row.' + pillar);
+      if (row) row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    });
+  });
+})();
+</script>
+</body>
+</html>

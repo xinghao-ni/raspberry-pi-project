@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Medical Consultation — PetCare Pro</title>
+<link rel="stylesheet" href="shared.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+.team-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:20px; }
+.team-card {
+  background:linear-gradient(135deg,#0f1535,#151f45);
+  border:1px solid #1e2d6b; border-radius:14px; padding:18px;
+  display:flex; align-items:center; gap:14px;
+}
+.doc-avatar {
+  width:56px; height:56px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-size:24px; flex-shrink:0;
+}
+
+.consult-tab { padding:18px; }
+
+.note-block {
+  background:#0d111c; border:1px solid #1f2937;
+  border-radius:10px; padding:16px; margin-bottom:12px;
+}
+.note-hd { display:flex; justify-content:space-between; margin-bottom:10px; flex-wrap:wrap; gap:6px; }
+.note-author { font-size:12px; font-weight:700; color:#63b3ed; }
+.note-date   { font-size:11px; color:#4b5563; }
+.note-body   { font-size:13px; color:#a0aec0; line-height:1.75; }
+.note-tag    { display:inline-block; padding:2px 8px; border-radius:4px; font-size:11px; margin:6px 3px 0 0; }
+
+.rx-row {
+  display:flex; align-items:flex-start; gap:12px;
+  background:#0d111c; border:1px solid #1f2937;
+  border-radius:10px; padding:14px; margin-bottom:10px;
+}
+.rx-ico { font-size:22px; flex-shrink:0; margin-top:1px; }
+.rx-name{ font-size:14px; font-weight:600; color:#e2e8f0; }
+.rx-info{ font-size:12px; color:#6b7280; margin-top:3px; }
+
+.plan-row {
+  display:flex; align-items:flex-start; gap:12px;
+  padding:12px; background:#0d111c; border-radius:8px; margin-bottom:8px;
+}
+.plan-n {
+  width:26px; height:26px; border-radius:50%;
+  background:#1e2d6b; color:#63b3ed;
+  display:flex; align-items:center; justify-content:center;
+  font-size:12px; font-weight:700; flex-shrink:0;
+}
+
+.appt-row {
+  display:flex; align-items:center; gap:12px; padding:14px;
+  background:#0d111c; border-radius:10px; margin-bottom:8px;
+}
+.appt-date-box {
+  min-width:80px; text-align:center; padding:8px;
+  background:#111827; border-radius:8px; border:1px solid #1f2937;
+}
+.appt-day   { font-size:24px; font-weight:900; color:#4299e1; line-height:1; }
+.appt-month { font-size:11px; color:#4b5563; }
+
+.goal-row { margin-bottom:10px; }
+.goal-hd  { display:flex; justify-content:space-between; font-size:12px; margin-bottom:5px; }
+
+.records-grid { display:grid; grid-template-columns:auto 1fr; gap:5px 14px; font-size:13px; color:#a0aec0; }
+.records-grid .lbl { color:#4b5563; }
+</style>
+</head>
+<body>
+<div class="app-container">
+  <nav class="sidebar">
+    <div class="sidebar-logo" style="justify-content:center;padding:24px 12px 20px;">
+  <img src="assets/tonitruum-logo-white.png" alt="TONITRUUM"
+       style="width:100%;height:auto;max-width:180px;opacity:0.85;">
+</div>
+    <ul class="nav-list">
+      <li class="nav-section">Monitor</li>
+      <li class="nav-item"><a href="index.html"><span class="nav-icon">⬡</span>Habitat Monitor</a></li>
+      <li class="nav-section">Clinical</li>
+      <li class="nav-item"><a href="autism.html"><span class="nav-icon">♡</span>Patient Care</a></li>
+      <li class="nav-item"><a href="assessment.html"><span class="nav-icon">≡</span>Assessments</a></li>
+      <li class="nav-item"><a href="parent-form.html"><span class="nav-icon">✎</span>Parent Reports</a></li>
+      <li class="nav-item active"><a href="medical.html"><span class="nav-icon">✚</span>Medical Consult</a></li>
+      <li class="nav-section">Strategy</li>
+      <li class="nav-item"><a href="service.html"><span class="nav-icon">◎</span>Service Overview</a></li>
+      <li class="nav-item"><a href="stakeholder.html"><span class="nav-icon">◉</span>Stakeholder Map</a></li>
+      <li class="nav-item"><a href="product.html"><span class="nav-icon">◈</span>Product Design</a></li>
+      <li class="nav-section">Project</li>
+      <li class="nav-item"><a href="phase0.html"><span class="nav-icon">◫</span>Phase 0 Origin</a></li>
+      <li class="nav-item"><a href="phase1.html"><span class="nav-icon">◧</span>Phase 1 Research</a></li>
+      <li class="nav-item"><a href="founder.html"><span class="nav-icon">◐</span>Founder</a></li>
+      <li class="nav-item"><a href="research.html"><span class="nav-icon">◇</span>Reptile Therapy</a></li>
+      <li class="nav-item"><a href="market.html"><span class="nav-icon">◆</span>Business Model</a></li>
+      <li class="nav-section">Play</li>
+      <li class="nav-item"><a href="game.html"><span class="nav-icon">◎</span>Cricket Hunter</a></li>
+    
+    
+    </ul>
+    <div class="sidebar-footer"><div class="sys-status"><span class="status-indicator status-good"></span>All Systems Online</div><div class="sys-time" id="sidebarTime"></div></div>
+  </nav>
+
+  <main class="main-content">
+    <header class="page-header">
+      <div>
+        <h1 class="page-title">Medical & Psychological Consultation</h1>
+        <p class="page-desc">Clinical Notes · Treatment Plans · Progress Monitoring</p>
+      </div>
+      <div class="header-actions">
+        <button class="btn btn-outline" onclick="showToast('Appointment request sent','info')">📅 Request Appointment</button>
+        <button class="btn btn-primary" onclick="showToast('Medical record exported','success')">⬇ Export Record</button>
+      </div>
+    </header>
+
+    <!-- Care Team -->
+    <div class="team-grid">
+      <div class="team-card">
+        <div class="doc-avatar" style="background:linear-gradient(135deg,#6366f1,#8b5cf6);">👩‍⚕️</div>
+        <div>
+          <div style="font-size:15px;font-weight:700;">Dr. Sarah Lee</div>
+          <div style="font-size:12px;color:#a0aec0;margin-top:2px;">Lead Psychologist</div>
+          <div style="font-size:11px;color:#4b5563;margin-top:3px;">Specialty: ASD Child Intervention</div>
+          <div style="margin-top:7px;"><span class="badge badge-green">On Duty</span></div>
+        </div>
+      </div>
+      <div class="team-card">
+        <div class="doc-avatar" style="background:linear-gradient(135deg,#3b82f6,#06b6d4);">👨‍⚕️</div>
+        <div>
+          <div style="font-size:15px;font-weight:700;">Dr. James Wang</div>
+          <div style="font-size:12px;color:#a0aec0;margin-top:2px;">Child Psychiatrist</div>
+          <div style="font-size:11px;color:#4b5563;margin-top:3px;">Specialty: ASD Diagnosis & Meds</div>
+          <div style="margin-top:7px;"><span class="badge badge-gray">Thursday Clinic</span></div>
+        </div>
+      </div>
+      <div class="team-card">
+        <div class="doc-avatar" style="background:linear-gradient(135deg,#10b981,#059669);">🐾</div>
+        <div>
+          <div style="font-size:15px;font-weight:700;">Emma Chen</div>
+          <div style="font-size:12px;color:#a0aec0;margin-top:2px;">AAT Specialist</div>
+          <div style="font-size:11px;color:#4b5563;margin-top:3px;">Specialty: Reptile-Assisted Therapy</div>
+          <div style="margin-top:7px;"><span class="badge badge-green">On Duty</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-grid" style="grid-template-columns:1.3fr 1fr;">
+
+      <!-- Left -->
+      <div style="display:flex;flex-direction:column;gap:14px;">
+
+        <!-- Notes/Rx/Plan tabs -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">📋 Consultation Records</span>
+            <button class="btn btn-outline" style="font-size:11px;padding:4px 10px;" onclick="showToast('New session created','info')">+ New Session</button>
+          </div>
+          <div class="tab-list" style="margin-bottom:16px;">
+            <button class="tab-btn active" onclick="switchTab(this,'tab-notes')">Clinical Notes</button>
+            <button class="tab-btn" onclick="switchTab(this,'tab-rx')">Treatment Rx</button>
+            <button class="tab-btn" onclick="switchTab(this,'tab-plan')">6-Month Plan</button>
+          </div>
+
+          <!-- Notes -->
+          <div id="tab-notes" class="tab-panel">
+            <div class="note-block">
+              <div class="note-hd">
+                <div><span class="note-author">Dr. Sarah Lee</span> <span style="color:#4b5563;font-size:11px;margin-left:6px;">Session #8 · AAT</span></div>
+                <span class="note-date">Mar 24, 2026 · 10:00</span>
+              </div>
+              <div class="note-body">
+                Alex exceeded expectations in today's session. He sustained focused attention on Maple (Red-Eyed Tree Frog) for a continuous 20-minute period — the longest recorded since AAT began. Of particular clinical significance: Alex spontaneously combined spoken word and sign language to express "frog," indicating cross-modal language integration is developing.
+                <br><br>
+                <strong style="color:#63b3ed;">Emotional Regulation Event (10:35):</strong> Rapid frog movement triggered brief agitation — 2 glass taps observed. Intervention: guided breathing (3 cycles) + verbal reassurance. Recovery time: ~3 minutes — a 50% improvement over last week's baseline. This suggests the emotional regulation strategies introduced in Week 2 are consolidating.
+                <br><br>
+                <strong style="color:#68d391;">Clinical Recommendation:</strong> Introduce supervised co-feeding activity from Week 4 (Alex observes/assists cricket feeding). This step targets responsibility-based bonding and emotion generalization. Continue current 3×/week frequency.
+              </div>
+              <div>
+                <span class="note-tag" style="background:rgba(72,187,120,.12);color:#68d391;">Significant Progress</span>
+                <span class="note-tag" style="background:rgba(66,153,225,.12);color:#63b3ed;">AAT</span>
+                <span class="note-tag" style="background:rgba(128,90,213,.12);color:#b794f4;">Language Development</span>
+              </div>
+            </div>
+
+            <div class="note-block">
+              <div class="note-hd">
+                <div><span class="note-author">Dr. James Wang</span> <span style="color:#4b5563;font-size:11px;margin-left:6px;">Quarterly Diagnostic Review</span></div>
+                <span class="note-date">Mar 10, 2026 · 14:00</span>
+              </div>
+              <div class="note-body">
+                Q1 2026 assessment: CARS score decreased from 38 → 34 (decline on this scale indicates improvement). ASD Level 2 diagnosis maintained, though several sub-domains approaching Level 1 criteria. Language expression remains the primary deficit — recommend intensifying AAC integration within SLT sessions.
+                <br><br>
+                Parent report notes Alex has begun referencing "Maple" by name at home — a clear generalization of AAT concepts into daily life. The temporal correlation between AAT introduction (Feb 10) and acceleration in social initiation scores is statistically meaningful.
+              </div>
+              <div>
+                <span class="note-tag" style="background:rgba(245,158,11,.12);color:#fcd34d;">Quarterly Assessment</span>
+                <span class="note-tag" style="background:rgba(66,153,225,.12);color:#63b3ed;">ASD Review</span>
+              </div>
+            </div>
+
+            <div class="note-block">
+              <div class="note-hd">
+                <div><span class="note-author">Emma Chen</span> <span style="color:#4b5563;font-size:11px;margin-left:6px;">AAT Weekly Report</span></div>
+                <span class="note-date">Mar 17, 2026 · 16:30</span>
+              </div>
+              <div class="note-body">
+                Week 2 summary: Alex demonstrated voluntary approach in 3/5 sessions (vs 1/5 in Week 1). Showed observable curiosity about color changes in Maple — multiple pointing gestures and vocalizations directed at frog. Recommend Week 3 introduce feeding observation — Alex watches supervised cricket feeding — to begin reducing uncertainty around novel stimuli.
+              </div>
+              <div>
+                <span class="note-tag" style="background:rgba(20,184,166,.12);color:#5eead4;">AAT Session</span>
+                <span class="note-tag" style="background:rgba(72,187,120,.12);color:#68d391;">Behavioral Improvement</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Rx -->
+          <div id="tab-rx" class="tab-panel" style="display:none;">
+            <div style="font-size:12px;color:#6b7280;text-transform:uppercase;letter-spacing:.7px;margin-bottom:14px;">Current Intervention Protocol</div>
+            <div class="rx-row">
+              <div class="rx-ico">🐸</div>
+              <div style="flex:1;">
+                <div class="rx-name">Animal-Assisted Therapy (AAT)</div>
+                <div class="rx-info">3×/week · 30–45 min · Red-Eyed Tree Frog · 1:1 supervision · Emma Chen</div>
+                <div class="rx-info" style="margin-top:3px;">Current phase: Observation → Interaction (Week 3)</div>
+              </div>
+              <span class="badge badge-green" style="flex-shrink:0;">Active</span>
+            </div>
+            <div class="rx-row">
+              <div class="rx-ico">🗣️</div>
+              <div style="flex:1;">
+                <div class="rx-name">Speech & Language Therapy (SLT)</div>
+                <div class="rx-info">2×/week · 40 min · Animal-themed vocabulary integration · Ms. Zhang</div>
+              </div>
+              <span class="badge badge-green" style="flex-shrink:0;">Active</span>
+            </div>
+            <div class="rx-row">
+              <div class="rx-ico">🤸</div>
+              <div style="flex:1;">
+                <div class="rx-name">Occupational Therapy / Sensory Integration (OT)</div>
+                <div class="rx-info">3×/week · 45 min · Focus: tactile desensitization, proprioception</div>
+              </div>
+              <span class="badge badge-green" style="flex-shrink:0;">Active</span>
+            </div>
+            <div class="rx-row">
+              <div class="rx-ico">🧠</div>
+              <div style="flex:1;">
+                <div class="rx-name">Applied Behavior Analysis (ABA)</div>
+                <div class="rx-info">5×/week · 60 min · Hybrid: center + home sessions</div>
+              </div>
+              <span class="badge badge-green" style="flex-shrink:0;">Active</span>
+            </div>
+            <div class="rx-row" style="border-color:rgba(252,129,129,.2);background:rgba(252,129,129,.03);">
+              <div class="rx-ico">💊</div>
+              <div style="flex:1;">
+                <div class="rx-name" style="color:#fc8181;">Pharmacological Intervention</div>
+                <div class="rx-info">No current prescription. Assess if anxiety or sleep dysregulation persist ≥2 weeks.</div>
+              </div>
+              <span class="badge badge-gray" style="flex-shrink:0;">N/A</span>
+            </div>
+          </div>
+
+          <!-- Plan -->
+          <div id="tab-plan" class="tab-panel" style="display:none;">
+            <div style="font-size:12px;color:#6b7280;text-transform:uppercase;letter-spacing:.7px;margin-bottom:14px;">6-Month AAT Intervention Roadmap</div>
+            <div class="plan-row">
+              <div class="plan-n">1</div>
+              <div style="flex:1;">
+                <div style="font-size:13px;font-weight:600;">Phase 1: Desensitization &amp; Engagement (Weeks 1–2)</div>
+                <div style="font-size:12px;color:#6b7280;margin-top:3px;line-height:1.5;">Glass-barrier observation. Reduce fear response. Introduce animal-themed picture books and vocabulary.</div>
+                <div style="font-size:11px;color:#4b5563;margin-top:5px;">Feb 10 – Feb 21, 2026</div>
+              </div>
+              <span class="badge badge-green" style="flex-shrink:0;">✓ Complete</span>
+            </div>
+            <div class="plan-row">
+              <div class="plan-n">2</div>
+              <div style="flex:1;">
+                <div style="font-size:13px;font-weight:600;">Phase 2: Interaction &amp; Communication (Weeks 3–6)</div>
+                <div style="font-size:12px;color:#6b7280;margin-top:3px;line-height:1.5;">Guided enclosure interaction. Learn animal-related vocabulary (color, movement). Introduce feeding observation. Establish care concept.</div>
+                <div style="font-size:11px;color:#f6ad55;margin-top:5px;">Feb 24 – Mar 21, 2026 <span style="color:#f6ad55;">· In Progress</span></div>
+              </div>
+              <span class="badge badge-orange" style="flex-shrink:0;">Active</span>
+            </div>
+            <div class="plan-row">
+              <div class="plan-n">3</div>
+              <div style="flex:1;">
+                <div style="font-size:13px;font-weight:600;">Phase 3: Responsibility Building (Weeks 7–12)</div>
+                <div style="font-size:12px;color:#6b7280;margin-top:3px;line-height:1.5;">Supervised co-feeding. Develop understanding of animal needs. Generalize to human needs and empathy.</div>
+                <div style="font-size:11px;color:#4b5563;margin-top:5px;">Mar 24 – May 2, 2026</div>
+              </div>
+              <span class="badge badge-gray" style="flex-shrink:0;">Upcoming</span>
+            </div>
+            <div class="plan-row">
+              <div class="plan-n">4</div>
+              <div style="flex:1;">
+                <div style="font-size:13px;font-weight:600;">Phase 4: Social Extension (Weeks 13–24)</div>
+                <div style="font-size:12px;color:#6b7280;margin-top:3px;line-height:1.5;">Group animal observation sessions with other ASD peers. Animal as social bridge for peer interaction practice.</div>
+                <div style="font-size:11px;color:#4b5563;margin-top:5px;">May 5 – Jul 24, 2026</div>
+              </div>
+              <span class="badge badge-gray" style="flex-shrink:0;">Upcoming</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Appointments -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">📅 Upcoming Appointments</span>
+            <button class="btn btn-blue" style="font-size:11px;padding:5px 12px;" onclick="showToast('Appointment scheduler opened','info')">+ Book</button>
+          </div>
+          <div class="appt-row" style="border-left:3px solid #48bb78;">
+            <div class="appt-date-box"><div class="appt-day">25</div><div class="appt-month">Mar · Wed</div></div>
+            <div style="flex:1;">
+              <div style="font-size:13px;font-weight:600;">AAT Session #9</div>
+              <div style="font-size:12px;color:#6b7280;margin-top:3px;">14:00 · Emma Chen · Room B102</div>
+              <div style="font-size:12px;color:#4b5563;margin-top:2px;">Focus: First supervised cricket feeding observation</div>
+            </div>
+            <span class="badge badge-green">Confirmed</span>
+          </div>
+          <div class="appt-row" style="border-left:3px solid #4299e1;">
+            <div class="appt-date-box"><div class="appt-day">27</div><div class="appt-month">Mar · Fri</div></div>
+            <div style="flex:1;">
+              <div style="font-size:13px;font-weight:600;">Dr. Sarah Lee — Bi-Weekly Review</div>
+              <div style="font-size:12px;color:#6b7280;margin-top:3px;">10:00 · In-person / Video · Room A205</div>
+              <div style="font-size:12px;color:#4b5563;margin-top:2px;">Agenda: Parent feedback + next phase planning</div>
+            </div>
+            <span class="badge badge-blue">Confirmed</span>
+          </div>
+          <div class="appt-row" style="border-left:3px solid #ed8936;">
+            <div class="appt-date-box"><div class="appt-day">7</div><div class="appt-month">Apr · Tue</div></div>
+            <div style="flex:1;">
+              <div style="font-size:13px;font-weight:600;">Dr. James Wang — Quarterly Diagnostic</div>
+              <div style="font-size:12px;color:#6b7280;margin-top:3px;">09:30 · Psychiatry Clinic · Room C301</div>
+              <div style="font-size:12px;color:#4b5563;margin-top:2px;">Full CARS evaluation + treatment efficacy review</div>
+            </div>
+            <span class="badge badge-orange">Pending</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right -->
+      <div style="display:flex;flex-direction:column;gap:14px;">
+        <div class="card">
+          <div class="card-header"><span class="card-title">📈 Treatment Progress</span></div>
+          <div style="position:relative;height:210px;"><canvas id="progressChart"></canvas></div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><span class="card-title">🎯 Monthly Goals</span></div>
+          <div>
+            <div class="goal-row">
+              <div class="goal-hd"><span style="color:#9ca3af;">Voluntary animal approach (≥5/week)</span><span style="color:#68d391;font-weight:600;">5/5 ✓</span></div>
+              <div class="progress-track"><div class="progress-fill" style="width:100%;background:linear-gradient(90deg,#065f46,#48bb78);"></div></div>
+            </div>
+            <div class="goal-row">
+              <div class="goal-hd"><span style="color:#9ca3af;">New vocabulary (5 words/month)</span><span style="color:#f6ad55;font-weight:600;">3/5</span></div>
+              <div class="progress-track"><div class="progress-fill" style="width:60%;background:linear-gradient(90deg,#78350f,#ed8936);"></div></div>
+            </div>
+            <div class="goal-row">
+              <div class="goal-hd"><span style="color:#9ca3af;">Meltdown duration (≤5 min/episode)</span><span style="color:#68d391;font-weight:600;">Achieved ✓</span></div>
+              <div class="progress-track"><div class="progress-fill" style="width:87%;background:linear-gradient(90deg,#065f46,#48bb78);"></div></div>
+            </div>
+            <div class="goal-row">
+              <div class="goal-hd"><span style="color:#9ca3af;">Self-feeding rate (≥80%)</span><span style="color:#68d391;font-weight:600;">88% ✓</span></div>
+              <div class="progress-track"><div class="progress-fill" style="width:88%;background:linear-gradient(90deg,#065f46,#48bb78);"></div></div>
+            </div>
+            <div class="goal-row">
+              <div class="goal-hd"><span style="color:#9ca3af;">Zero animal harm incidents (monthly)</span><span style="color:#68d391;font-weight:600;">24/30 days</span></div>
+              <div class="progress-track"><div class="progress-fill" style="width:80%;background:linear-gradient(90deg,#065f46,#48bb78);"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><span class="card-title">🗂️ Medical Summary</span></div>
+          <div class="records-grid">
+            <span class="lbl">Diagnosis:</span><span>ASD Level 2 (DSM-5)</span>
+            <span class="lbl">Diagnosed:</span><span>Aug 2024 (age 6)</span>
+            <span class="lbl">Primary deficits:</span><span>Language expression, social initiation</span>
+            <span class="lbl">Co-occurring:</span><span>Sensory processing, sleep rhythm</span>
+            <span class="lbl">Strengths:</span><span>Visual memory, pattern recognition</span>
+            <span class="lbl">Known allergies:</span><span>None</span>
+            <span class="lbl">Family hx:</span><span>Paternal — social anxiety traits</span>
+            <span class="lbl">In treatment:</span><span>19 months</span>
+            <span class="lbl">AAT started:</span><span>Feb 10, 2026 (Week 1)</span>
+          </div>
+        </div>
+
+        <div class="card" style="background:rgba(72,187,120,.04);border-color:rgba(72,187,120,.3);">
+          <div class="card-header"><span class="card-title">📜 AAT Consent Status</span><span class="badge badge-green">Signed</span></div>
+          <div style="font-size:12px;color:#a0aec0;line-height:1.8;">
+            <div>Signed: <span style="color:#e2e8f0;">Feb 5, 2026</span></div>
+            <div>Signatories: <span style="color:#e2e8f0;">David M. (Father) · Linda M. (Mother)</span></div>
+            <div>Therapy animal: <span style="color:#e2e8f0;">Red-Eyed Tree Frog — Vet certified</span></div>
+            <div>Health certificate: <span style="color:#68d391;">Valid through Dec 31, 2026</span></div>
+            <div style="margin-top:8px;padding:8px;background:#0a1a10;border-radius:6px;font-size:11px;color:#4b5563;border:1px solid rgba(72,187,120,.15);">
+              Animal health is verified before every session. All interactions occur under strict 1:1 professional supervision. Emergency protocol in place.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Consult Request -->
+    <div class="card" style="margin-top:14px;">
+      <div class="card-header"><span class="card-title">✉️ Online Consultation Request</span></div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Consultation Type</label><select class="form-control"><option>Treatment plan discussion</option><option>Urgent behavioral concern</option><option>AAT feedback</option><option>Appointment change</option><option>Parent support</option></select></div>
+        <div class="form-group"><label class="form-label">Preferred Clinician</label><select class="form-control"><option>Dr. Sarah Lee (preferred)</option><option>Dr. James Wang</option><option>Emma Chen (AAT)</option><option>Any available</option></select></div>
+        <div class="form-group"><label class="form-label">Urgency Level</label><select class="form-control"><option>Standard (reply within 48h)</option><option>Urgent (within 24h)</option><option>Emergency (within 4h)</option></select></div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Message</label>
+        <textarea class="form-control" rows="4">Would like to discuss increasing AAT frequency to 4 sessions/week, as Alex is showing consistent positive responses. Also requesting a formal assessment on whether introducing a household pet could safely complement the therapy. Alex recently asked about Maple independently at home — a first. Very excited about his progress.</textarea>
+      </div>
+      <div style="display:flex;justify-content:flex-end;gap:10px;">
+        <button class="btn btn-outline">📎 Attach File</button>
+        <button class="btn btn-primary" onclick="showToast('Consultation request submitted — Dr. Lee will respond within 24h','success')">📨 Submit Request</button>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="shared.js"></script>
+<script>
+// Progress chart
+new Chart(document.getElementById('progressChart').getContext('2d'),{
+  type:'line',
+  data:{
+    labels:['Intake','M1','M2','M3','M4','M5','M6','M7','M8','M9','M10','Now'],
+    datasets:[
+      {label:'Overall Progress',data:[20,25,28,32,35,38,42,48,52,58,65,72],borderColor:'#4299e1',backgroundColor:'rgba(66,153,225,.08)',tension:.4,pointRadius:3,borderWidth:2,fill:true},
+      {label:'Animal Affinity',data:[null,null,null,null,null,null,null,null,30,52,68,82],borderColor:'#48bb78',backgroundColor:'rgba(72,187,120,.08)',tension:.4,pointRadius:3,borderWidth:2,fill:true}
+    ]
+  },
+  options:{responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{labels:{color:'#a0aec0',font:{size:10}}}},
+    scales:{
+      x:{ticks:{color:'#6b7280',font:{size:10}},grid:{color:'#1f2937'}},
+      y:{min:0,max:100,ticks:{color:'#6b7280',font:{size:10}},grid:{color:'#1f2937'}}
+    }
+  }
+});
+</script>
+</body>
+</html>

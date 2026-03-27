@@ -1,0 +1,1609 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Parent Daily Report — PetCare Pro</title>
+<link rel="stylesheet" href="shared.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+.form-section { background:var(--bg-card); border:1px solid var(--border); border-radius:14px; padding:22px; margin-bottom:14px; }
+.sec-title { font-size:14px; font-weight:700; color:#e2e8f0; display:flex; align-items:center; gap:8px; padding-bottom:12px; border-bottom:1px solid #1f2937; margin-bottom:16px; }
+.form-row   { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+.form-row-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px; }
+
+.check-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:7px; margin-top:6px; }
+.ck {
+  display:flex; align-items:center; gap:7px;
+  padding:7px 10px; background:#0d111c; border:1px solid #1f2937;
+  border-radius:7px; cursor:pointer; font-size:12px; color:#9ca3af;
+  transition:all .15s; user-select:none;
+}
+.ck:hover { border-color:#4299e1; }
+.ck.on { background:rgba(66,153,225,.1); border-color:#4299e1; color:#63b3ed; }
+.ck-box { width:15px; height:15px; border:1.5px solid #374151; border-radius:3px; display:flex; align-items:center; justify-content:center; font-size:9px; flex-shrink:0; }
+.ck.on .ck-box { background:#4299e1; border-color:#4299e1; color:white; }
+
+.week-cells { display:grid; grid-template-columns:repeat(7,1fr); gap:5px; margin-top:8px; }
+.day-cell { text-align:center; padding:8px 4px; border-radius:8px; border:1px solid; font-size:11px; }
+.day-nm { color:#6b7280; margin-bottom:3px; }
+.day-vl { font-weight:700; font-size:13px; }
+.dc-ok   { background:rgba(72,187,120,.1); border-color:rgba(72,187,120,.3); }
+.dc-warn { background:rgba(237,137,54,.1); border-color:rgba(237,137,54,.3); }
+.dc-bad  { background:rgba(252,129,129,.1); border-color:rgba(252,129,129,.3); }
+
+.tag-cloud { display:flex; flex-wrap:wrap; gap:6px; margin-top:6px; }
+.mood-chip {
+  padding:5px 12px; border-radius:20px; cursor:pointer; font-size:12px;
+  border:1px solid #1f2937; color:#6b7280; transition:all .15s; user-select:none;
+}
+.mood-chip.on { border-color:#4299e1; background:rgba(66,153,225,.12); color:#63b3ed; }
+
+.star-row { display:flex; gap:5px; }
+.star { font-size:24px; cursor:pointer; filter:grayscale(1) opacity(.35); transition:.15s; }
+.star.on { filter:none; }
+
+.prev-entry {
+  display:flex; align-items:center; gap:12px; padding:12px;
+  background:#0d111c; border-radius:8px; margin-bottom:7px;
+  border-left:3px solid;
+}
+
+/* ══════════════════════════════
+   FINANCE SECTION
+   ══════════════════════════════ */
+.finance-section { margin-top: 28px; }
+.finance-section-title {
+  font-size: 11px; font-weight: 700; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--accent-orange);
+  margin-bottom: 16px; display: flex; align-items: center; gap: 8px;
+}
+.finance-section-title::after {
+  content: ''; flex: 1; height: 1px; background: var(--border);
+}
+
+/* KPI row */
+.fin-kpi-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; margin-bottom: 18px; }
+.fin-kpi {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 10px; padding: 14px 16px; position: relative; overflow: hidden;
+}
+.fin-kpi::before { content:''; position:absolute; bottom:0; left:0; right:0; height:2px; background: var(--fk-color, var(--accent-orange)); }
+.fin-kpi-lbl { font-size: 9px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px; }
+.fin-kpi-val { font-size: 24px; font-weight: 700; letter-spacing: -0.03em; color: var(--text-primary); }
+.fin-kpi-sub { font-size: 10px; color: var(--text-muted); margin-top: 4px; }
+
+/* Budget progress bar */
+.fin-budget-bar {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 10px; padding: 14px 18px; margin-bottom: 18px;
+}
+.fin-budget-header { display: flex; justify-content: space-between; margin-bottom: 10px; }
+.fin-budget-label { font-size: 11px; font-weight: 600; color: var(--text-primary); }
+.fin-budget-pct { font-size: 11px; color: var(--accent-orange); }
+.fin-track { height: 8px; background: rgba(255,255,255,0.06); border-radius: 4px; overflow: hidden; display: flex; gap: 1px; }
+.fin-fill { height: 100%; border-radius: 4px; transition: width 1s ease; }
+.fin-budget-legend { display: flex; gap: 16px; margin-top: 8px; flex-wrap: wrap; }
+.fin-leg-item { display: flex; align-items: center; gap: 5px; font-size: 10px; color: var(--text-muted); }
+.fin-leg-dot { width: 8px; height: 8px; border-radius: 2px; flex-shrink: 0; }
+
+/* Two-column grid */
+.fin-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 18px; }
+.fin-grid-3 { display: grid; grid-template-columns: 1.6fr 1fr; gap: 14px; margin-bottom: 18px; }
+
+/* Table styles */
+.fin-table { width: 100%; border-collapse: collapse; font-size: 11.5px; }
+.fin-table th {
+  text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--border);
+  font-size: 9.5px; color: var(--text-muted); text-transform: uppercase;
+  letter-spacing: 0.07em; font-weight: 500; white-space: nowrap;
+}
+.fin-table td {
+  padding: 9px 10px; border-bottom: 1px solid rgba(255,255,255,0.04);
+  color: var(--text-secondary); vertical-align: middle;
+}
+.fin-table tr:last-child td { border-bottom: none; }
+.fin-table tr:hover td { background: rgba(255,255,255,0.02); }
+.fin-table .total-row td { border-top: 1px solid var(--border); color: var(--text-primary); font-weight: 600; background: rgba(255,255,255,0.02); }
+
+.fin-tag {
+  padding: 2px 6px; border-radius: 3px; font-size: 9px; font-weight: 600;
+  letter-spacing: 0.05em; text-transform: uppercase; white-space: nowrap;
+}
+.fin-tag.ss    { background: rgba(107,158,184,0.15); color: #8ab8ce; border: 1px solid rgba(107,158,184,0.25); }
+.fin-tag.mut   { background: rgba(74,140,104,0.15);  color: #6aad84; border: 1px solid rgba(74,140,104,0.25); }
+.fin-tag.inst  { background: rgba(217,110,40,0.15);  color: #e8884a; border: 1px solid rgba(217,110,40,0.25); }
+.fin-tag.self  { background: rgba(90,88,85,0.2);     color: #8a8784; border: 1px solid rgba(90,88,85,0.3); }
+.fin-tag.pet   { background: rgba(122,106,176,0.15); color: #a090cc; border: 1px solid rgba(122,106,176,0.25); }
+.fin-tag.dep   { background: rgba(184,74,58,0.12);   color: #d4735e; border: 1px solid rgba(184,74,58,0.2); }
+
+/* Depreciation bar */
+.dep-bar { height: 4px; background: rgba(255,255,255,0.06); border-radius: 2px; overflow: hidden; margin-top: 4px; }
+.dep-fill { height: 100%; border-radius: 2px; background: linear-gradient(90deg,#b84a3a,#d4735e); }
+
+/* ── Payment Modal ── */
+.pay-overlay {
+  position: fixed; inset: 0; z-index: 800;
+  background: rgba(0,0,0,0.65); backdrop-filter: blur(6px);
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; pointer-events: none; transition: opacity 0.25s;
+}
+.pay-overlay.open { opacity: 1; pointer-events: all; }
+.pay-modal {
+  background: #1a1918; border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 16px; padding: 28px; width: 440px; max-width: 95vw;
+  transform: translateY(16px) scale(0.97);
+  transition: transform 0.3s cubic-bezier(0.34,1.2,0.64,1);
+}
+.pay-overlay.open .pay-modal { transform: none; }
+.pay-modal-title { font-size: 16px; font-weight: 700; color: var(--text-primary); margin-bottom: 4px; }
+.pay-modal-sub { font-size: 11px; color: var(--text-muted); margin-bottom: 22px; }
+.pay-amount-display {
+  background: rgba(217,110,40,0.08); border: 1px solid rgba(217,110,40,0.2);
+  border-radius: 10px; padding: 16px 20px; margin-bottom: 20px; text-align: center;
+}
+.pay-amount-display .amount { font-size: 36px; font-weight: 700; color: var(--accent-orange); letter-spacing: -0.03em; }
+.pay-amount-display .amount-lbl { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+.pay-method-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 20px; }
+.pay-method {
+  padding: 10px 12px; border-radius: 8px; border: 1px solid var(--border);
+  background: transparent; cursor: pointer; transition: all 0.18s;
+  display: flex; align-items: center; gap: 8px; font-family: inherit;
+}
+.pay-method:hover { border-color: rgba(217,110,40,0.35); background: rgba(217,110,40,0.04); }
+.pay-method.selected { border-color: var(--accent-orange); background: rgba(217,110,40,0.09); }
+.pay-method-icon { font-size: 18px; }
+.pay-method-name { font-size: 12px; font-weight: 500; color: var(--text-primary); }
+.pay-method-desc { font-size: 9px; color: var(--text-muted); }
+.pay-breakdown { background: rgba(255,255,255,0.03); border-radius: 8px; padding: 12px 14px; margin-bottom: 20px; }
+.pay-breakdown-row { display: flex; justify-content: space-between; font-size: 11px; padding: 4px 0; }
+.pay-breakdown-row .lbl { color: var(--text-muted); }
+.pay-breakdown-row .val { color: var(--text-secondary); }
+.pay-breakdown-row.total { border-top: 1px solid var(--border); margin-top: 6px; padding-top: 8px; }
+.pay-breakdown-row.total .lbl { color: var(--text-primary); font-weight: 600; }
+.pay-breakdown-row.total .val { color: var(--accent-orange); font-weight: 700; font-size: 13px; }
+.pay-confirm-btn {
+  width: 100%; padding: 13px; border-radius: 10px; border: none;
+  background: var(--accent-orange); color: #fff; font-size: 14px; font-weight: 600;
+  cursor: pointer; transition: opacity 0.2s; font-family: inherit; letter-spacing: 0.02em;
+}
+.pay-confirm-btn:hover { opacity: 0.88; }
+.pay-close-btn {
+  position: absolute; top: 18px; right: 18px; width: 28px; height: 28px;
+  border-radius: 50%; border: 1px solid var(--border); background: transparent;
+  color: var(--text-muted); cursor: pointer; font-size: 14px;
+  display: flex; align-items: center; justify-content: center; transition: all 0.2s;
+}
+.pay-close-btn:hover { background: rgba(255,255,255,0.08); color: var(--text-primary); }
+.pay-modal { position: relative; }
+
+@media (max-width: 900px) {
+  .fin-kpi-row { grid-template-columns: repeat(2,1fr); }
+  .fin-grid-2, .fin-grid-3 { grid-template-columns: 1fr; }
+}
+
+/* ── Mobile portrait ── */
+@media (max-width: 600px) {
+  /* Page-level layout */
+  .form-row, .form-row-3 { grid-template-columns: 1fr !important; }
+  .check-grid { grid-template-columns: repeat(2,1fr); }
+  .week-cells { grid-template-columns: repeat(7,1fr); gap: 3px; }
+  .day-cell { padding: 6px 2px; font-size: 10px; }
+
+  /* Finance */
+  .fin-kpi-row { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .fin-kpi-val { font-size: 20px; }
+  .fin-grid-2, .fin-grid-3 { grid-template-columns: 1fr; }
+  .fin-budget-legend { gap: 8px; }
+
+  /* Scrollable tables */
+  .fin-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .fin-table { min-width: 520px; }
+
+  /* Assessment */
+  .asd-score-ring + .asd-domain-row { margin-top: 14px; }
+  [style*="display:flex;align-items:center;gap:20px"] {
+    flex-direction: column; align-items: flex-start;
+  }
+  .asd-domain { grid-template-columns: 100px 1fr 30px; gap: 7px; }
+  .compare-grid { grid-template-columns: 1fr; gap: 8px; }
+  .compare-val { font-size: 22px; }
+
+  /* Highlight cards */
+  [style*="grid-template-columns:1fr 1fr"] { grid-template-columns: 1fr !important; }
+
+  /* Badge grid */
+  #badgeGrid { grid-template-columns: repeat(2,1fr) !important; gap: 8px; }
+  .badge-card { padding: 14px 10px; }
+  .badge-icon-wrap { width: 52px; height: 52px; font-size: 22px; }
+  .badge-name { font-size: 11px; }
+  .badge-desc { font-size: 9.5px; }
+
+  /* Tab list scroll */
+  .tab-list { overflow-x: auto; white-space: nowrap; flex-wrap: nowrap; padding-bottom: 4px; }
+  .tab-btn { flex-shrink: 0; padding: 8px 12px; }
+
+  /* Page headers */
+  .page-header { flex-direction: column; gap: 8px; }
+  .header-actions { flex-wrap: wrap; gap: 6px; width: 100%; }
+  .header-actions .btn { flex: 1; justify-content: center; }
+  .header-actions select { width: 100% !important; }
+
+  /* Score ring layout */
+  .score-ring-row { flex-direction: column !important; align-items: center !important; }
+
+  /* Toast position */
+  .toast-container { bottom: 12px; right: 12px; left: 12px; }
+
+  /* Charts — prevent overflow */
+  canvas { max-width: 100% !important; }
+
+  /* Remove horizontal overflow globally */
+  .card { overflow-x: hidden; }
+}
+
+/* ── Assessment Section ── */
+.asd-score-ring {
+  position: relative; display: flex; align-items: center; justify-content: center;
+  width: 110px; height: 110px; flex-shrink: 0;
+}
+.asd-score-ring svg { position: absolute; inset: 0; transform: rotate(-90deg); }
+.asd-score-center { position: relative; z-index: 1; text-align: center; }
+.asd-score-num { font-size: 26px; font-weight: 700; letter-spacing: -0.03em; }
+.asd-score-max { font-size: 10px; color: var(--text-muted); }
+
+.asd-domain-row { display: flex; flex-direction: column; gap: 8px; flex: 1; }
+.asd-domain { display: grid; grid-template-columns: 120px 1fr 36px; align-items: center; gap: 10px; font-size: 11px; }
+.asd-domain-lbl { color: var(--text-secondary); }
+.asd-domain-track { height: 5px; background: rgba(255,255,255,0.06); border-radius: 3px; overflow: hidden; }
+.asd-domain-fill { height: 100%; border-radius: 3px; transition: width 1.2s cubic-bezier(0.4,0,0.2,1); }
+.asd-domain-val { font-size: 10px; color: var(--text-muted); text-align: right; }
+
+.highlight-card {
+  background: var(--bg-card-alt); border: 1px solid var(--border);
+  border-radius: 10px; padding: 14px 16px;
+  border-left: 3px solid;
+}
+.hl-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; }
+.hl-title { font-size: 12.5px; font-weight: 600; color: var(--text-primary); }
+.hl-date { font-size: 9px; color: var(--text-muted); font-family: monospace; }
+.hl-desc { font-size: 11px; color: var(--text-secondary); line-height: 1.55; margin-bottom: 8px; }
+.hl-score-chip {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 3px 8px; border-radius: 12px; font-size: 10px; font-weight: 600;
+}
+.hl-impact { font-size: 9px; color: var(--text-muted); margin-left: 6px; }
+
+.trend-badge {
+  display: inline-flex; align-items: center; gap: 3px;
+  padding: 2px 7px; border-radius: 10px; font-size: 10px; font-weight: 600;
+}
+.trend-up   { background: rgba(74,140,104,0.15); color: #6aad84; }
+.trend-down { background: rgba(184,74,58,0.15);  color: #d4735e; }
+.trend-flat { background: rgba(90,88,85,0.2);    color: #8a8784; }
+
+.compare-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; }
+.compare-card {
+  background: var(--bg-card-alt); border: 1px solid var(--border); border-radius: 8px;
+  padding: 12px 14px; text-align: center;
+}
+.compare-period { font-size: 9px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 8px; }
+.compare-val { font-size: 28px; font-weight: 700; letter-spacing: -0.03em; }
+.compare-lbl { font-size: 9.5px; color: var(--text-muted); margin-top: 3px; }
+.compare-delta { font-size: 11px; margin-top: 5px; font-weight: 600; }
+.compare-bar-wrap { height: 3px; background: rgba(255,255,255,0.06); border-radius: 2px; overflow: hidden; margin-top: 8px; }
+.compare-bar-fill { height: 100%; border-radius: 2px; transition: width 1.3s ease; }
+
+/* ── Badges ── */
+@keyframes badgeSpin {
+  0%   { transform: rotate(0deg) scale(1); }
+  50%  { transform: rotate(180deg) scale(1.08); }
+  100% { transform: rotate(360deg) scale(1); }
+}
+@keyframes badgePulse {
+  0%,100% { box-shadow: 0 0 8px 2px var(--bc,#d96e28), 0 0 0px 0px transparent; }
+  50%      { box-shadow: 0 0 18px 6px var(--bc,#d96e28), 0 0 30px 10px color-mix(in srgb,var(--bc,#d96e28) 20%,transparent); }
+}
+@keyframes badgeUnlock {
+  0%   { transform: scale(0.4) rotate(-20deg); opacity:0; }
+  60%  { transform: scale(1.15) rotate(5deg);  opacity:1; }
+  100% { transform: scale(1) rotate(0deg); }
+}
+.badge-card {
+  background: var(--bg-card-alt); border: 1px solid var(--border);
+  border-radius: 14px; padding: 18px 14px; text-align: center;
+  cursor: pointer; transition: border-color 0.25s, background 0.25s;
+  position: relative; overflow: hidden;
+}
+.badge-card.unlocked { border-color: var(--bc,rgba(217,110,40,0.4)); }
+.badge-card.unlocked:hover { background: rgba(255,255,255,0.04); }
+.badge-card.locked { opacity: 0.38; filter: grayscale(1); }
+.badge-card.locked:hover { opacity: 0.55; }
+
+/* Shimmer sweep on unlocked */
+.badge-card.unlocked::before {
+  content:''; position:absolute; inset:0;
+  background: linear-gradient(105deg, transparent 35%, rgba(255,255,255,0.06) 50%, transparent 65%);
+  background-size:200% 100%; background-position:-100% 0;
+  transition: background-position 0.6s;
+}
+.badge-card.unlocked:hover::before { background-position:200% 0; }
+
+.badge-icon-wrap {
+  width: 64px; height: 64px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 28px; margin: 0 auto 10px;
+  background: rgba(255,255,255,0.04);
+  border: 2px solid var(--bc, rgba(217,110,40,0.4));
+}
+.badge-card.unlocked .badge-icon-wrap {
+  animation: badgePulse 3s ease-in-out infinite;
+}
+.badge-card.unlocked:hover .badge-icon-wrap {
+  animation: badgeSpin 0.8s cubic-bezier(0.4,0,0.2,1) forwards, badgePulse 3s ease-in-out 0.8s infinite;
+}
+.badge-card.new-unlock .badge-icon-wrap {
+  animation: badgeUnlock 0.7s cubic-bezier(0.34,1.4,0.64,1) forwards, badgePulse 3s ease-in-out 0.7s infinite;
+}
+.badge-name { font-size: 12px; font-weight: 700; color: var(--text-primary); margin-bottom: 4px; }
+.badge-desc { font-size: 10px; color: var(--text-muted); line-height: 1.5; }
+.badge-date { font-size: 9px; color: var(--text-muted); margin-top: 6px; font-family: monospace; opacity:0.7; }
+.badge-xp {
+  position: absolute; top: 10px; right: 10px;
+  font-size: 9px; font-weight: 700; padding: 2px 6px;
+  border-radius: 8px; letter-spacing: 0.04em;
+}
+.badge-tier {
+  position: absolute; top: 10px; left: 10px;
+  font-size: 8px; font-weight: 700; padding: 2px 5px;
+  border-radius: 4px; text-transform: uppercase; letter-spacing: 0.06em;
+  background: rgba(255,255,255,0.07); color: var(--text-muted);
+}
+.badge-card.unlocked .badge-tier { background: rgba(255,255,255,0.12); color: var(--text-secondary); }
+
+.submit-strip {
+  position:sticky; bottom:0; background:var(--bg-secondary);
+  border-top:1px solid var(--border); padding:14px 24px;
+  display:flex; justify-content:flex-end; gap:10px;
+  margin:0 -24px -24px;
+}
+</style>
+</head>
+<body>
+<div class="app-container">
+  <nav class="sidebar">
+    <div class="sidebar-logo" style="justify-content:center;padding:24px 12px 20px;">
+  <img src="assets/tonitruum-logo-white.png" alt="TONITRUUM"
+       style="width:100%;height:auto;max-width:180px;opacity:0.85;">
+</div>
+    <ul class="nav-list">
+      <li class="nav-section">Monitor</li>
+      <li class="nav-item"><a href="index.html"><span class="nav-icon">⬡</span>Habitat Monitor</a></li>
+      <li class="nav-section">Clinical</li>
+      <li class="nav-item"><a href="autism.html"><span class="nav-icon">♡</span>Patient Care</a></li>
+      <li class="nav-item"><a href="assessment.html"><span class="nav-icon">≡</span>Assessments</a></li>
+      <li class="nav-item active"><a href="parent-form.html"><span class="nav-icon">✎</span>Parent Reports</a></li>
+      <li class="nav-item"><a href="medical.html"><span class="nav-icon">✚</span>Medical Consult</a></li>
+      <li class="nav-section">Strategy</li>
+      <li class="nav-item"><a href="service.html"><span class="nav-icon">◎</span>Service Overview</a></li>
+      <li class="nav-item"><a href="stakeholder.html"><span class="nav-icon">◉</span>Stakeholder Map</a></li>
+      <li class="nav-item"><a href="product.html"><span class="nav-icon">◈</span>Product Design</a></li>
+      <li class="nav-section">Project</li>
+      <li class="nav-item"><a href="phase0.html"><span class="nav-icon">◫</span>Phase 0 Origin</a></li>
+      <li class="nav-item"><a href="phase1.html"><span class="nav-icon">◧</span>Phase 1 Research</a></li>
+      <li class="nav-item"><a href="founder.html"><span class="nav-icon">◐</span>Founder</a></li>
+      <li class="nav-item"><a href="research.html"><span class="nav-icon">◇</span>Reptile Therapy</a></li>
+      <li class="nav-item"><a href="market.html"><span class="nav-icon">◆</span>Business Model</a></li>
+      <li class="nav-section">Play</li>
+      <li class="nav-item"><a href="game.html"><span class="nav-icon">◎</span>Cricket Hunter</a></li>
+    
+    
+    </ul>
+    <div class="sidebar-footer"><div class="sys-status"><span class="status-indicator status-good"></span>All Systems Online</div><div class="sys-time" id="sidebarTime"></div></div>
+  </nav>
+
+  <main class="main-content">
+    <header class="page-header">
+      <div>
+        <h1 class="page-title">Parent Daily Status Report</h1>
+        <p class="page-desc">Track · Observe · Collaborate with the Care Team</p>
+      </div>
+      <div class="header-actions">
+        <button class="btn btn-outline" onclick="showToast('Draft loaded','info')">📂 Load Draft</button>
+        <button class="btn btn-primary" onclick="submitForm()">✓ Submit Today's Report</button>
+      </div>
+    </header>
+
+    <div class="content-grid" style="grid-template-columns:1.6fr 1fr;">
+
+      <!-- Form -->
+      <div>
+        <!-- Basic Info -->
+        <div class="form-section">
+          <div class="sec-title">👤 Basic Information</div>
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">Child's Name</label><input class="form-control" value="Alex M." readonly style="opacity:.7;"></div>
+            <div class="form-group"><label class="form-label">Report Date</label><input class="form-control" type="date" value="2026-03-24"></div>
+            <div class="form-group"><label class="form-label">Completed By</label><input class="form-control" value="David M. (Father)" placeholder="Your name"></div>
+            <div class="form-group"><label class="form-label">Relationship</label><select class="form-control"><option>Father</option><option>Mother</option><option>Grandparent</option><option>Guardian</option></select></div>
+          </div>
+        </div>
+
+        <!-- Sleep -->
+        <div class="form-section">
+          <div class="sec-title">😴 Sleep Record</div>
+          <div class="form-row-3">
+            <div class="form-group"><label class="form-label">Bedtime (last night)</label><input class="form-control" type="time" value="21:30"></div>
+            <div class="form-group"><label class="form-label">Wake-up Time</label><input class="form-control" type="time" value="07:15"></div>
+            <div class="form-group"><label class="form-label">Total Sleep</label><input class="form-control" value="9h 45min" readonly style="opacity:.7;"></div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Sleep Quality</label>
+            <div style="display:flex;align-items:center;gap:10px;">
+              <span style="font-size:12px;color:#6b7280;">Poor</span>
+              <input type="range" min="1" max="10" value="7" id="sleepSlider" oninput="document.getElementById('sleepVal').textContent=this.value" style="flex:1;accent-color:#4299e1;">
+              <span style="font-size:12px;color:#6b7280;">Excellent</span>
+              <span style="font-weight:700;color:#63b3ed;min-width:28px;text-align:right;" id="sleepVal">7</span>
+            </div>
+          </div>
+          <div class="form-group" style="margin-bottom:0;">
+            <label class="form-label">Sleep Issues (select all that apply)</label>
+            <div class="check-grid" style="grid-template-columns:repeat(4,1fr);">
+              <label class="ck" onclick="this.classList.toggle('on');this.querySelector('.ck-box').textContent=this.classList.contains('on')?'✓':''"><span class="ck-box"></span>Trouble falling asleep</label>
+              <label class="ck" onclick="this.classList.toggle('on');this.querySelector('.ck-box').textContent=this.classList.contains('on')?'✓':''"><span class="ck-box"></span>Night waking</label>
+              <label class="ck on" onclick="this.classList.toggle('on');this.querySelector('.ck-box').textContent=this.classList.contains('on')?'✓':''"><span class="ck-box">✓</span>Sleep talking</label>
+              <label class="ck" onclick="this.classList.toggle('on');this.querySelector('.ck-box').textContent=this.classList.contains('on')?'✓':''"><span class="ck-box"></span>Sleepwalking</label>
+              <label class="ck" onclick="this.classList.toggle('on');this.querySelector('.ck-box').textContent=this.classList.contains('on')?'✓':''"><span class="ck-box"></span>Hard to wake up</label>
+              <label class="ck" onclick="this.classList.toggle('on');this.querySelector('.ck-box').textContent=this.classList.contains('on')?'✓':''"><span class="ck-box"></span>Daytime drowsiness</label>
+              <label class="ck" onclick="this.classList.toggle('on');this.querySelector('.ck-box').textContent=this.classList.contains('on')?'✓':''"><span class="ck-box"></span>Sleep regression</label>
+              <label class="ck on" onclick="this.classList.toggle('on');this.querySelector('.ck-box').textContent=this.classList.contains('on')?'✓':''"><span class="ck-box">✓</span>No issues</label>
+            </div>
+          </div>
+          <div style="margin-top:14px;">
+            <label class="form-label">Weekly Sleep Duration</label>
+            <div class="week-cells">
+              <div class="day-cell dc-ok"><div class="day-nm">Mon</div><div class="day-vl" style="color:#68d391;">9h</div></div>
+              <div class="day-cell dc-ok"><div class="day-nm">Tue</div><div class="day-vl" style="color:#68d391;">8.5h</div></div>
+              <div class="day-cell dc-warn"><div class="day-nm">Wed</div><div class="day-vl" style="color:#f6ad55;">7h</div></div>
+              <div class="day-cell dc-ok"><div class="day-nm">Thu</div><div class="day-vl" style="color:#68d391;">9h</div></div>
+              <div class="day-cell dc-bad"><div class="day-nm">Fri</div><div class="day-vl" style="color:#fc8181;">5.5h</div></div>
+              <div class="day-cell dc-ok"><div class="day-nm">Sat</div><div class="day-vl" style="color:#68d391;">10h</div></div>
+              <div class="day-cell dc-ok"><div class="day-nm">Sun</div><div class="day-vl" style="color:#68d391;">9.75h</div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Diet -->
+        <div class="form-section">
+          <div class="sec-title">🍱 Dietary Log</div>
+          <div class="form-row-3">
+            <div class="form-group">
+              <label class="form-label">Breakfast</label>
+              <input class="form-control" value="Rice porridge, steamed egg, bun">
+              <div style="margin-top:6px;display:flex;align-items:center;gap:8px;font-size:12px;color:#6b7280;">Intake: <input type="range" min="0" max="100" value="85" style="flex:1;accent-color:#48bb78;"><span style="color:#68d391;font-weight:700;">85%</span></div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Lunch</label>
+              <input class="form-control" value="Rice, broccoli, chicken breast">
+              <div style="margin-top:6px;display:flex;align-items:center;gap:8px;font-size:12px;color:#6b7280;">Intake: <input type="range" min="0" max="100" value="92" style="flex:1;accent-color:#48bb78;"><span style="color:#68d391;font-weight:700;">92%</span></div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Dinner</label>
+              <input class="form-control" value="Noodles, stir-fried vegetables">
+              <div style="margin-top:6px;display:flex;align-items:center;gap:8px;font-size:12px;color:#6b7280;">Intake: <input type="range" min="0" max="100" value="70" style="flex:1;accent-color:#f6ad55;"><span style="color:#f6ad55;font-weight:700;">70%</span></div>
+            </div>
+          </div>
+          <div class="form-group" style="margin-bottom:0;">
+            <label class="form-label">Dietary Issues</label>
+            <div class="check-grid">
+              <label class="ck" onclick="this.classList.toggle('on');this.querySelector('.ck-box').textContent=this.classList.contains('on')?'✓':''"><span class="ck-box"></span>Food refusal</label>
+              <label class="ck" onclick="this.classList.toggle('on');this.querySelector('.ck-box').textContent=this.classList.contains('on')?'✓':''"><span class="ck-box"></span>Reduced appetite</label>
+              <label class="ck" onclick="this.classList.toggle('on');this.querySelector('.ck-box').textContent=this.classList.contains('on')?'✓':''"><span class="ck-box"></span>Increased appetite</label>
+              <label class="ck" onclick="this.classList.toggle('on');this.querySelector('.ck-box').textContent=this.classList.contains('on')?'✓':''"><span class="ck-box"></span>Worsened picky eating</label>
+              <label class="ck" onclick="this.classList.toggle('on');this.querySelector('.ck-box').textContent=this.classList.contains('on')?'✓':''"><span class="ck-box"></span>Mealtime meltdown</label>
+              <label class="ck on" onclick="this.classList.toggle('on');this.querySelector('.ck-box').textContent=this.classList.contains('on')?'✓':''"><span class="ck-box">✓</span>Eating normally</label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mood & Behavior -->
+        <div class="form-section">
+          <div class="sec-title">🌡️ Mood & Behavior Observations</div>
+          <div class="form-group">
+            <label class="form-label">Today's Emotional States (select all observed)</label>
+            <div class="tag-cloud">
+              <span class="mood-chip on" onclick="this.classList.toggle('on')">😊 Happy</span>
+              <span class="mood-chip" onclick="this.classList.toggle('on')">😐 Calm</span>
+              <span class="mood-chip" onclick="this.classList.toggle('on')">😔 Sad</span>
+              <span class="mood-chip" onclick="this.classList.toggle('on')">😠 Anxious</span>
+              <span class="mood-chip" onclick="this.classList.toggle('on')">😤 Irritable</span>
+              <span class="mood-chip on" onclick="this.classList.toggle('on')">🤩 Excited</span>
+              <span class="mood-chip" onclick="this.classList.toggle('on')">😨 Fearful</span>
+              <span class="mood-chip" onclick="this.classList.toggle('on')">😑 Withdrawn</span>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">Number of Emotional Episodes</label><input class="form-control" type="number" value="2" min="0"></div>
+            <div class="form-group"><label class="form-label">Most Intense Episode Time</label><input class="form-control" type="time" value="10:35"></div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Observed Behaviors (select all that apply)</label>
+            <div class="check-grid">
+              <label class="ck on" onclick="this.classList.toggle('on');this.querySelector('.ck-box').textContent=this.classList.contains('on')?'✓':''"><span class="ck-box">✓</span>Body rocking</label>
+              <label class="ck" onclick="this.classList.toggle('on');this.querySelector('.ck-box').textContent=this.classList.contains('on')?'✓':''"><span class="ck-box"></span>Self-hitting</label>
+              <label class="ck on" onclick="this.classList.toggle('on');this.querySelector('.ck-box').textContent=this.classList.contains('on')?'✓':''"><span class="ck-box">✓</span>Repetitive actions</label>
+              <label class="ck" onclick="this.classList.toggle('on');this.querySelector('.ck-box').textContent=this.classList.contains('on')?'✓':''"><span class="ck-box"></span>Screaming</label>
+              <label class="ck" onclick="this.classList.toggle('on');this.querySelector('.ck-box').textContent=this.classList.contains('on')?'✓':''"><span class="ck-box"></span>Refused dressing</label>
+              <label class="ck on" onclick="this.classList.toggle('on');this.querySelector('.ck-box').textContent=this.classList.contains('on')?'✓':''"><span class="ck-box">✓</span>Eye contact</label>
+              <label class="ck" onclick="this.classList.toggle('on');this.querySelector('.ck-box').textContent=this.classList.contains('on')?'✓':''"><span class="ck-box"></span>Aggression to others</label>
+              <label class="ck on" onclick="this.classList.toggle('on');this.querySelector('.ck-box').textContent=this.classList.contains('on')?'✓':''"><span class="ck-box">✓</span>Initiated greeting</label>
+              <label class="ck" onclick="this.classList.toggle('on');this.querySelector('.ck-box').textContent=this.classList.contains('on')?'✓':''"><span class="ck-box"></span>Self-talk</label>
+            </div>
+          </div>
+          <div class="form-group" style="margin-bottom:0;">
+            <label class="form-label">🐸 Animal Interaction Observations (parent perspective)</label>
+            <textarea class="form-control" rows="3" style="margin-top:6px;" placeholder="Describe today's animal interaction — duration, behavior, emotional changes...">Today was a great session. Alex was extremely focused watching Maple for nearly 20 minutes and even pulled me over to look together. He said "frog" twice — clearly and independently. The one moment of agitation passed quickly. Appetite was noticeably better afterward.</textarea>
+            <div style="margin-top:8px;">
+              <label class="form-label">Interaction Safety Evaluation</label>
+              <select class="form-control"><option>✅ Fully safe — no concerning behaviors</option><option>⚠️ Minor incident, intervened</option><option>🚫 Concerning behavior observed</option></select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Communication -->
+        <div class="form-section">
+          <div class="sec-title">👥 Communication & Social Skills</div>
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">Spontaneous Social Initiations (count)</label><input class="form-control" type="number" value="4" min="0"></div>
+            <div class="form-group"><label class="form-label">New Words / Skills Learned Today</label><input class="form-control" value="'frog' (with sign language), 'green'" placeholder="New vocabulary or skills"></div>
+          </div>
+          <div class="form-group" style="margin-bottom:0;">
+            <label class="form-label">Communication Methods Used (select all)</label>
+            <div class="check-grid">
+              <label class="ck on" onclick="this.classList.toggle('on');this.querySelector('.ck-box').textContent=this.classList.contains('on')?'✓':''"><span class="ck-box">✓</span>Verbal speech</label>
+              <label class="ck on" onclick="this.classList.toggle('on');this.querySelector('.ck-box').textContent=this.classList.contains('on')?'✓':''"><span class="ck-box">✓</span>Gesture / pointing</label>
+              <label class="ck" onclick="this.classList.toggle('on');this.querySelector('.ck-box').textContent=this.classList.contains('on')?'✓':''"><span class="ck-box"></span>Picture cards (PECS)</label>
+              <label class="ck on" onclick="this.classList.toggle('on');this.querySelector('.ck-box').textContent=this.classList.contains('on')?'✓':''"><span class="ck-box">✓</span>Eye contact</label>
+              <label class="ck" onclick="this.classList.toggle('on');this.querySelector('.ck-box').textContent=this.classList.contains('on')?'✓':''"><span class="ck-box"></span>Physical guidance</label>
+              <label class="ck" onclick="this.classList.toggle('on');this.querySelector('.ck-box').textContent=this.classList.contains('on')?'✓':''"><span class="ck-box"></span>AAC device</label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Notes & Rating -->
+        <div class="form-section">
+          <div class="sec-title">📝 Parent Notes</div>
+          <div class="form-group">
+            <label class="form-label">Notable Observations Today</label>
+            <textarea class="form-control" rows="4">Alex made amazing progress today. He approached the enclosure entirely on his own and tried to call me over — a first! The therapist said his "frog" sign was the clearest she's seen. One brief agitation episode but much faster to recover than last week. Very proud of him today.</textarea>
+          </div>
+          <div class="form-group" style="margin-bottom:0;">
+            <label class="form-label">Questions / Topics for Care Team</label>
+            <textarea class="form-control" rows="3" placeholder="Topics you'd like to discuss at the next consultation...">Can we increase AAT sessions to 4×/week? Also wondering if a small household pet might be a good idea — would love the team's assessment of feasibility.</textarea>
+          </div>
+          <div class="form-row" style="margin-top:16px;">
+            <div class="form-group">
+              <label class="form-label">Overall Day Rating</label>
+              <div class="star-row" id="starsDay">
+                <span class="star on">★</span><span class="star on">★</span><span class="star on">★</span><span class="star on">★</span><span class="star">★</span>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">AAT Satisfaction</label>
+              <div class="star-row" id="starsAAT">
+                <span class="star on">★</span><span class="star on">★</span><span class="star on">★</span><span class="star on">★</span><span class="star on">★</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right sidebar -->
+      <div style="display:flex;flex-direction:column;gap:14px;">
+        <div class="card">
+          <div class="card-header"><span class="card-title">📊 Weekly Summary</span></div>
+          <div style="position:relative;height:200px;"><canvas id="weekChart"></canvas></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">📅 Recent Submissions</span><span class="badge badge-gray">Last 4</span></div>
+          <div>
+            <div class="prev-entry" style="border-color:#48bb78;"><div style="flex:1;"><div style="font-size:12px;font-weight:600;">Mar 23 · David (Father)</div><div style="font-size:11px;color:#6b7280;margin-top:2px;">Sleep: Good · Diet: Normal · Mood: Stable</div></div><span class="badge badge-green">⭐ 4</span></div>
+            <div class="prev-entry" style="border-color:#4299e1;"><div style="flex:1;"><div style="font-size:12px;font-weight:600;">Mar 22 · Linda (Mother)</div><div style="font-size:11px;color:#6b7280;margin-top:2px;">Sleep: Fair · Diet: Poor · Mood: Anxious</div></div><span class="badge badge-orange">⭐ 3</span></div>
+            <div class="prev-entry" style="border-color:#48bb78;"><div style="flex:1;"><div style="font-size:12px;font-weight:600;">Mar 21 · David (Father)</div><div style="font-size:11px;color:#6b7280;margin-top:2px;">Sleep: Good · Diet: Normal · Mood: Happy</div></div><span class="badge badge-green">⭐ 5</span></div>
+            <div class="prev-entry" style="border-color:#f6ad55;"><div style="flex:1;"><div style="font-size:12px;font-weight:600;">Mar 20 · Linda (Mother)</div><div style="font-size:11px;color:#6b7280;margin-top:2px;">Sleep: Poor · 1 meltdown noted</div></div><span class="badge badge-orange">⭐ 3</span></div>
+          </div>
+        </div>
+        <div class="card" style="background:linear-gradient(135deg,#0f1535,#151f45);border-color:#1e2d6b;">
+          <div class="card-header"><span class="card-title">💡 Reporting Guide</span></div>
+          <div style="font-size:12px;color:#a0aec0;line-height:1.8;">
+            <div style="margin-bottom:6px;"><strong style="color:#63b3ed;">🐸 Animal Interaction:</strong><br>Include duration, expressions, approach behavior, and whether Alex remained calm throughout.</div>
+            <div style="margin-bottom:6px;"><strong style="color:#68d391;">😊 Emotional Episodes:</strong><br>Count any noticeable mood shift — positive (sudden excitement) or negative (meltdown).</div>
+            <div><strong style="color:#f6ad55;">⚠️ Safety Alert:</strong><br>Report any behavior toward the animal — even mild — in the safety field. The team reviews all submissions within 24h.</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">🏆 Monthly Milestones</span></div>
+          <div style="display:flex;flex-direction:column;gap:7px;font-size:13px;">
+            <div style="display:flex;align-items:center;gap:8px;">🌟 <span style="color:#a0aec0;">First spontaneous "frog" utterance</span></div>
+            <div style="display:flex;align-items:center;gap:8px;">🌟 <span style="color:#a0aec0;">5-day zero harm streak with Maple</span></div>
+            <div style="display:flex;align-items:center;gap:8px;">🌟 <span style="color:#a0aec0;">Eye contact rate increased 60%</span></div>
+            <div style="display:flex;align-items:center;gap:8px;">🌟 <span style="color:#a0aec0;">Self-feeding improved to 85%</span></div>
+            <div style="display:flex;align-items:center;gap:8px;">🌟 <span style="color:#a0aec0;">Meltdown duration decreased 50%</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="submit-strip">
+      <button class="btn btn-outline" onclick="showToast('Draft saved','info')">💾 Save Draft</button>
+      <button class="btn btn-primary" onclick="submitForm()">✓ Submit Today's Report</button>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════
+         FINANCE SECTION
+    ══════════════════════════════════════════════════ -->
+    <div style="margin-top:28px;">
+      <div class="page-header" style="margin-bottom:16px;">
+        <div>
+          <div class="page-title">💳 Finance &amp; Fees</div>
+          <div class="page-desc">Mars 2025 — Services, équipements &amp; financement</div>
+        </div>
+        <div class="header-actions">
+          <button class="btn btn-outline" onclick="exportStatement()">⬇ Export PDF</button>
+          <button class="btn btn-primary" onclick="openPayModal()">◎ Régler le solde</button>
+        </div>
+      </div>
+
+      <!-- KPI row -->
+      <div class="fin-kpi-row">
+        <div class="fin-kpi" style="--fk-color:#6b9eb8;">
+          <div class="fin-kpi-lbl">Total du mois</div>
+          <div class="fin-kpi-val">€847.50</div>
+          <div class="fin-kpi-sub">↑ +€42 vs fév.</div>
+        </div>
+        <div class="fin-kpi" style="--fk-color:#4a8c68;">
+          <div class="fin-kpi-lbl">Remboursé Séc. Soc.</div>
+          <div class="fin-kpi-val">€312.40</div>
+          <div class="fin-kpi-sub">36.9% couvert</div>
+        </div>
+        <div class="fin-kpi" style="--fk-color:#d96e28;">
+          <div class="fin-kpi-lbl">Mensualités TONITRUUM</div>
+          <div class="fin-kpi-val">€24.90</div>
+          <div class="fin-kpi-sub">Mois 7 / 24</div>
+        </div>
+        <div class="fin-kpi" style="--fk-color:#b84a3a;">
+          <div class="fin-kpi-lbl">Reste à régler</div>
+          <div class="fin-kpi-val">€124.80</div>
+          <div class="fin-kpi-sub">Échéance 30 mars</div>
+        </div>
+      </div>
+
+      <!-- Budget bar -->
+      <div class="fin-budget-bar">
+        <div class="fin-budget-header">
+          <span class="fin-budget-label">Répartition des sources de financement — Mars 2025</span>
+          <span class="fin-budget-pct">Total €847.50</span>
+        </div>
+        <div class="fin-track">
+          <div class="fin-fill" id="ff-ss"   style="width:36.9%;background:#6b9eb8;"></div>
+          <div class="fin-fill" id="ff-mut"  style="width:18.3%;background:#4a8c68;"></div>
+          <div class="fin-fill" id="ff-inst" style="width:9.9%; background:#d96e28;"></div>
+          <div class="fin-fill" id="ff-self" style="width:14.7%;background:#8a8784;"></div>
+          <div class="fin-fill" id="ff-pet"  style="width:12.4%;background:#7a6ab0;"></div>
+          <div class="fin-fill" id="ff-dep"  style="width:7.8%; background:#b84a3a;"></div>
+        </div>
+        <div class="fin-budget-legend">
+          <div class="fin-leg-item"><div class="fin-leg-dot" style="background:#6b9eb8;"></div>Sécurité Sociale 36.9% (€312.40)</div>
+          <div class="fin-leg-item"><div class="fin-leg-dot" style="background:#4a8c68;"></div>Mutuelle 18.3% (€155.10)</div>
+          <div class="fin-leg-item"><div class="fin-leg-dot" style="background:#d96e28;"></div>Mensualités TONITRUUM 9.9% (€83.90)</div>
+          <div class="fin-leg-item"><div class="fin-leg-dot" style="background:#8a8784;"></div>Paiement perso 14.7% (€124.80)</div>
+          <div class="fin-leg-item"><div class="fin-leg-dot" style="background:#7a6ab0;"></div>Budget reptile 12.4% (€105.00)</div>
+          <div class="fin-leg-item"><div class="fin-leg-dot" style="background:#b84a3a;"></div>Amort. équipement 7.8% (€66.30)</div>
+        </div>
+      </div>
+
+      <!-- Service fees + Donut -->
+      <div class="fin-grid-3">
+        <!-- Service fees table -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">◎ Détail des prestations</span>
+            <span style="font-size:10px;color:var(--text-muted);">Mars 2025</span>
+          </div>
+          <div class="fin-table-wrap">
+          <table class="fin-table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Prestation</th>
+                <th>Montant</th>
+                <th>SS</th>
+                <th>Mut.</th>
+                <th>Net</th>
+                <th>Source</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style="color:var(--text-muted);">03/03</td>
+                <td>Séance orthophonie</td>
+                <td>€68.00</td>
+                <td style="color:#6aad84;">€42.00</td>
+                <td style="color:#6aad84;">€18.00</td>
+                <td>€8.00</td>
+                <td><span class="fin-tag ss">SS</span></td>
+              </tr>
+              <tr>
+                <td style="color:var(--text-muted);">06/03</td>
+                <td>Abonnement TONITRUUM</td>
+                <td>€24.90</td>
+                <td>—</td>
+                <td>—</td>
+                <td>€0.00</td>
+                <td><span class="fin-tag inst">Mensuel</span></td>
+              </tr>
+              <tr>
+                <td style="color:var(--text-muted);">08/03</td>
+                <td>Séance psychomotricité</td>
+                <td>€55.00</td>
+                <td style="color:#6aad84;">€34.00</td>
+                <td style="color:#6aad84;">€14.00</td>
+                <td>€7.00</td>
+                <td><span class="fin-tag ss">SS</span></td>
+              </tr>
+              <tr>
+                <td style="color:var(--text-muted);">10/03</td>
+                <td>Consultation pédiatre</td>
+                <td>€26.50</td>
+                <td style="color:#6aad84;">€23.00</td>
+                <td style="color:#6aad84;">€3.50</td>
+                <td>€0.00</td>
+                <td><span class="fin-tag ss">SS</span></td>
+              </tr>
+              <tr>
+                <td style="color:var(--text-muted);">12/03</td>
+                <td>Nourriture Maple (crickets)</td>
+                <td>€18.50</td>
+                <td>—</td>
+                <td>—</td>
+                <td>€18.50</td>
+                <td><span class="fin-tag pet">Reptile</span></td>
+              </tr>
+              <tr>
+                <td style="color:var(--text-muted);">14/03</td>
+                <td>Séance ABA thérapie</td>
+                <td>€95.00</td>
+                <td style="color:#6aad84;">€62.00</td>
+                <td style="color:#6aad84;">€24.00</td>
+                <td>€9.00</td>
+                <td><span class="fin-tag ss">SS</span></td>
+              </tr>
+              <tr>
+                <td style="color:var(--text-muted);">17/03</td>
+                <td>Équipement terrarium UVB</td>
+                <td>€38.00</td>
+                <td>—</td>
+                <td>—</td>
+                <td>€38.00</td>
+                <td><span class="fin-tag pet">Reptile</span></td>
+              </tr>
+              <tr>
+                <td style="color:var(--text-muted);">19/03</td>
+                <td>Bilan neuropsychologique</td>
+                <td>€180.00</td>
+                <td style="color:#6aad84;">€80.00</td>
+                <td style="color:#6aad84;">€70.00</td>
+                <td>€30.00</td>
+                <td><span class="fin-tag mut">Mut.</span></td>
+              </tr>
+              <tr>
+                <td style="color:var(--text-muted);">22/03</td>
+                <td>Séance ergothérapie</td>
+                <td>€55.00</td>
+                <td style="color:#6aad84;">€34.00</td>
+                <td style="color:#6aad84;">£14.00</td>
+                <td>€7.00</td>
+                <td><span class="fin-tag ss">SS</span></td>
+              </tr>
+              <tr>
+                <td style="color:var(--text-muted);">25/03</td>
+                <td>Vétérinaire reptile</td>
+                <td>€48.50</td>
+                <td>—</td>
+                <td>—</td>
+                <td>€48.50</td>
+                <td><span class="fin-tag pet">Reptile</span></td>
+              </tr>
+              <tr>
+                <td style="color:var(--text-muted);">28/03</td>
+                <td>Amortissement équipement</td>
+                <td>€66.30</td>
+                <td>—</td>
+                <td>—</td>
+                <td>—</td>
+                <td><span class="fin-tag dep">Amort.</span></td>
+              </tr>
+              <tr class="total-row">
+                <td colspan="2">Total mars 2025</td>
+                <td>€847.50</td>
+                <td style="color:#6aad84;">€275.00</td>
+                <td style="color:#6aad84;">€143.50</td>
+                <td style="color:var(--accent-orange);">€124.80</td>
+                <td></td>
+              </tr>
+            </tbody>
+          </table>
+          </div><!-- /fin-table-wrap -->
+        </div>
+
+        <!-- Donut — funding sources -->
+        <div class="card" style="display:flex;flex-direction:column;">
+          <div class="card-header"><span class="card-title">◉ Sources financement</span></div>
+          <div style="position:relative;flex:1;min-height:180px;display:flex;align-items:center;justify-content:center;">
+            <canvas id="fundingDonut"></canvas>
+          </div>
+          <div style="margin-top:12px;display:flex;flex-direction:column;gap:5px;">
+            <div class="fin-leg-item"><div class="fin-leg-dot" style="background:#6b9eb8;"></div>Sécu. Sociale €312.40</div>
+            <div class="fin-leg-item"><div class="fin-leg-dot" style="background:#4a8c68;"></div>Mutuelle €155.10</div>
+            <div class="fin-leg-item"><div class="fin-leg-dot" style="background:#d96e28;"></div>TONITRUUM mensualités €83.90</div>
+            <div class="fin-leg-item"><div class="fin-leg-dot" style="background:#7a6ab0;"></div>Budget reptile €105.00</div>
+            <div class="fin-leg-item"><div class="fin-leg-dot" style="background:#b84a3a;"></div>Amortissement €66.30</div>
+            <div class="fin-leg-item"><div class="fin-leg-dot" style="background:#8a8784;"></div>Reste à payer €124.80</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Reptile expenses + Depreciation table -->
+      <div class="fin-grid-2">
+        <!-- Reptile budget breakdown -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">🦎 Budget reptile</span>
+            <span style="font-size:10px;color:var(--text-muted);">Total €105.00</span>
+          </div>
+          <div style="position:relative;height:160px;margin-bottom:14px;">
+            <canvas id="reptileDonut"></canvas>
+          </div>
+          <table class="fin-table">
+            <thead><tr><th>Poste</th><th>Mars</th><th>Moy. 3M</th><th>Cat.</th></tr></thead>
+            <tbody>
+              <tr>
+                <td>Nourriture (insectes)</td>
+                <td>€18.50</td>
+                <td>€17.20</td>
+                <td><span class="fin-tag pet">Feed</span></td>
+              </tr>
+              <tr>
+                <td>Lampe UVB + ampoule</td>
+                <td>€38.00</td>
+                <td>€12.50</td>
+                <td><span class="fin-tag inst">Équip.</span></td>
+              </tr>
+              <tr>
+                <td>Consultation vétérinaire</td>
+                <td>€48.50</td>
+                <td>€16.10</td>
+                <td><span class="fin-tag mut">Santé</span></td>
+              </tr>
+              <tr>
+                <td>Substrat &amp; décor</td>
+                <td>€0.00</td>
+                <td>€8.40</td>
+                <td><span class="fin-tag self">Divers</span></td>
+              </tr>
+              <tr class="total-row">
+                <td>Total reptile</td>
+                <td>€105.00</td>
+                <td>€54.20</td>
+                <td></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Depreciation table -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">◈ Amortissement équipements</span>
+            <span style="font-size:10px;color:var(--text-muted);">Durée &amp; usure</span>
+          </div>
+          <table class="fin-table" style="margin-bottom:10px;">
+            <thead>
+              <tr>
+                <th>Équipement</th>
+                <th>Valeur</th>
+                <th>Durée</th>
+                <th>Mois</th>
+                <th>%</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <div>Capteur TONITRUUM v2</div>
+                  <div class="dep-bar"><div class="dep-fill" style="width:29%;"></div></div>
+                </td>
+                <td>€349</td>
+                <td>24 mois</td>
+                <td>€14.54</td>
+                <td><span style="color:#d4735e;">29%</span></td>
+              </tr>
+              <tr>
+                <td>
+                  <div>Terrarium ProRep 60×40</div>
+                  <div class="dep-bar"><div class="dep-fill" style="width:17%;background:linear-gradient(90deg,#4a8c68,#6aad84);"></div></div>
+                </td>
+                <td>€220</td>
+                <td>48 mois</td>
+                <td>€4.58</td>
+                <td><span style="color:#6aad84;">17%</span></td>
+              </tr>
+              <tr>
+                <td>
+                  <div>Lampe UVB Arcadia 6%</div>
+                  <div class="dep-bar"><div class="dep-fill" style="width:58%;background:linear-gradient(90deg,#7a6ab0,#a090cc);"></div></div>
+                </td>
+                <td>€85</td>
+                <td>12 mois</td>
+                <td>€7.08</td>
+                <td><span style="color:#a090cc;">58%</span></td>
+              </tr>
+              <tr>
+                <td>
+                  <div>Thermostat Habistat</div>
+                  <div class="dep-bar"><div class="dep-fill" style="width:33%;background:linear-gradient(90deg,#d96e28,#e8884a);"></div></div>
+                </td>
+                <td>€120</td>
+                <td>36 mois</td>
+                <td>€3.33</td>
+                <td><span style="color:#e8884a;">33%</span></td>
+              </tr>
+              <tr>
+                <td>
+                  <div>Hygromètre digital + sonde</div>
+                  <div class="dep-bar"><div class="dep-fill" style="width:21%;background:linear-gradient(90deg,#6b9eb8,#8ab8ce);"></div></div>
+                </td>
+                <td>€45</td>
+                <td>24 mois</td>
+                <td>€1.88</td>
+                <td><span style="color:#8ab8ce;">21%</span></td>
+              </tr>
+              <tr class="total-row">
+                <td>Total amortissement</td>
+                <td>€819</td>
+                <td>—</td>
+                <td>€31.41</td>
+                <td></td>
+              </tr>
+            </tbody>
+          </table>
+          <div style="font-size:10px;color:var(--text-muted);line-height:1.6;padding:8px;background:rgba(255,255,255,0.02);border-radius:6px;border:1px solid var(--border);">
+            ℹ L'abonnement mensuel TONITRUUM (€24.90) inclut la maintenance préventive, les mises à jour firmware et le support technique prioritaire. En cas de fin de contrat, le dispositif reste propriété de la famille.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════
+         ASSESSMENT & HIGHLIGHT SECTION
+    ══════════════════════════════════════════════════ -->
+    <div style="margin-top:28px;">
+      <div class="page-header" style="margin-bottom:16px;">
+        <div>
+          <div class="page-title">⭐ Évaluation &amp; Moments forts</div>
+          <div class="page-desc">Scores développementaux — suivi mensuel et comparatif</div>
+        </div>
+        <div class="header-actions">
+          <select class="form-control" id="compareRange" style="width:auto;font-size:11px;padding:5px 10px;" onchange="updateCompareCharts()">
+            <option value="3">3 derniers mois</option>
+            <option value="6" selected>6 derniers mois</option>
+            <option value="12">12 derniers mois</option>
+          </select>
+          <button class="btn btn-outline" onclick="showToast('Rapport envoyé à l\'équipe clinique','success')">✉ Partager</button>
+        </div>
+      </div>
+
+      <!-- Score radar + domain bars -->
+      <div class="fin-grid-2" style="margin-bottom:18px;">
+        <!-- Overall score + domains -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">◎ Score global TONITRUUM</span>
+            <span class="trend-badge trend-up">↑ +8.4 pts vs jan.</span>
+          </div>
+          <div class="score-ring-row" style="display:flex;align-items:center;gap:20px;margin-bottom:16px;">
+            <!-- Animated ring -->
+            <div class="asd-score-ring">
+              <svg viewBox="0 0 110 110" width="110" height="110">
+                <circle cx="55" cy="55" r="46" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="9"/>
+                <circle cx="55" cy="55" r="46" fill="none" stroke="#d96e28" stroke-width="9"
+                        stroke-dasharray="289" stroke-dashoffset="289"
+                        id="scoreRingCircle" stroke-linecap="round"/>
+              </svg>
+              <div class="asd-score-center">
+                <div class="asd-score-num" id="scoreRingNum" style="color:#d96e28;">0</div>
+                <div class="asd-score-max">/100</div>
+              </div>
+            </div>
+            <!-- Domain list -->
+            <div class="asd-domain-row">
+              <div class="asd-domain">
+                <span class="asd-domain-lbl">Contact visuel</span>
+                <div class="asd-domain-track"><div class="asd-domain-fill" data-pct="72" style="width:0%;background:#d96e28;"></div></div>
+                <span class="asd-domain-val">72</span>
+              </div>
+              <div class="asd-domain">
+                <span class="asd-domain-lbl">Communication verbale</span>
+                <div class="asd-domain-track"><div class="asd-domain-fill" data-pct="58" style="width:0%;background:#6b9eb8;"></div></div>
+                <span class="asd-domain-val">58</span>
+              </div>
+              <div class="asd-domain">
+                <span class="asd-domain-lbl">Régulation émotionnelle</span>
+                <div class="asd-domain-track"><div class="asd-domain-fill" data-pct="65" style="width:0%;background:#4a8c68;"></div></div>
+                <span class="asd-domain-val">65</span>
+              </div>
+              <div class="asd-domain">
+                <span class="asd-domain-lbl">Interactions sociales</span>
+                <div class="asd-domain-track"><div class="asd-domain-fill" data-pct="48" style="width:0%;background:#7a6ab0;"></div></div>
+                <span class="asd-domain-val">48</span>
+              </div>
+              <div class="asd-domain">
+                <span class="asd-domain-lbl">Autonomie quotidienne</span>
+                <div class="asd-domain-track"><div class="asd-domain-fill" data-pct="81" style="width:0%;background:#4a8c68;"></div></div>
+                <span class="asd-domain-val">81</span>
+              </div>
+              <div class="asd-domain">
+                <span class="asd-domain-lbl">Comportements répétitifs</span>
+                <div class="asd-domain-track"><div class="asd-domain-fill" data-pct="54" style="width:0%;background:#b84a3a;"></div></div>
+                <span class="asd-domain-val">54</span>
+              </div>
+              <div class="asd-domain">
+                <span class="asd-domain-lbl">Lien avec Maple 🦎</span>
+                <div class="asd-domain-track"><div class="asd-domain-fill" data-pct="94" style="width:0%;background:#d96e28;"></div></div>
+                <span class="asd-domain-val">94</span>
+              </div>
+            </div>
+          </div>
+          <div style="font-size:10px;color:var(--text-muted);line-height:1.6;padding:8px;background:rgba(255,255,255,0.02);border-radius:6px;border:1px solid var(--border);">
+            Score composite calculé à partir des observations parentales, des données capteurs TONITRUUM et des évaluations cliniques. Mise à jour hebdomadaire.
+          </div>
+        </div>
+
+        <!-- Radar chart -->
+        <div class="card">
+          <div class="card-header"><span class="card-title">◉ Profil développemental</span><span style="font-size:10px;color:var(--text-muted);">Mars 2025</span></div>
+          <div style="position:relative;height:260px;">
+            <canvas id="asdRadar"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Evolution line chart -->
+      <div class="card" style="margin-bottom:18px;">
+        <div class="card-header">
+          <span class="card-title">◈ Évolution sur 6 mois</span>
+          <div style="display:flex;gap:12px;">
+            <span style="font-size:10px;color:#d96e28;">■ Score global</span>
+            <span style="font-size:10px;color:#6b9eb8;">■ Lien avec Maple</span>
+            <span style="font-size:10px;color:#4a8c68;">■ Autonomie</span>
+          </div>
+        </div>
+        <div style="height:180px;"><canvas id="asdTrendLine"></canvas></div>
+      </div>
+
+      <!-- Comparison row -->
+      <div style="margin-bottom:18px;">
+        <div class="section-title">Comparatif mensuel</div>
+        <div class="compare-grid">
+          <div class="compare-card" style="border-top:2px solid #5a5855;">
+            <div class="compare-period">Janvier 2025</div>
+            <div class="compare-val" style="color:#8a8784;">60.2</div>
+            <div class="compare-lbl">Score composite</div>
+            <div class="compare-delta" style="color:#8a8784;">Référence</div>
+            <div class="compare-bar-wrap"><div class="compare-bar-fill" data-pct="60.2" style="width:0%;background:#5a5855;"></div></div>
+          </div>
+          <div class="compare-card" style="border-top:2px solid #6b9eb8;">
+            <div class="compare-period">Février 2025</div>
+            <div class="compare-val" style="color:#8ab8ce;">64.8</div>
+            <div class="compare-lbl">Score composite</div>
+            <div class="compare-delta trend-up">↑ +4.6 pts</div>
+            <div class="compare-bar-wrap"><div class="compare-bar-fill" data-pct="64.8" style="width:0%;background:#6b9eb8;"></div></div>
+          </div>
+          <div class="compare-card" style="border-top:2px solid #d96e28;">
+            <div class="compare-period">Mars 2025</div>
+            <div class="compare-val" style="color:#e8884a;">68.6</div>
+            <div class="compare-lbl">Score composite</div>
+            <div class="compare-delta trend-up">↑ +3.8 pts</div>
+            <div class="compare-bar-wrap"><div class="compare-bar-fill" data-pct="68.6" style="width:0%;background:#d96e28;"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Highlight moments -->
+      <div class="section-title">✨ Moments forts du mois</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px;">
+        <div class="highlight-card" style="border-left-color:#d96e28;">
+          <div class="hl-header">
+            <span class="hl-title">🦎 Premier câlin spontané avec Maple</span>
+            <span class="hl-date">2025-03-07 16:42</span>
+          </div>
+          <p class="hl-desc">Léo a approché Maple sans y être invité et l'a tenu contre sa joue pendant 4 minutes. Aucun signe de stress détecté par le capteur (FC 72 bpm, temp. 36.1°C).</p>
+          <div style="display:flex;align-items:center;gap:6px;">
+            <span class="hl-score-chip" style="background:rgba(217,110,40,0.15);color:#e8884a;">+12 pts lien animal</span>
+            <span class="hl-impact">Impact émotionnel : très fort</span>
+          </div>
+        </div>
+        <div class="highlight-card" style="border-left-color:#4a8c68;">
+          <div class="hl-header">
+            <span class="hl-title">💬 Première phrase spontanée : "Maple a faim"</span>
+            <span class="hl-date">2025-03-12 09:18</span>
+          </div>
+          <p class="hl-desc">Léo a verbalisé spontanément le besoin de son gecko sans sollicitation parentale. Construction syntaxique sujet-verbe complète, première depuis 3 mois.</p>
+          <div style="display:flex;align-items:center;gap:6px;">
+            <span class="hl-score-chip" style="background:rgba(74,140,104,0.15);color:#6aad84;">+9 pts comm. verbale</span>
+            <span class="hl-impact">Validé par orthophoniste</span>
+          </div>
+        </div>
+        <div class="highlight-card" style="border-left-color:#6b9eb8;">
+          <div class="hl-header">
+            <span class="hl-title">👁 Contact visuel soutenu 8 secondes</span>
+            <span class="hl-date">2025-03-18 11:05</span>
+          </div>
+          <p class="hl-desc">Lors d'une séance ABA, Léo a maintenu un contact visuel de 8 secondes avec le thérapeute — record personnel. Précédent meilleur : 3 secondes (déc. 2024).</p>
+          <div style="display:flex;align-items:center;gap:6px;">
+            <span class="hl-score-chip" style="background:rgba(107,158,184,0.15);color:#8ab8ce;">+7 pts contact visuel</span>
+            <span class="hl-impact">Noté rapport clinique</span>
+          </div>
+        </div>
+        <div class="highlight-card" style="border-left-color:#7a6ab0;">
+          <div class="hl-header">
+            <span class="hl-title">🎯 Repas complet sans aide parentale</span>
+            <span class="hl-date">2025-03-22 12:30</span>
+          </div>
+          <p class="hl-desc">Léo a préparé et consommé son déjeuner (sandwich + compote) en autonomie totale. Durée : 18 min. Capteur : état calme stable tout au long du repas.</p>
+          <div style="display:flex;align-items:center;gap:6px;">
+            <span class="hl-score-chip" style="background:rgba(122,106,176,0.15);color:#a090cc;">+6 pts autonomie</span>
+            <span class="hl-impact">3× semaine en mars</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Historical highlights bar chart -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">◐ Fréquence des moments forts — 6 mois</span>
+          <span style="font-size:10px;color:var(--text-muted);">Nombre par catégorie</span>
+        </div>
+        <div style="height:180px;"><canvas id="highlightBar"></canvas></div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════
+         BADGES & ACHIEVEMENTS
+    ══════════════════════════════════════════════════ -->
+    <div style="margin-top:28px;margin-bottom:32px;">
+      <div class="page-header" style="margin-bottom:16px;">
+        <div>
+          <div class="page-title">🏅 Badges &amp; Récompenses</div>
+          <div class="page-desc">Jalons atteints — progression de Léo avec Maple</div>
+        </div>
+        <div style="font-size:11px;color:var(--text-muted);align-self:center;">
+          <span id="badgeCount" style="color:var(--accent-orange);font-weight:700;font-size:18px;">0</span> / 20 débloqués
+        </div>
+      </div>
+
+      <!-- Overall progress bar -->
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:14px 18px;margin-bottom:20px;">
+        <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
+          <span style="font-size:11px;font-weight:600;color:var(--text-primary);">Progression globale</span>
+          <span style="font-size:11px;color:var(--accent-orange);" id="badgePct">0%</span>
+        </div>
+        <div style="height:8px;background:rgba(255,255,255,0.06);border-radius:4px;overflow:hidden;">
+          <div id="badgeProgressFill" style="height:100%;width:0%;background:linear-gradient(90deg,#d96e28,#e8884a);border-radius:4px;transition:width 1.4s cubic-bezier(0.4,0,0.2,1);"></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;margin-top:8px;font-size:9px;color:var(--text-muted);">
+          <span>Débutant</span><span>Intermédiaire</span><span>Avancé</span><span>Expert</span><span>Maître</span>
+        </div>
+      </div>
+
+      <!-- Badge categories tabs -->
+      <div class="tab-list" style="margin-bottom:18px;">
+        <button class="tab-btn active" onclick="filterBadges('all',this)">Tous</button>
+        <button class="tab-btn" onclick="filterBadges('animal',this)">🦎 Lien animal</button>
+        <button class="tab-btn" onclick="filterBadges('social',this)">💬 Social</button>
+        <button class="tab-btn" onclick="filterBadges('auto',this)">🎯 Autonomie</button>
+        <button class="tab-btn" onclick="filterBadges('therapy',this)">🧠 Thérapie</button>
+        <button class="tab-btn" onclick="filterBadges('locked',this)">🔒 À débloquer</button>
+      </div>
+
+      <!-- Badge grid -->
+      <div id="badgeGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- Payment Modal -->
+<div class="pay-overlay" id="payOverlay" onclick="closePayModal(event)">
+  <div class="pay-modal">
+    <button class="pay-close-btn" onclick="closePayModal()">✕</button>
+    <div class="pay-modal-title">Régler le solde</div>
+    <div class="pay-modal-sub">Choisissez votre mode de paiement sécurisé</div>
+    <div class="pay-amount-display">
+      <div class="amount">€124.80</div>
+      <div class="amount-lbl">Solde dû — mars 2025</div>
+    </div>
+    <div class="pay-method-grid">
+      <button class="pay-method selected" onclick="selectMethod(this,'virement')">
+        <span class="pay-method-icon">🏦</span>
+        <div><div class="pay-method-name">Virement SEPA</div><div class="pay-method-desc">Délai 1–2 jours</div></div>
+      </button>
+      <button class="pay-method" onclick="selectMethod(this,'cb')">
+        <span class="pay-method-icon">💳</span>
+        <div><div class="pay-method-name">Carte bancaire</div><div class="pay-method-desc">Immédiat</div></div>
+      </button>
+      <button class="pay-method" onclick="selectMethod(this,'sepa')">
+        <span class="pay-method-icon">🔄</span>
+        <div><div class="pay-method-name">Prélèvement auto</div><div class="pay-method-desc">Prochain mois</div></div>
+      </button>
+      <button class="pay-method" onclick="selectMethod(this,'echelon')">
+        <span class="pay-method-icon">📅</span>
+        <div><div class="pay-method-name">Échelonnement</div><div class="pay-method-desc">3× €41.60</div></div>
+      </button>
+    </div>
+    <div class="pay-breakdown">
+      <div class="pay-breakdown-row"><span class="lbl">Services thérapeutiques</span><span class="val">€31.00</span></div>
+      <div class="pay-breakdown-row"><span class="lbl">Budget reptile (solde)</span><span class="val">€48.50</span></div>
+      <div class="pay-breakdown-row"><span class="lbl">Ticket modérateur restant</span><span class="val">€45.30</span></div>
+      <div class="pay-breakdown-row total"><span class="lbl">Total à régler</span><span class="val">€124.80</span></div>
+    </div>
+    <button class="pay-confirm-btn" onclick="confirmPayment()">✓ Confirmer le paiement</button>
+  </div>
+</div>
+
+<script src="shared.js"></script>
+<script>
+// Weekly chart
+new Chart(document.getElementById('weekChart').getContext('2d'),{
+  type:'bar',
+  data:{
+    labels:['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
+    datasets:[
+      {label:'Mood Index',   data:[62,58,55,70,68,75,78], backgroundColor:'rgba(66,153,225,.55)', borderColor:'#4299e1', borderWidth:1},
+      {label:'Feeding Rate%',data:[85,72,68,90,88,82,82], backgroundColor:'rgba(72,187,120,.55)', borderColor:'#48bb78', borderWidth:1}
+    ]
+  },
+  options:{responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{labels:{color:'#a0aec0',font:{size:10}}}},
+    scales:{x:{ticks:{color:'#6b7280',font:{size:10}},grid:{color:'#1f2937'}},
+            y:{min:0,max:100,ticks:{color:'#6b7280',font:{size:10}},grid:{color:'#1f2937'}}}}
+});
+
+// Star rating
+document.querySelectorAll('.star-row').forEach(row=>{
+  row.querySelectorAll('.star').forEach((s,i)=>{
+    s.addEventListener('click',()=>{
+      row.querySelectorAll('.star').forEach((x,j)=>x.classList.toggle('on',j<=i));
+    });
+  });
+});
+
+function submitForm(){ showToast('Report submitted — care team will review within 24h','success'); }
+
+/* ── Finance section ── */
+function openPayModal(){
+  document.getElementById('payOverlay').classList.add('open');
+}
+function closePayModal(e){
+  if(!e || e.target===document.getElementById('payOverlay')){
+    document.getElementById('payOverlay').classList.remove('open');
+  }
+}
+function selectMethod(btn, method){
+  document.querySelectorAll('.pay-method').forEach(b=>b.classList.remove('selected'));
+  btn.classList.add('selected');
+}
+function confirmPayment(){
+  document.getElementById('payOverlay').classList.remove('open');
+  showToast('Paiement de €124.80 confirmé — reçu envoyé par email','success');
+}
+function exportStatement(){ showToast('Relevé PDF en cours de génération…','info'); }
+
+// Funding sources donut
+(function(){
+  const ctx = document.getElementById('fundingDonut');
+  if(!ctx) return;
+  new Chart(ctx,{
+    type:'doughnut',
+    data:{
+      labels:['Séc. Sociale','Mutuelle','TONITRUUM mensual.','Budget reptile','Amortissement','Reste à payer'],
+      datasets:[{
+        data:[312.40,155.10,83.90,105.00,66.30,124.80],
+        backgroundColor:['#6b9eb8','#4a8c68','#d96e28','#7a6ab0','#b84a3a','#5a5855'],
+        borderColor:'#1a1918', borderWidth:2, hoverOffset:6
+      }]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      cutout:'68%',
+      plugins:{
+        legend:{display:false},
+        tooltip:{
+          callbacks:{
+            label:function(c){ return ' €'+c.parsed.toFixed(2)+' ('+Math.round(c.parsed/847.50*100)+'%)'; }
+          }
+        }
+      }
+    }
+  });
+})();
+
+// Reptile expense donut
+(function(){
+  const ctx = document.getElementById('reptileDonut');
+  if(!ctx) return;
+  new Chart(ctx,{
+    type:'doughnut',
+    data:{
+      labels:['Nourriture','Équipement','Vétérinaire','Substrat'],
+      datasets:[{
+        data:[18.50,38.00,48.50,0.01],
+        backgroundColor:['#4a8c68','#d96e28','#b84a3a','#5a5855'],
+        borderColor:'#1a1918', borderWidth:2, hoverOffset:6
+      }]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      cutout:'62%',
+      plugins:{
+        legend:{labels:{color:'#8a8784',font:{size:10}}},
+        tooltip:{
+          callbacks:{
+            label:function(c){ return ' €'+c.parsed.toFixed(2); }
+          }
+        }
+      }
+    }
+  });
+})();
+
+/* ── Assessment charts & animations ── */
+
+// Animated score ring
+(function(){
+  const circle = document.getElementById('scoreRingCircle');
+  const numEl  = document.getElementById('scoreRingNum');
+  if(!circle || !numEl) return;
+  const target = 68.6;
+  const circ   = 2 * Math.PI * 46; // 289
+  let current  = 0;
+  const step   = target / 60;
+  const timer  = setInterval(()=>{
+    current = Math.min(current + step, target);
+    const offset = circ - (circ * current / 100);
+    circle.style.strokeDashoffset = offset;
+    numEl.textContent = current.toFixed(current >= target ? 1 : 0);
+    if(current >= target) clearInterval(timer);
+  }, 16);
+})();
+
+// Animate domain fill bars
+document.querySelectorAll('.asd-domain-fill').forEach(el=>{
+  const pct = el.dataset.pct;
+  setTimeout(()=>{ el.style.width = pct + '%'; }, 300);
+});
+
+// Animate compare bars
+document.querySelectorAll('.compare-bar-fill').forEach(el=>{
+  const pct = el.dataset.pct;
+  setTimeout(()=>{ el.style.width = pct + '%'; }, 400);
+});
+
+// Radar chart
+(function(){
+  const ctx = document.getElementById('asdRadar');
+  if(!ctx) return;
+  new Chart(ctx,{
+    type:'radar',
+    data:{
+      labels:['Contact visuel','Comm. verbale','Régul. émot.','Interactions','Autonomie','Maple 🦎'],
+      datasets:[
+        {
+          label:'Mars 2025',
+          data:[72,58,65,48,81,94],
+          backgroundColor:'rgba(217,110,40,0.12)',
+          borderColor:'#d96e28', pointBackgroundColor:'#d96e28',
+          borderWidth:2, pointRadius:4
+        },
+        {
+          label:'Janvier 2025',
+          data:[58,44,52,38,70,76],
+          backgroundColor:'rgba(107,158,184,0.08)',
+          borderColor:'rgba(107,158,184,0.5)', pointBackgroundColor:'#6b9eb8',
+          borderWidth:1.5, pointRadius:3, borderDash:[4,3]
+        }
+      ]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      scales:{
+        r:{
+          min:0, max:100, ticks:{display:false},
+          grid:{color:'rgba(255,255,255,0.07)'},
+          angleLines:{color:'rgba(255,255,255,0.07)'},
+          pointLabels:{color:'#8a8784',font:{size:10}}
+        }
+      },
+      plugins:{
+        legend:{labels:{color:'#8a8784',font:{size:10},boxWidth:10}}
+      }
+    }
+  });
+})();
+
+// Trend line chart (6 months)
+(function(){
+  const ctx = document.getElementById('asdTrendLine');
+  if(!ctx) return;
+  const months = ['Oct','Nov','Déc','Jan','Fév','Mar'];
+  new Chart(ctx,{
+    type:'line',
+    data:{
+      labels: months,
+      datasets:[
+        {
+          label:'Score global',
+          data:[52.1,55.4,58.3,60.2,64.8,68.6],
+          borderColor:'#d96e28', backgroundColor:'rgba(217,110,40,0.08)',
+          borderWidth:2, pointRadius:4, pointBackgroundColor:'#d96e28',
+          tension:0.4, fill:true
+        },
+        {
+          label:'Lien avec Maple',
+          data:[64,68,72,76,88,94],
+          borderColor:'#6b9eb8', backgroundColor:'rgba(107,158,184,0.06)',
+          borderWidth:2, pointRadius:4, pointBackgroundColor:'#6b9eb8',
+          tension:0.4, fill:false
+        },
+        {
+          label:'Autonomie',
+          data:[60,63,66,70,75,81],
+          borderColor:'#4a8c68', backgroundColor:'transparent',
+          borderWidth:2, pointRadius:3, pointBackgroundColor:'#4a8c68',
+          tension:0.4, fill:false
+        }
+      ]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{legend:{labels:{color:'#8a8784',font:{size:10},boxWidth:10}}},
+      scales:{
+        x:{ticks:{color:'#6b7280',font:{size:10}},grid:{color:'rgba(255,255,255,0.04)'}},
+        y:{min:40,max:100,ticks:{color:'#6b7280',font:{size:10}},grid:{color:'rgba(255,255,255,0.04)'}}
+      }
+    }
+  });
+})();
+
+// Highlight frequency bar
+(function(){
+  const ctx = document.getElementById('highlightBar');
+  if(!ctx) return;
+  new Chart(ctx,{
+    type:'bar',
+    data:{
+      labels:['Oct','Nov','Déc','Jan','Fév','Mar'],
+      datasets:[
+        {label:'Lien animal',    data:[1,2,1,3,3,4], backgroundColor:'rgba(217,110,40,0.65)', borderRadius:4},
+        {label:'Communication',  data:[0,1,1,2,2,3], backgroundColor:'rgba(74,140,104,0.65)',  borderRadius:4},
+        {label:'Contact visuel', data:[1,0,2,1,2,3], backgroundColor:'rgba(107,158,184,0.65)', borderRadius:4},
+        {label:'Autonomie',      data:[1,1,1,2,2,4], backgroundColor:'rgba(122,106,176,0.65)', borderRadius:4}
+      ]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{legend:{labels:{color:'#8a8784',font:{size:10},boxWidth:10}}},
+      scales:{
+        x:{stacked:true, ticks:{color:'#6b7280',font:{size:10}},grid:{display:false}},
+        y:{stacked:true, ticks:{color:'#6b7280',font:{size:10}},grid:{color:'rgba(255,255,255,0.04)'}}
+      }
+    }
+  });
+})();
+
+function updateCompareCharts(){
+  const v = document.getElementById('compareRange').value;
+  showToast('Affichage sur '+v+' mois — données mises à jour','info');
+}
+
+/* ── Badge System ── */
+const BADGES = [
+  // Lien animal
+  { id:'first_touch',  cat:'animal',  icon:'🤝', name:'Premier Contact',      desc:'Toucher Maple pour la première fois sans aide', xp:'+50 XP',  color:'#d96e28', tier:'Bronze', unlocked:true,  date:'2024-09-14' },
+  { id:'cuddle',       cat:'animal',  icon:'🦎', name:'Câlin Spontané',        desc:'Initier un câlin avec Maple sans invitation',   xp:'+120 XP', color:'#d96e28', tier:'Argent', unlocked:true,  date:'2025-03-07' },
+  { id:'feed_solo',    cat:'animal',  icon:'🦗', name:'Soigneur en Chef',      desc:'Nourrir Maple seul 7 jours consécutifs',        xp:'+200 XP', color:'#4a8c68', tier:'Argent', unlocked:true,  date:'2025-01-22' },
+  { id:'name_gecko',   cat:'animal',  icon:'💛', name:'Nommeur de Gecko',      desc:'Choisir le nom "Maple" tout seul',              xp:'+80 XP',  color:'#d96e28', tier:'Bronze', unlocked:true,  date:'2024-09-05' },
+  { id:'vet_visit',    cat:'animal',  icon:'🏥', name:'Protecteur de Maple',   desc:'Accompagner Maple chez le vétérinaire',         xp:'+150 XP', color:'#6b9eb8', tier:'Argent', unlocked:true,  date:'2025-02-18' },
+  { id:'terrarium',    cat:'animal',  icon:'🌿', name:'Architecte Habitat',    desc:'Décorer le terrarium de façon autonome',        xp:'+300 XP', color:'#4a8c68', tier:'Or',     unlocked:false, date:null },
+
+  // Social
+  { id:'first_word',   cat:'social',  icon:'💬', name:'Première Phrase',       desc:'"Maple a faim" — première phrase spontanée',   xp:'+180 XP', color:'#4a8c68', tier:'Or',     unlocked:true,  date:'2025-03-12' },
+  { id:'eye_3s',       cat:'social',  icon:'👁',  name:'Regard Connecté',       desc:'Contact visuel maintenu 3+ secondes',          xp:'+100 XP', color:'#6b9eb8', tier:'Bronze', unlocked:true,  date:'2024-11-30' },
+  { id:'eye_8s',       cat:'social',  icon:'✨',  name:'Regard Profond',        desc:'Contact visuel soutenu 8 secondes — record',   xp:'+250 XP', color:'#6b9eb8', tier:'Or',     unlocked:true,  date:'2025-03-18' },
+  { id:'wave',         cat:'social',  icon:'👋',  name:'Au Revoir Maple',       desc:'Dire au revoir à Maple avec un geste',         xp:'+60 XP',  color:'#4a8c68', tier:'Bronze', unlocked:true,  date:'2025-01-08' },
+  { id:'share',        cat:'social',  icon:'🤲',  name:'Partage',               desc:'Partager sa nourriture avec un pair',          xp:'+220 XP', color:'#7a6ab0', tier:'Argent', unlocked:false, date:null },
+  { id:'group',        cat:'social',  icon:'👥',  name:'En Groupe',             desc:'Participer à une activité collective 20 min',  xp:'+400 XP', color:'#7a6ab0', tier:'Platine',unlocked:false, date:null },
+
+  // Autonomie
+  { id:'meal_solo',    cat:'auto',    icon:'🥪', name:'Chef Cuisinier',        desc:'Préparer son repas seul 3× dans la semaine',   xp:'+160 XP', color:'#7a6ab0', tier:'Argent', unlocked:true,  date:'2025-03-22' },
+  { id:'dress',        cat:'auto',    icon:'👕', name:'Je M\'habille Seul',    desc:'S\'habiller complètement sans aide',            xp:'+90 XP',  color:'#4a8c68', tier:'Bronze', unlocked:true,  date:'2025-02-03' },
+  { id:'routine',      cat:'auto',    icon:'⏰', name:'Maître du Temps',       desc:'Suivre la routine du matin sans rappel',        xp:'+280 XP', color:'#d96e28', tier:'Or',     unlocked:false, date:null },
+  { id:'transport',    cat:'auto',    icon:'🚌', name:'Voyageur Courageux',    desc:'Prendre le bus seul avec Maple en transport',  xp:'+500 XP', color:'#b84a3a', tier:'Platine',unlocked:false, date:null },
+
+  // Thérapie
+  { id:'aba_5',        cat:'therapy', icon:'🧠', name:'5 Séances ABA',         desc:'Compléter 5 séances ABA sans incident',        xp:'+100 XP', color:'#6b9eb8', tier:'Bronze', unlocked:true,  date:'2024-12-10' },
+  { id:'calm_10',      cat:'therapy', icon:'🌊', name:'Vague de Calme',        desc:'10 jours consécutifs sans crise majeure',      xp:'+350 XP', color:'#4a8c68', tier:'Or',     unlocked:true,  date:'2025-02-28' },
+  { id:'sensor_30',    cat:'therapy', icon:'📡', name:'30 Jours Connecté',     desc:'30 jours de données TONITRUUM continues',      xp:'+200 XP', color:'#d96e28', tier:'Argent', unlocked:true,  date:'2025-01-15' },
+  { id:'milestone',    cat:'therapy', icon:'🏆', name:'Étoile TONITRUUM',      desc:'Score global > 80/100 — objectif ultime',      xp:'+1000 XP',color:'#d4af37', tier:'Légend.', unlocked:false, date:null },
+];
+
+let currentFilter = 'all';
+
+function renderBadges(filter){
+  const grid = document.getElementById('badgeGrid');
+  if(!grid) return;
+  const list = filter === 'locked'
+    ? BADGES.filter(b => !b.unlocked)
+    : filter === 'all'
+    ? BADGES
+    : BADGES.filter(b => b.cat === filter);
+
+  grid.innerHTML = list.map(b => `
+    <div class="badge-card ${b.unlocked ? 'unlocked' : 'locked'}"
+         style="--bc:${b.color}40;"
+         onclick="${b.unlocked ? `showToast('${b.name} — ${b.xp}','success')` : `showToast('🔒 Pas encore débloqué','info')`}">
+      <span class="badge-tier">${b.tier}</span>
+      <span class="badge-xp" style="background:${b.color}22;color:${b.color};">${b.unlocked ? b.xp : '???'}</span>
+      <div class="badge-icon-wrap" style="--bc:${b.color};border-color:${b.color}55;background:${b.color}12;">
+        ${b.unlocked ? b.icon : '🔒'}
+      </div>
+      <div class="badge-name">${b.unlocked ? b.name : '???'}</div>
+      <div class="badge-desc">${b.unlocked ? b.desc : 'Continuez à progresser pour débloquer ce badge'}</div>
+      ${b.unlocked && b.date ? `<div class="badge-date">Débloqué le ${b.date}</div>` : ''}
+    </div>
+  `).join('');
+}
+
+function filterBadges(cat, btn){
+  currentFilter = cat;
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderBadges(cat);
+}
+
+// Init
+(function(){
+  const unlocked = BADGES.filter(b=>b.unlocked).length;
+  const total    = BADGES.length;
+  const pct      = Math.round(unlocked/total*100);
+
+  renderBadges('all');
+
+  // Animate counter + bar
+  setTimeout(()=>{
+    document.getElementById('badgeProgressFill').style.width = pct+'%';
+    document.getElementById('badgePct').textContent = pct+'%';
+    let c = 0;
+    const el = document.getElementById('badgeCount');
+    const t = setInterval(()=>{
+      c = Math.min(c+1, unlocked);
+      el.textContent = c;
+      if(c >= unlocked) clearInterval(t);
+    }, 60);
+  }, 500);
+})();
+</script>
+</body>
+</html>

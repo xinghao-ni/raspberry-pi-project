@@ -1,0 +1,2704 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Business Model — TONITRUUM</title>
+<link rel="stylesheet" href="shared.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+/* ── Market Page Specific ── */
+.market-hero {
+  background: linear-gradient(135deg, rgba(217,110,40,0.08) 0%, rgba(107,158,184,0.06) 100%);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 32px;
+  margin-bottom: 24px;
+  position: relative;
+  overflow: hidden;
+}
+.market-hero::before {
+  content: '';
+  position: absolute; top: 0; right: 0;
+  width: 300px; height: 300px;
+  background: radial-gradient(circle, rgba(217,110,40,0.06) 0%, transparent 70%);
+  pointer-events: none;
+}
+.hero-tag {
+  font-size: 10px; font-weight: 600; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--accent-orange);
+  margin-bottom: 8px;
+}
+.hero-title {
+  font-size: 28px; font-weight: 700; letter-spacing: -0.02em;
+  color: var(--text-primary); line-height: 1.2; margin-bottom: 10px;
+}
+.hero-title span { color: var(--accent-orange); }
+.hero-desc {
+  font-size: 13px; color: var(--text-secondary); max-width: 600px; line-height: 1.7;
+}
+
+/* ── Section Headers ── */
+.section-header {
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 20px; padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+.section-num {
+  width: 28px; height: 28px; border-radius: 6px;
+  background: rgba(217,110,40,0.12); border: 1px solid rgba(217,110,40,0.25);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700; color: var(--accent-orange);
+  flex-shrink: 0;
+}
+.section-header-text h2 { font-size: 15px; font-weight: 600; color: var(--text-primary); }
+.section-header-text p { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+
+/* ── Animated Counter Cards ── */
+.kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 24px; }
+.kpi-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 10px; padding: 18px 16px;
+  position: relative; overflow: hidden;
+  transition: border-color 0.3s, transform 0.3s;
+}
+.kpi-card:hover { border-color: var(--border-light); transform: translateY(-2px); }
+.kpi-card::after {
+  content: ''; position: absolute; bottom: 0; left: 0; right: 0;
+  height: 2px; background: var(--kpi-color, var(--accent-orange));
+  transform: scaleX(0); transform-origin: left;
+  transition: transform 0.6s cubic-bezier(0.25,0.46,0.45,0.94);
+}
+.kpi-card.animated::after { transform: scaleX(1); }
+.kpi-icon { font-size: 18px; margin-bottom: 10px; opacity: 0.8; }
+.kpi-value {
+  font-size: 28px; font-weight: 700; letter-spacing: -0.03em;
+  color: var(--text-primary); margin-bottom: 4px;
+}
+.kpi-value .unit { font-size: 14px; font-weight: 500; color: var(--text-muted); }
+.kpi-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.07em; }
+.kpi-source { font-size: 9px; color: var(--text-muted); margin-top: 8px; opacity: 0.6; }
+
+/* ── Chart Cards ── */
+.chart-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 10px; padding: 20px;
+}
+.chart-card-header {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  margin-bottom: 16px;
+}
+.chart-card-title { font-size: 12px; font-weight: 600; color: var(--text-primary); }
+.chart-card-desc { font-size: 10px; color: var(--text-muted); margin-top: 3px; }
+.chart-source {
+  font-size: 9px; color: var(--text-muted); text-align: right;
+  margin-top: 10px; opacity: 0.6;
+}
+
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 24px; }
+.three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin-bottom: 24px; }
+
+/* ── Market Sizing Table ── */
+.market-table-wrapper { margin-bottom: 24px; }
+
+/* ── Target Market Cards ── */
+.target-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 24px; }
+.target-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 10px; padding: 16px;
+  transition: border-color 0.25s, transform 0.25s;
+  position: relative; overflow: hidden;
+}
+.target-card:hover { border-color: var(--border-light); transform: translateY(-2px); }
+.target-phase {
+  font-size: 9px; font-weight: 600; letter-spacing: 0.1em;
+  text-transform: uppercase; margin-bottom: 8px;
+  color: var(--phase-color, var(--text-muted));
+}
+.target-market { font-size: 16px; font-weight: 700; color: var(--text-primary); margin-bottom: 6px; }
+.target-flag { font-size: 22px; margin-bottom: 8px; }
+.target-desc { font-size: 11px; color: var(--text-secondary); line-height: 1.5; }
+.target-tag {
+  display: inline-block; margin-top: 10px;
+  padding: 3px 8px; border-radius: 4px; font-size: 9px;
+  font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase;
+}
+
+/* ── User Segment Cards ── */
+.segment-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 24px; }
+.segment-card {
+  background: var(--bg-card-alt); border: 1px solid var(--border);
+  border-radius: 8px; padding: 14px 16px;
+  display: flex; gap: 14px; align-items: flex-start;
+  transition: border-color 0.2s;
+}
+.segment-card:hover { border-color: var(--border-light); }
+.segment-icon { font-size: 28px; line-height: 1; flex-shrink: 0; }
+.segment-body {}
+.segment-name { font-size: 13px; font-weight: 600; color: var(--text-primary); margin-bottom: 3px; }
+.segment-sub { font-size: 10px; color: var(--accent-orange); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px; }
+.segment-desc { font-size: 11px; color: var(--text-secondary); line-height: 1.5; }
+.segment-needs { margin-top: 8px; display: flex; flex-wrap: wrap; gap: 4px; }
+.need-tag {
+  padding: 2px 7px; border-radius: 3px; font-size: 9px;
+  background: rgba(255,255,255,0.05); border: 1px solid var(--border);
+  color: var(--text-muted);
+}
+
+/* ── Competitor Cards ── */
+.competitor-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 16px; }
+.competitor-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 8px; padding: 14px;
+  transition: border-color 0.2s;
+}
+.competitor-card:hover { border-color: var(--border-light); }
+.comp-name { font-size: 12px; font-weight: 600; color: var(--text-primary); margin-bottom: 2px; }
+.comp-cat { font-size: 9px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 10px; }
+.comp-price { font-size: 20px; font-weight: 700; color: var(--accent-orange); margin-bottom: 6px; }
+.comp-features { list-style: none; }
+.comp-features li { font-size: 10px; color: var(--text-secondary); padding: 3px 0; border-bottom: 1px solid rgba(255,255,255,0.03); }
+.comp-features li:last-child { border-bottom: none; }
+.comp-features li::before { content: '·  '; color: var(--text-muted); }
+
+/* ── Business Model Canvas ── */
+.bmc-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  grid-template-rows: auto auto;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+.bmc-cell {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 8px; padding: 12px;
+  min-height: 120px;
+}
+.bmc-cell.tall { grid-row: span 2; }
+.bmc-cell.wide2 { grid-column: span 2; }
+.bmc-cell-label {
+  font-size: 9px; font-weight: 600; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--accent-orange);
+  margin-bottom: 8px;
+}
+.bmc-item {
+  font-size: 10px; color: var(--text-secondary);
+  padding: 3px 0; display: flex; gap: 5px; line-height: 1.4;
+}
+.bmc-item::before { content: '▸'; color: var(--text-muted); flex-shrink: 0; }
+
+/* ── Revenue Streams ── */
+.revenue-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 24px; }
+.revenue-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 8px; padding: 14px; text-align: center;
+  transition: border-color 0.2s, transform 0.2s;
+}
+.revenue-card:hover { border-color: rgba(217,110,40,0.4); transform: translateY(-2px); }
+.rev-icon { font-size: 22px; margin-bottom: 8px; }
+.rev-name { font-size: 11px; font-weight: 600; color: var(--text-primary); margin-bottom: 4px; }
+.rev-pct { font-size: 22px; font-weight: 700; color: var(--accent-orange); margin-bottom: 4px; }
+.rev-desc { font-size: 10px; color: var(--text-muted); line-height: 1.4; }
+
+/* ── Scroll reveal ── */
+.reveal { opacity: 0; transform: translateY(18px); transition: opacity 0.5s ease, transform 0.5s ease; }
+.reveal.visible { opacity: 1; transform: none; }
+
+/* ── Geo Map visual ── */
+.geo-row { display: grid; grid-template-columns: 2fr 1fr; gap: 14px; margin-bottom: 24px; }
+.geo-bars { padding: 4px 0; }
+.geo-bar-row { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+.geo-country { font-size: 11px; color: var(--text-secondary); flex-shrink: 0; }
+.geo-bar-track { flex: 1; height: 6px; background: rgba(255,255,255,0.06); border-radius: 3px; overflow: hidden; }
+.geo-bar-fill {
+  height: 100%; border-radius: 3px;
+  background: linear-gradient(90deg, var(--accent-orange), var(--accent-orange-lt));
+  width: 0%; transition: width 1.2s cubic-bezier(0.25,0.46,0.45,0.94);
+}
+/* Region colour variants */
+.geo-bar-fill.americas { background: linear-gradient(90deg, #4a8caa, #7fb3c8); }
+.geo-bar-fill.asia     { background: linear-gradient(90deg, #7a6ab0, #a89bd4); }
+.geo-bar-fill.oceania  { background: linear-gradient(90deg, #4a8c68, #78c49a); }
+/* Region label pill */
+.geo-region-tag {
+  font-size: 9px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+  padding: 1px 6px; border-radius: 3px; flex-shrink: 0; margin-left: 4px;
+}
+.geo-region-tag.eu  { background: rgba(217,110,40,0.15); color: var(--accent-orange-lt); }
+.geo-region-tag.am  { background: rgba(74,140,170,0.15); color: #7fb3c8; }
+.geo-region-tag.as  { background: rgba(122,106,176,0.15); color: #a89bd4; }
+.geo-region-tag.oc  { background: rgba(74,140,104,0.15); color: #78c49a; }
+.geo-country-wrap { display: flex; align-items: center; width: 130px; flex-shrink: 0; gap: 4px; }
+.geo-val { font-size: 11px; color: var(--text-muted); width: 50px; text-align: right; flex-shrink: 0; }
+
+/* ── Source footnotes ── */
+.source-list {
+  background: rgba(255,255,255,0.02); border: 1px solid var(--border);
+  border-radius: 8px; padding: 14px 16px; margin-bottom: 24px;
+}
+.source-list-title { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px; }
+.source-item { font-size: 10px; color: var(--text-muted); padding: 4px 0; display: flex; gap: 8px; }
+.source-item::before { content: '[' attr(data-num) ']'; color: var(--accent-orange); flex-shrink: 0; font-family: monospace; }
+
+@media (max-width: 1200px) {
+  .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+  .target-grid { grid-template-columns: 1fr 1fr; }
+  .revenue-grid { grid-template-columns: repeat(2, 1fr); }
+  .bmc-grid { grid-template-columns: 1fr 1fr; }
+  .bmc-cell.tall { grid-row: span 1; }
+}
+@media (max-width: 900px) {
+  .two-col, .three-col, .segment-grid, .competitor-grid { grid-template-columns: 1fr; }
+  .geo-row { grid-template-columns: 1fr; }
+}
+
+/* ── Team Portrait Cards ── */
+.team-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 24px;
+}
+.team-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 12px; padding: 20px 18px; position: relative; overflow: hidden;
+  transition: border-color 0.25s, transform 0.25s;
+}
+.team-card:hover { border-color: var(--border-light); transform: translateY(-3px); }
+.team-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: var(--member-color, var(--accent-orange));
+}
+.team-avatar {
+  width: 52px; height: 52px; border-radius: 50%; margin-bottom: 12px;
+  background: var(--member-bg, rgba(217,110,40,0.12));
+  border: 2px solid var(--member-color, rgba(217,110,40,0.3));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; font-weight: 900; color: var(--member-color, var(--accent-orange));
+  letter-spacing: -0.03em;
+}
+.team-name { font-size: 15px; font-weight: 700; color: var(--text-primary); margin-bottom: 2px; }
+.team-role {
+  font-size: 9px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--member-color, var(--accent-orange)); margin-bottom: 10px;
+}
+.team-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 10px; }
+.team-tag {
+  padding: 2px 8px; border-radius: 4px; font-size: 9px; font-weight: 600;
+  background: rgba(255,255,255,0.04); border: 1px solid var(--border);
+  color: var(--text-muted);
+}
+.team-desc { font-size: 11px; color: var(--text-secondary); line-height: 1.55; }
+.team-stat-row { display: flex; gap: 16px; margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--border); }
+.team-stat-val { font-size: 14px; font-weight: 700; color: var(--text-primary); }
+.team-stat-lbl { font-size: 9px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.07em; margin-top: 1px; }
+
+/* ── Product Matrix ── */
+.product-matrix {
+  display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 24px;
+}
+.product-col {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 10px; padding: 16px 12px; text-align: center;
+  transition: border-color 0.2s, transform 0.2s;
+  position: relative; overflow: hidden;
+}
+.product-col:hover { border-color: rgba(217,110,40,0.4); transform: translateY(-2px); }
+.product-col::after {
+  content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
+  background: var(--prod-color, var(--accent-orange));
+}
+.product-col-icon { font-size: 28px; margin-bottom: 10px; }
+.product-col-name { font-size: 11px; font-weight: 700; color: var(--text-primary); margin-bottom: 4px; line-height: 1.3; }
+.product-col-en { font-size: 9px; color: var(--text-muted); margin-bottom: 8px; line-height: 1.4; }
+.product-col-desc { font-size: 10px; color: var(--text-secondary); line-height: 1.5; }
+
+/* ── Core Competitiveness ── */
+.comp-pillars {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 24px;
+}
+.pillar-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 10px; padding: 18px 14px;
+  transition: border-color 0.2s, transform 0.2s;
+}
+.pillar-card:hover { transform: translateY(-2px); border-color: rgba(217,110,40,0.35); }
+.pillar-icon { font-size: 26px; margin-bottom: 10px; }
+.pillar-name { font-size: 12px; font-weight: 700; color: var(--text-primary); margin-bottom: 8px; }
+.pillar-items { display: flex; flex-direction: column; gap: 6px; }
+.pillar-item {
+  font-size: 10px; color: var(--text-secondary); line-height: 1.45;
+  display: flex; gap: 5px;
+}
+.pillar-item::before { content: '▸'; color: var(--accent-orange); flex-shrink: 0; font-size: 8px; margin-top: 2px; }
+
+/* ── Development Roadmap ── */
+.roadmap-phases {
+  display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0;
+  margin-bottom: 8px;
+}
+.roadmap-phase-label {
+  font-size: 9px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--text-muted); text-align: center; padding-bottom: 8px;
+  border-bottom: 2px solid var(--border);
+}
+.roadmap-phase-label.active { color: var(--accent-orange); border-bottom-color: var(--accent-orange); }
+
+.roadmap-row {
+  display: flex; gap: 0; margin-bottom: 24px; position: relative;
+  overflow-x: auto; padding-bottom: 4px;
+}
+.roadmap-row::before {
+  content: ''; position: absolute; top: 16px; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, rgba(217,110,40,0.8), rgba(107,158,184,0.5), rgba(74,140,104,0.5));
+}
+.roadmap-node {
+  flex: 1; min-width: 110px; padding: 0 6px; position: relative; text-align: center;
+}
+.roadmap-dot {
+  width: 14px; height: 14px; border-radius: 50%; margin: 9px auto 10px;
+  position: relative; z-index: 1;
+  border: 2px solid;
+  background: var(--bg-main);
+}
+.roadmap-dot.done { background: var(--accent-orange); border-color: var(--accent-orange); }
+.roadmap-dot.inprogress { background: rgba(217,110,40,0.3); border-color: var(--accent-orange); box-shadow: 0 0 8px rgba(217,110,40,0.5); animation: pulseDot 1.8s infinite; }
+.roadmap-dot.future { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.15); }
+@keyframes pulseDot { 0%,100%{ box-shadow: 0 0 0 0 rgba(217,110,40,0.5); } 50%{ box-shadow: 0 0 0 6px rgba(217,110,40,0); } }
+.roadmap-date { font-size: 9px; color: var(--accent-orange); font-weight: 700; margin-bottom: 3px; letter-spacing: 0.04em; }
+.roadmap-event { font-size: 9.5px; color: var(--text-secondary); line-height: 1.4; }
+
+/* ── Funding Ladder ── */
+.funding-ladder {
+  display: flex; gap: 0; align-items: flex-end; margin-bottom: 16px;
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 10px; padding: 20px 16px 16px; overflow-x: auto;
+}
+.funding-step { flex: 1; min-width: 80px; text-align: center; position: relative; }
+.funding-bar-wrap { display: flex; align-items: flex-end; justify-content: center; height: 100px; margin-bottom: 8px; }
+.funding-bar {
+  width: 28px; border-radius: 4px 4px 0 0;
+  background: linear-gradient(180deg, var(--accent-orange), rgba(217,110,40,0.4));
+  transition: height 1s cubic-bezier(0.25,0.46,0.45,0.94);
+  position: relative;
+}
+.funding-bar.angel { background: linear-gradient(180deg, #9b59d0, rgba(155,89,208,0.4)); }
+.funding-bar.series { background: linear-gradient(180deg, #2eb8a6, rgba(46,184,166,0.4)); }
+.funding-bar.total { background: linear-gradient(180deg, #e05b7a, rgba(224,91,122,0.4)); }
+.funding-amount { font-size: 12px; font-weight: 800; color: var(--text-primary); }
+.funding-self { font-size: 9px; color: var(--text-muted); margin-top: 2px; }
+.funding-label { font-size: 9px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 4px; }
+
+@media (max-width: 900px) {
+  .team-grid { grid-template-columns: 1fr 1fr; }
+  .product-matrix { grid-template-columns: repeat(2, 1fr); }
+  .comp-pillars { grid-template-columns: 1fr 1fr; }
+  .roadmap-node { min-width: 90px; }
+}
+@media (max-width: 600px) {
+  .team-grid { grid-template-columns: 1fr; }
+  .product-matrix { grid-template-columns: 1fr 1fr; }
+  .comp-pillars { grid-template-columns: 1fr; }
+}
+
+/* ── Competitive Landscape ── */
+.comp-seg-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:20px}
+.comp-seg{background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:20px 18px;position:relative;overflow:hidden}
+.comp-seg-badge{display:inline-block;font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.12em;padding:3px 9px;border-radius:20px;margin-bottom:12px}
+.badge-budget{background:rgba(90,88,85,.25);color:var(--text-muted);border:1px solid rgba(90,88,85,.4)}
+.badge-mid{background:rgba(107,158,184,.12);color:var(--accent-blue);border:1px solid rgba(107,158,184,.22)}
+.badge-smart{background:rgba(217,110,40,.1);color:var(--accent-orange);border:1px solid rgba(217,110,40,.2)}
+.comp-seg-title{font-size:13px;font-weight:600;color:var(--text-primary);margin-bottom:4px}
+.comp-seg-sub{font-size:10px;color:var(--text-muted);margin-bottom:14px}
+.comp-brands{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:14px}
+.comp-brand-tag{font-size:9px;padding:2px 8px;border-radius:4px;background:rgba(255,255,255,.05);border:1px solid var(--border);color:var(--text-secondary)}
+.comp-price-range{font-family:monospace;font-size:1.35rem;font-weight:300;color:var(--text-primary);margin-bottom:2px}
+.comp-price-label{font-size:9px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px}
+.comp-items{border-top:1px solid var(--border);padding-top:12px;display:flex;flex-direction:column;gap:6px}
+.comp-item{display:flex;justify-content:space-between;align-items:baseline}
+.comp-item-name{font-size:10px;color:var(--text-secondary);flex:1;padding-right:8px}
+.comp-item-price{font-family:monospace;font-size:10px;color:var(--text-primary);white-space:nowrap}
+.comp-item-price.hi{color:var(--accent-orange)}
+.comp-divider{height:1px;background:var(--border);margin:4px 0}
+
+.comp-cat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:16px}
+.comp-cat{background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:16px}
+.comp-cat-icon{font-size:1.4rem;margin-bottom:8px}
+.comp-cat-name{font-size:11px;font-weight:600;color:var(--text-primary);margin-bottom:10px}
+.comp-cat-rows{display:flex;flex-direction:column;gap:5px}
+.comp-cat-row{display:flex;justify-content:space-between;align-items:baseline;font-size:9.5px}
+.comp-cat-row-label{color:var(--text-muted);flex:1}
+.comp-cat-row-price{font-family:monospace;color:var(--text-secondary);white-space:nowrap}
+
+.comp-insight-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px}
+.comp-insight{background:rgba(255,255,255,.025);border:1px solid var(--border);border-radius:8px;padding:14px}
+.comp-insight-label{font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:var(--text-muted);margin-bottom:6px}
+.comp-insight-val{font-size:12px;color:var(--text-primary);line-height:1.6}
+.comp-insight-val strong{color:var(--accent-orange)}
+
+@media(max-width:900px){.comp-seg-grid{grid-template-columns:1fr 1fr}.comp-cat-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.comp-seg-grid{grid-template-columns:1fr}.comp-cat-grid{grid-template-columns:1fr}.comp-insight-row{grid-template-columns:1fr}}
+
+/* ── Pricing Formula + Calculator ── */
+.pf-wrap{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start;margin-top:24px}
+.pf-box{background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:22px;margin-bottom:16px}
+.pf-name{font-size:.6rem;text-transform:uppercase;letter-spacing:.18em;color:var(--accent-orange);margin-bottom:10px}
+.pf-eq{font-family:monospace;font-size:.84rem;color:var(--text-primary);line-height:2.2;overflow-x:auto}
+.pf-eq .v{color:var(--accent-blue)}.pf-eq .op{color:var(--text-muted)}.pf-eq .c{color:var(--accent-orange)}.pf-eq .k{color:var(--accent-green)}
+.pf-note{font-size:.75rem;color:var(--text-secondary);margin-top:10px;line-height:1.7;border-top:1px solid var(--border);padding-top:10px}
+.calc-box{background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:26px;position:sticky;top:80px}
+.calc-title{font-size:.65rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);margin-bottom:20px;display:flex;align-items:center;gap:10px}
+.calc-title::after{content:'';flex:1;height:1px;background:var(--border)}
+.calc-field{margin-bottom:12px}
+.calc-field label{display:block;font-size:.62rem;color:var(--text-muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:.09em}
+.calc-input{width:100%;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:6px;color:var(--text-primary);font-family:monospace;font-size:.88rem;padding:7px 10px;outline:none;transition:border-color .2s;-moz-appearance:textfield}
+.calc-input:focus{border-color:rgba(217,110,40,.5)}
+.calc-input::-webkit-inner-spin-button,.calc-input::-webkit-outer-spin-button{-webkit-appearance:none}
+.calc-select{width:100%;background:var(--bg-secondary);border:1px solid var(--border);border-radius:6px;color:var(--text-primary);font-family:inherit;font-size:.84rem;padding:7px 10px;outline:none;cursor:pointer}
+.calc-2col{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.calc-div{height:1px;background:var(--border);margin:16px 0}
+.calc-result{background:rgba(255,255,255,.025);border:1px solid var(--border);border-radius:6px;padding:12px 14px;margin-bottom:8px}
+.calc-rl{font-size:.6rem;text-transform:uppercase;letter-spacing:.1em;color:var(--text-muted);margin-bottom:3px}
+.calc-rv{font-family:monospace;font-size:1.2rem;font-weight:300;color:var(--text-primary)}
+.calc-rv.gold{color:var(--accent-orange)}.calc-rv.blue{color:var(--accent-blue)}.calc-rv.green{color:var(--accent-green)}
+.calc-rsub{font-size:.66rem;color:var(--text-muted);margin-top:2px}
+.calc-bar{height:3px;background:var(--border);border-radius:2px;margin-top:6px;overflow:hidden}
+.calc-bar-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--accent-blue),var(--accent-green));transition:width .6s ease}
+@media(max-width:900px){.pf-wrap{grid-template-columns:1fr}}
+
+/* ── Product Matrix ── */
+.prod-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-top:20px}
+.prod-card{background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:20px 16px;position:relative;overflow:hidden;transition:border-color .3s,transform .3s}
+.prod-card:hover{border-color:var(--border-light);transform:translateY(-4px)}
+.prod-glow{position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(217,110,40,.5),transparent);opacity:0;transition:.3s}
+.prod-card:hover .prod-glow{opacity:1}
+.prod-sz{font-size:9px;font-weight:600;letter-spacing:.12em;color:var(--text-muted);text-transform:uppercase;margin-bottom:8px;font-family:monospace}
+.prod-name{font-size:15px;font-weight:600;color:var(--text-primary);margin-bottom:3px}
+.prod-sub{font-size:10px;color:var(--text-muted);margin-bottom:12px}
+.prod-tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:14px}
+.prod-tag{font-size:9px;padding:2px 8px;border-radius:20px;background:rgba(217,110,40,.1);border:1px solid rgba(217,110,40,.2);color:var(--accent-orange)}
+.prod-price{border-top:1px solid var(--border);padding-top:12px}
+.prod-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px}
+.prod-label{font-size:9px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.08em}
+.prod-val{font-size:12px;font-weight:500;font-family:monospace;color:var(--text-primary)}
+.prod-vat{font-size:9px;color:var(--text-muted);margin-top:3px}
+@media(max-width:1100px){.prod-grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:700px){.prod-grid{grid-template-columns:repeat(2,1fr)}}
+
+/* ── Species Market Price ── */
+.sp-ftabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px;margin-top:20px}
+.sp-ftab{padding:6px 16px;background:transparent;border:1px solid var(--border);border-radius:20px;color:var(--text-muted);font-size:11px;letter-spacing:.05em;cursor:pointer;transition:all .2s;font-family:inherit}
+.sp-ftab:hover{border-color:var(--border-light);color:var(--text-primary)}
+.sp-ftab.act{background:var(--accent-orange);color:#fff;border-color:var(--accent-orange);font-weight:500}
+.sp-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.sp-card{background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:18px 15px;transition:border-color .3s,transform .3s;position:relative;overflow:hidden}
+.sp-card:hover{border-color:var(--border-light);transform:translateY(-4px)}
+.sp-card.hide{display:none}
+.sp-glow{position:absolute;top:0;left:0;right:0;height:1px;opacity:0;transition:.3s}
+.sp-card:hover .sp-glow{opacity:1}
+.sp-emoji{font-size:1.7rem;margin-bottom:9px;display:block;line-height:1}
+.sp-cn{font-size:.88rem;font-weight:600;color:var(--text-primary);margin-bottom:2px}
+.sp-en{font-size:.74rem;color:var(--text-secondary);margin-bottom:1px}
+.sp-sci{font-size:.62rem;color:var(--text-muted);font-style:italic;margin-bottom:10px}
+.sp-org{font-size:.68rem;color:var(--text-secondary);margin-bottom:10px}
+.sp-org span{color:var(--text-muted)}
+.sp-bands{margin-bottom:10px}
+.sp-pb{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px}
+.sp-pbl{font-size:.6rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.08em}
+.sp-pbr{font-family:monospace;font-size:.76rem}
+.sp-pbr.com{color:var(--accent-blue)}
+.sp-pbr.rare{color:var(--accent-orange)}
+.sp-diff{display:flex;align-items:center;gap:6px;margin-bottom:12px}
+.sp-dfll{font-size:.6rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.08em}
+.sp-stars{display:flex;gap:3px}
+.sp-star{width:6px;height:6px;border-radius:50%}
+.sp-star.on{background:var(--accent-orange)}.sp-star.off{background:var(--border-light)}
+.sp-ctag{position:absolute;top:11px;right:11px;font-size:.52rem;text-transform:uppercase;letter-spacing:.1em;padding:2px 7px;border-radius:20px;font-weight:500}
+.ct-gecko{background:rgba(107,158,184,.14);color:var(--accent-blue);border:1px solid rgba(107,158,184,.22)}
+.ct-snake{background:rgba(74,140,104,.14);color:var(--accent-green);border:1px solid rgba(74,140,104,.22)}
+.ct-lizard{background:rgba(217,110,40,.1);color:var(--accent-orange);border:1px solid rgba(217,110,40,.2)}
+.ct-frog{background:rgba(74,140,104,.14);color:#5ab870;border:1px solid rgba(74,140,104,.22)}
+.sp-match{border-top:1px solid var(--border);padding-top:11px;margin-top:2px}
+.sp-ml{font-size:.56rem;text-transform:uppercase;letter-spacing:.12em;color:var(--text-muted);margin-bottom:4px}
+.sp-mp{font-size:.82rem;font-weight:600;color:var(--accent-orange);margin-bottom:2px}
+.sp-msz{font-family:monospace;font-size:.64rem;color:var(--text-secondary);margin-bottom:6px}
+.sp-mpr{font-family:monospace;font-size:.88rem;color:var(--text-primary)}
+.sp-mpr .vat{font-size:.6rem;color:var(--text-muted);display:block;margin-top:2px}
+.sp-budget{margin-top:8px;padding:8px 10px;background:rgba(217,110,40,.07);border:1px solid rgba(217,110,40,.15);border-radius:6px}
+.sp-bl{font-size:.55rem;text-transform:uppercase;letter-spacing:.08em;color:var(--accent-orange);margin-bottom:2px}
+.sp-bv{font-family:monospace;font-size:.82rem;color:var(--text-primary)}
+.sp-budbar{height:3px;background:var(--border);border-radius:2px;margin-top:6px;overflow:hidden}
+.sp-budbar-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--accent-blue),var(--accent-orange))}
+@media(max-width:1100px){.sp-grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:760px){.sp-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:480px){.sp-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="app-container">
+
+  <!-- ── Sidebar ── -->
+  <nav class="sidebar">
+    <div class="sidebar-logo" style="justify-content:center;padding:24px 12px 20px;">
+      <img src="assets/tonitruum-logo-white.png" alt="TONITRUUM"
+           style="width:100%;height:auto;max-width:180px;opacity:0.85;">
+    </div>
+    <ul class="nav-list">
+      <li class="nav-section">Monitor</li>
+      <li class="nav-item"><a href="index.html"><span class="nav-icon">⬡</span>Habitat Monitor</a></li>
+      <li class="nav-section">Clinical</li>
+      <li class="nav-item"><a href="autism.html"><span class="nav-icon">♡</span>Patient Care</a></li>
+      <li class="nav-item"><a href="assessment.html"><span class="nav-icon">≡</span>Assessments</a></li>
+      <li class="nav-item"><a href="parent-form.html"><span class="nav-icon">✎</span>Parent Reports</a></li>
+      <li class="nav-item"><a href="medical.html"><span class="nav-icon">✚</span>Medical Consult</a></li>
+      <li class="nav-section">Strategy</li>
+      <li class="nav-item"><a href="service.html"><span class="nav-icon">◎</span>Service Overview</a></li>
+      <li class="nav-item"><a href="stakeholder.html"><span class="nav-icon">◉</span>Stakeholder Map</a></li>
+      <li class="nav-item"><a href="product.html"><span class="nav-icon">◈</span>Product Design</a></li>
+      <li class="nav-section">Project</li>
+      <li class="nav-item"><a href="phase0.html"><span class="nav-icon">◫</span>Phase 0 Origin</a></li>
+      <li class="nav-item"><a href="phase1.html"><span class="nav-icon">◧</span>Phase 1 Research</a></li>
+      <li class="nav-item"><a href="founder.html"><span class="nav-icon">◐</span>Founder</a></li>
+      <li class="nav-item"><a href="research.html"><span class="nav-icon">◇</span>Reptile Therapy</a></li>
+      <li class="nav-item active"><a href="market.html"><span class="nav-icon">◆</span>Business Model</a></li>
+      <li class="nav-section">Play</li>
+      <li class="nav-item"><a href="game.html"><span class="nav-icon">◎</span>Cricket Hunter</a></li>
+    
+    
+    </ul>
+    <div class="sidebar-footer">
+      <div class="sys-status"><span class="status-indicator status-good"></span>All Systems Online</div>
+      <div class="sys-time" id="sidebarTime"></div>
+    </div>
+  </nav>
+
+  <!-- ── Main ── -->
+  <main class="main-content">
+
+    <!-- Hero -->
+    <div class="market-hero reveal">
+      <div class="hero-tag">Business Model · Market Analysis · 2025</div>
+      <h1 class="hero-title">From Niche to <span>Mainstream</span>:<br>The Reptile Pet Tech Opportunity</h1>
+      <p class="hero-desc">TONITRUUM addresses a rapidly growing but underserved market — terrarium-keeping pet owners who lack affordable, intelligent habitat monitoring. Combining IoT hardware with care intelligence, we enter through Europe, validate in China, then scale to North America.</p>
+    </div>
+
+    <!-- ── Section 1: Market Size KPIs ── -->
+    <div class="section-header reveal">
+      <div class="section-num">01</div>
+      <div class="section-header-text">
+        <h2>Market Scale — Key Numbers</h2>
+        <p>Global pet ownership & reptile terrarium market indicators, 2025</p>
+      </div>
+    </div>
+
+    <div class="kpi-grid">
+      <div class="kpi-card reveal" style="--kpi-color:#d96e28" data-count="79" data-suffix="M">
+        <div class="kpi-icon">🐾</div>
+        <div class="kpi-value"><span class="count-num">79</span><span class="unit">M</span></div>
+        <div class="kpi-label">Total pets — France 2025</div>
+        <div class="kpi-source">Source: FACCO / KANTAR [1]</div>
+      </div>
+      <div class="kpi-card reveal" style="--kpi-color:#6b9eb8" data-count="2.5" data-suffix="M">
+        <div class="kpi-icon">🦎</div>
+        <div class="kpi-value"><span class="count-num">2.5</span><span class="unit">M</span></div>
+        <div class="kpi-label">Terrarium animals — France 2025</div>
+        <div class="kpi-source">Source: FACCO [1]</div>
+      </div>
+      <div class="kpi-card reveal" style="--kpi-color:#4a8c68" data-count="12" data-suffix="M">
+        <div class="kpi-icon">🌍</div>
+        <div class="kpi-value"><span class="count-num">12</span><span class="unit">M</span></div>
+        <div class="kpi-label">Reptile pets — Europe (EU)</div>
+        <div class="kpi-source">Source: FEDIAF 2024 [2]</div>
+      </div>
+      <div class="kpi-card reveal" style="--kpi-color:#7a6ab0" data-count="94" data-suffix="M">
+        <div class="kpi-icon">🏠</div>
+        <div class="kpi-value"><span class="count-num">94</span><span class="unit">M</span></div>
+        <div class="kpi-label">Pet-owning households — USA 2025</div>
+        <div class="kpi-source">Source: APPA [3]</div>
+      </div>
+    </div>
+
+    <div class="kpi-grid">
+      <div class="kpi-card reveal" style="--kpi-color:#d96e28">
+        <div class="kpi-icon">📈</div>
+        <div class="kpi-value"><span class="count-num">2.16</span><span class="unit">B$</span></div>
+        <div class="kpi-label">Reptile enclosure market 2030</div>
+        <div class="kpi-source">Source: EIN Presswire / Coherent MI [4]</div>
+      </div>
+      <div class="kpi-card reveal" style="--kpi-color:#6b9eb8">
+        <div class="kpi-icon">🚀</div>
+        <div class="kpi-value"><span class="count-num">7.6</span><span class="unit">%</span></div>
+        <div class="kpi-label">CAGR reptile enclosure 2023–2030</div>
+        <div class="kpi-source">Source: Coherent MI [4]</div>
+      </div>
+      <div class="kpi-card reveal" style="--kpi-color:#4a8c68">
+        <div class="kpi-icon">📱</div>
+        <div class="kpi-value"><span class="count-num">17.25</span><span class="unit">B$</span></div>
+        <div class="kpi-label">Pet tech market size 2030</div>
+        <div class="kpi-source">Source: Arizton [5]</div>
+      </div>
+      <div class="kpi-card reveal" style="--kpi-color:#7a6ab0">
+        <div class="kpi-icon">⚡</div>
+        <div class="kpi-value"><span class="count-num">14.6</span><span class="unit">%</span></div>
+        <div class="kpi-label">Pet tech CAGR 2024–2030</div>
+        <div class="kpi-source">Source: Arizton [5]</div>
+      </div>
+    </div>
+
+    <!-- ── Section 2: Charts ── -->
+    <div class="section-header reveal">
+      <div class="section-num">02</div>
+      <div class="section-header-text">
+        <h2>Market Growth Visualisation</h2>
+        <p>Projected market expansion across reptile enclosure, exotic pets and pet tech segments</p>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <!-- Market Growth Line Chart -->
+      <div class="chart-card reveal">
+        <div class="chart-card-header">
+          <div>
+            <div class="chart-card-title">Global Reptile Enclosure Market (USD bn)</div>
+            <div class="chart-card-desc">Projected growth 2023–2030 at 7.6% CAGR</div>
+          </div>
+          <span class="badge badge-green">Growing</span>
+        </div>
+        <canvas id="growthChart" height="200"></canvas>
+        <div class="chart-source">Source: Coherent MI / EIN Presswire [4]</div>
+      </div>
+
+      <!-- Pet Tech vs Reptile -->
+      <div class="chart-card reveal">
+        <div class="chart-card-header">
+          <div>
+            <div class="chart-card-title">Pet Tech vs Reptile Market — 2024→2030 ($bn)</div>
+            <div class="chart-card-desc">Pet tech growing 2× faster than reptile hardware alone</div>
+          </div>
+          <span class="badge badge-blue">Comparison</span>
+        </div>
+        <canvas id="compareChart" height="200"></canvas>
+        <div class="chart-source">Sources: Arizton [5], Coherent MI [4], Grand View Research [6]</div>
+      </div>
+    </div>
+
+    <!-- France Pet Ownership Breakdown -->
+    <div class="two-col">
+      <div class="chart-card reveal">
+        <div class="chart-card-header">
+          <div>
+            <div class="chart-card-title">France 2025 — Pet Population by Category</div>
+            <div class="chart-card-desc">79M total pets across all categories</div>
+          </div>
+          <span class="badge badge-orange">France</span>
+        </div>
+        <canvas id="francePetChart" height="220"></canvas>
+        <div class="chart-source">Source: FACCO / KANTAR 2025 [1]</div>
+      </div>
+
+      <!-- USA Reptile Ownership -->
+      <div class="chart-card reveal">
+        <div class="chart-card-header">
+          <div>
+            <div class="chart-card-title">USA 2025 — Specialty Pet Households (Millions)</div>
+            <div class="chart-card-desc">Out of 94M pet-owning households</div>
+          </div>
+          <span class="badge badge-blue">USA</span>
+        </div>
+        <canvas id="usaPetChart" height="220"></canvas>
+        <div class="chart-source">Source: APPA National Pet Owners Survey 2025 [3]</div>
+      </div>
+    </div>
+
+    <!-- ── Section 3: Geographic Markets ── -->
+    <div class="section-header reveal">
+      <div class="section-num">03</div>
+      <div class="section-header-text">
+        <h2>Geographic Go-to-Market Strategy</h2>
+        <p>Three-phase international expansion: define → validate → scale</p>
+      </div>
+    </div>
+
+    <div class="target-grid reveal">
+      <div class="target-card" style="--phase-color:#4a8c68; border-color: rgba(74,140,104,0.3);">
+        <div class="target-phase">Phase 1 · 2025–2026 · Define</div>
+        <div class="target-flag">🇪🇺</div>
+        <div class="target-market">Europe</div>
+        <div class="target-desc">Lead market. France has the highest reptile pet population in the EU (2.1M). Strong regulatory framework, established terrarium culture, receptive to premium IoT solutions. Initial launch via specialty pet stores and direct-to-consumer online.</div>
+        <div class="target-tag" style="background: rgba(74,140,104,0.12); color: #6aad84; border: 1px solid rgba(74,140,104,0.25);">Entry Market</div>
+      </div>
+      <div class="target-card" style="--phase-color:#6b9eb8; border-color: rgba(107,158,184,0.3);">
+        <div class="target-phase">Phase 2 · 2026–2027 · Validate</div>
+        <div class="target-flag">🇨🇳</div>
+        <div class="target-market">China</div>
+        <div class="target-desc">Validation + supply chain optimisation. China's rapidly growing middle class drives exotic pet adoption. Proximity to hardware manufacturing reduces unit cost. Validate price point and feature set before North America scale-up.</div>
+        <div class="target-tag" style="background: rgba(107,158,184,0.12); color: #8ab8ce; border: 1px solid rgba(107,158,184,0.25);">Supply Chain Hub</div>
+      </div>
+      <div class="target-card" style="--phase-color:#d96e28; border-color: rgba(217,110,40,0.3);">
+        <div class="target-phase">Phase 3 · 2027–2028 · Scale</div>
+        <div class="target-flag">🇺🇸</div>
+        <div class="target-market">North America</div>
+        <div class="target-desc">Scale market. 6M reptile-owning households in the USA. North America holds over 37% global pet tech market share. Proven product-market fit + distribution partnerships (PetSmart 1,665 stores, Petco) enable rapid scaling.</div>
+        <div class="target-tag" style="background: rgba(217,110,40,0.12); color: #e8884a; border: 1px solid rgba(217,110,40,0.25);">Growth Market</div>
+      </div>
+    </div>
+
+    <!-- Reptile population geo bars -->
+    <div class="geo-row">
+      <div class="chart-card reveal">
+        <div class="chart-card-header">
+          <div>
+            <div class="chart-card-title">Reptile Pet Population by Country — Global 2022–2024</div>
+            <div class="chart-card-desc">Top markets by estimated reptile pet population (millions) · colour = region</div>
+          </div>
+        </div>
+        <div class="geo-bars" id="geoBars">
+          <!-- Americas -->
+          <div class="geo-bar-row">
+            <div class="geo-country-wrap"><span class="geo-country">🇺🇸 USA</span><span class="geo-region-tag am">Americas</span></div>
+            <div class="geo-bar-track"><div class="geo-bar-fill americas" data-pct="100"></div></div>
+            <span class="geo-val">9.4M</span>
+          </div>
+          <!-- Asia -->
+          <div class="geo-bar-row">
+            <div class="geo-country-wrap"><span class="geo-country">🇨🇳 China</span><span class="geo-region-tag as">Asia</span></div>
+            <div class="geo-bar-track"><div class="geo-bar-fill asia" data-pct="85"></div></div>
+            <span class="geo-val">~8.0M</span>
+          </div>
+          <!-- Asia -->
+          <div class="geo-bar-row">
+            <div class="geo-country-wrap"><span class="geo-country">🇯🇵 Japan</span><span class="geo-region-tag as">Asia</span></div>
+            <div class="geo-bar-track"><div class="geo-bar-fill asia" data-pct="28"></div></div>
+            <span class="geo-val">2.6M</span>
+          </div>
+          <!-- Europe -->
+          <div class="geo-bar-row">
+            <div class="geo-country-wrap"><span class="geo-country">🇫🇷 France</span><span class="geo-region-tag eu">Europe</span></div>
+            <div class="geo-bar-track"><div class="geo-bar-fill" data-pct="22"></div></div>
+            <span class="geo-val">2.1M</span>
+          </div>
+          <!-- Americas -->
+          <div class="geo-bar-row">
+            <div class="geo-country-wrap"><span class="geo-country">🇧🇷 Brazil</span><span class="geo-region-tag am">Americas</span></div>
+            <div class="geo-bar-track"><div class="geo-bar-fill americas" data-pct="18"></div></div>
+            <span class="geo-val">1.7M</span>
+          </div>
+          <!-- Europe -->
+          <div class="geo-bar-row">
+            <div class="geo-country-wrap"><span class="geo-country">🇩🇪 Germany</span><span class="geo-region-tag eu">Europe</span></div>
+            <div class="geo-bar-track"><div class="geo-bar-fill" data-pct="15"></div></div>
+            <span class="geo-val">1.4M</span>
+          </div>
+          <!-- Europe -->
+          <div class="geo-bar-row">
+            <div class="geo-country-wrap"><span class="geo-country">🇬🇧 UK</span><span class="geo-region-tag eu">Europe</span></div>
+            <div class="geo-bar-track"><div class="geo-bar-fill" data-pct="13"></div></div>
+            <span class="geo-val">1.2M</span>
+          </div>
+          <!-- Oceania -->
+          <div class="geo-bar-row">
+            <div class="geo-country-wrap"><span class="geo-country">🇦🇺 Australia</span><span class="geo-region-tag oc">Oceania</span></div>
+            <div class="geo-bar-track"><div class="geo-bar-fill oceania" data-pct="12"></div></div>
+            <span class="geo-val">1.1M</span>
+          </div>
+          <!-- Europe -->
+          <div class="geo-bar-row">
+            <div class="geo-country-wrap"><span class="geo-country">🇮🇹 Italy</span><span class="geo-region-tag eu">Europe</span></div>
+            <div class="geo-bar-track"><div class="geo-bar-fill" data-pct="11"></div></div>
+            <span class="geo-val">1.0M</span>
+          </div>
+          <!-- Europe -->
+          <div class="geo-bar-row">
+            <div class="geo-country-wrap"><span class="geo-country">🇳🇱 Netherlands</span><span class="geo-region-tag eu">Europe</span></div>
+            <div class="geo-bar-track"><div class="geo-bar-fill" data-pct="7"></div></div>
+            <span class="geo-val">0.7M</span>
+          </div>
+          <!-- Europe -->
+          <div class="geo-bar-row">
+            <div class="geo-country-wrap"><span class="geo-country">🇪🇸 Spain</span><span class="geo-region-tag eu">Europe</span></div>
+            <div class="geo-bar-track"><div class="geo-bar-fill" data-pct="6"></div></div>
+            <span class="geo-val">0.6M</span>
+          </div>
+          <!-- Europe -->
+          <div class="geo-bar-row">
+            <div class="geo-country-wrap"><span class="geo-country">🇧🇪 Belgium</span><span class="geo-region-tag eu">Europe</span></div>
+            <div class="geo-bar-track"><div class="geo-bar-fill" data-pct="4"></div></div>
+            <span class="geo-val">0.4M</span>
+          </div>
+        </div>
+        <div class="chart-source">
+          Sources: APPA NPOS 2023–24 [3] · Euromonitor Pet Care 2023 [9] · JPFA 2022 [10] · FACCO/Kantar 2025 [1] ·
+          ABINPET 2023 [11] · ZZF/IVH 2023 [12] · PFMA 2023 [13] · Animal Medicines Australia 2022 [14] ·
+          Assalco-Zoomark 2023 [15] · Statista EU 2023 [7]
+        </div>
+      </div>
+
+      <!-- Radar / spider chart for market opportunity -->
+      <div class="chart-card reveal">
+        <div class="chart-card-header">
+          <div>
+            <div class="chart-card-title">Market Opportunity Score</div>
+            <div class="chart-card-desc">By region across 5 dimensions</div>
+          </div>
+        </div>
+        <canvas id="radarChart" height="230"></canvas>
+      </div>
+    </div>
+
+    <!-- ── Section 4: Competitive Landscape ── -->
+    <div class="section-header reveal">
+      <div class="section-num">04</div>
+      <div class="section-header-text">
+        <h2>Competitive Landscape</h2>
+        <p>Existing products lack smart integration — TONITRUUM's differentiation</p>
+      </div>
+    </div>
+
+    <div class="competitor-grid">
+      <div class="competitor-card reveal">
+        <div class="comp-name">Lucky Reptile Thermo Control Pro II</div>
+        <div class="comp-cat">Temperature Controller</div>
+        <div class="comp-price">€82–85</div>
+        <ul class="comp-features">
+          <li>Analog dial interface</li>
+          <li>Single temperature probe</li>
+          <li>No app / no connectivity</li>
+          <li>No humidity monitoring</li>
+          <li>No data logging</li>
+        </ul>
+      </div>
+      <div class="competitor-card reveal">
+        <div class="comp-name">Zoo Med Repti Fogger</div>
+        <div class="comp-cat">Humidity / Fogger</div>
+        <div class="comp-price">~€99</div>
+        <ul class="comp-features">
+          <li>Ultrasonic mist generator</li>
+          <li>Manual timer only</li>
+          <li>No sensor feedback loop</li>
+          <li>No mobile control</li>
+          <li>Separate from heating system</li>
+        </ul>
+      </div>
+      <div class="competitor-card reveal">
+        <div class="comp-name">Exo Terra Vivarium</div>
+        <div class="comp-cat">Complete Enclosure</div>
+        <div class="comp-price">€299+</div>
+        <ul class="comp-features">
+          <li>High-quality glass build</li>
+          <li>Front-opening dual doors</li>
+          <li>No smart features</li>
+          <li>Separate accessories needed</li>
+          <li>No monitoring / alerts</li>
+        </ul>
+      </div>
+      <div class="competitor-card reveal">
+        <div class="comp-name">Arcadia EarthMix · Controllers</div>
+        <div class="comp-cat">Specialist Brand (UK)</div>
+        <div class="comp-price">€45–120</div>
+        <ul class="comp-features">
+          <li>Professional-grade substrates</li>
+          <li>UV + lighting timers</li>
+          <li>No IoT / app control</li>
+          <li>No ecosystem integration</li>
+          <li>Hobbyist market focus</li>
+        </ul>
+      </div>
+      <div class="competitor-card reveal">
+        <div class="comp-name">Inkbird IBS-TH2 / IBS-TH3</div>
+        <div class="comp-cat">Generic IoT Sensor</div>
+        <div class="comp-price">€15–30</div>
+        <ul class="comp-features">
+          <li>Bluetooth temp + humidity</li>
+          <li>Basic app with data export</li>
+          <li>Not reptile-specific</li>
+          <li>No actuation / control</li>
+          <li>No care recommendations</li>
+        </ul>
+      </div>
+      <div class="competitor-card reveal" style="border-color: rgba(217,110,40,0.4); background: rgba(217,110,40,0.04);">
+        <div class="comp-name">TONITRUUM Habitat Monitor</div>
+        <div class="comp-cat badge badge-orange" style="margin-bottom:10px;">Our Solution</div>
+        <div class="comp-price" style="color: var(--accent-green);">€149–199</div>
+        <ul class="comp-features">
+          <li>All-in-one smart sensor hub</li>
+          <li>Temp + humidity + light + UV</li>
+          <li>Mobile app with AI care alerts</li>
+          <li>Species-specific thresholds</li>
+          <li>Integrated actuation control</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Competitive positioning scatter -->
+    <div class="chart-card reveal" style="margin-bottom:24px;">
+      <div class="chart-card-header">
+        <div>
+          <div class="chart-card-title">Competitive Positioning — Price vs Intelligence</div>
+          <div class="chart-card-desc">TONITRUUM occupies the premium-smart quadrant currently unchallenged in reptile care</div>
+        </div>
+        <span class="badge badge-orange">Positioning Map</span>
+      </div>
+      <canvas id="scatterChart" height="220"></canvas>
+    </div>
+
+    <!-- ── Section 5: User Segments ── -->
+    <div class="section-header reveal">
+      <div class="section-num">05</div>
+      <div class="section-header-text">
+        <h2>User Segments</h2>
+        <p>Four primary customer profiles identified through field research</p>
+      </div>
+    </div>
+
+    <div class="segment-grid">
+      <div class="segment-card reveal">
+        <div class="segment-icon">👨‍👩‍👧</div>
+        <div class="segment-body">
+          <div class="segment-name">Families with Children (6–12)</div>
+          <div class="segment-sub">Primary Segment</div>
+          <div class="segment-desc">Parents seeking educational, low-allergen pets for children with sensory sensitivities or autism. Prioritise safety alerts and easy setup. Cost-sensitive but willing to invest in reliable care tools.</div>
+          <div class="segment-needs">
+            <span class="need-tag">Safety alerts</span>
+            <span class="need-tag">Simple setup</span>
+            <span class="need-tag">Educational</span>
+            <span class="need-tag">Low maintenance</span>
+          </div>
+        </div>
+      </div>
+      <div class="segment-card reveal">
+        <div class="segment-icon">🏙️</div>
+        <div class="segment-body">
+          <div class="segment-name">Urban White-Collar Professionals</div>
+          <div class="segment-sub">Secondary Segment</div>
+          <div class="segment-desc">25–40 year olds in apartments. Value convenience and remote monitoring — long working hours mean they can't check habitats manually. High willingness to pay for smart, app-based solutions.</div>
+          <div class="segment-needs">
+            <span class="need-tag">Remote monitoring</span>
+            <span class="need-tag">Push notifications</span>
+            <span class="need-tag">Minimalist design</span>
+            <span class="need-tag">App control</span>
+          </div>
+        </div>
+      </div>
+      <div class="segment-card reveal">
+        <div class="segment-icon">🧑‍🦳</div>
+        <div class="segment-body">
+          <div class="segment-name">Middle-Aged Hobbyists</div>
+          <div class="segment-sub">Tertiary Segment</div>
+          <div class="segment-desc">Established collectors with 2–5+ terrariums. Deep species knowledge but frustrated by fragmented, manual monitoring tools. Value reliability and data logging over aesthetics.</div>
+          <div class="segment-needs">
+            <span class="need-tag">Data logging</span>
+            <span class="need-tag">Multi-terrarium</span>
+            <span class="need-tag">Species database</span>
+            <span class="need-tag">Export data</span>
+          </div>
+        </div>
+      </div>
+      <div class="segment-card reveal">
+        <div class="segment-icon">🔬</div>
+        <div class="segment-body">
+          <div class="segment-name">Professional Breeders, Zoos & Research</div>
+          <div class="segment-sub">B2B Segment</div>
+          <div class="segment-desc">High-volume operators managing 20–200+ habitats. Require commercial-grade logging, API integrations, and bulk pricing. Longer sales cycle but high LTV and strong word-of-mouth influence.</div>
+          <div class="segment-needs">
+            <span class="need-tag">API access</span>
+            <span class="need-tag">Bulk licensing</span>
+            <span class="need-tag">Compliance logs</span>
+            <span class="need-tag">White-label</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Segment distribution donut -->
+    <div class="two-col">
+      <div class="chart-card reveal">
+        <div class="chart-card-header">
+          <div>
+            <div class="chart-card-title">Target Segment Distribution — Addressable Market Share</div>
+            <div class="chart-card-desc">Estimated proportion of initial TAM per customer type</div>
+          </div>
+        </div>
+        <canvas id="segmentChart" height="220"></canvas>
+      </div>
+
+      <div class="chart-card reveal">
+        <div class="chart-card-header">
+          <div>
+            <div class="chart-card-title">Product Design Decision — Integrated vs Modular</div>
+            <div class="chart-card-desc">Evaluation criteria score (1–10)</div>
+          </div>
+          <span class="badge badge-green">Decision Made</span>
+        </div>
+        <canvas id="decisionChart" height="220"></canvas>
+      </div>
+    </div>
+
+    <!-- ── Section 6: Business Model Canvas ── -->
+    <div class="section-header reveal">
+      <div class="section-num">06</div>
+      <div class="section-header-text">
+        <h2>Business Model Canvas</h2>
+        <p>Lean Canvas adapted for hardware + SaaS hybrid model</p>
+      </div>
+    </div>
+
+    <div class="bmc-grid reveal">
+      <div class="bmc-cell tall">
+        <div class="bmc-cell-label">Key Partners</div>
+        <div class="bmc-item">Hardware manufacturers (Shenzhen)</div>
+        <div class="bmc-item">Reptile specialty retailers (Animalia, Vivarium World)</div>
+        <div class="bmc-item">Veterinary partners (reptile specialists)</div>
+        <div class="bmc-item">Zoo & research institutions</div>
+        <div class="bmc-item">Cloud platform (AWS / Alibaba Cloud)</div>
+      </div>
+      <div class="bmc-cell tall">
+        <div class="bmc-cell-label">Key Activities</div>
+        <div class="bmc-item">IoT hardware R&D + manufacturing</div>
+        <div class="bmc-item">Mobile app development (iOS/Android)</div>
+        <div class="bmc-item">Species database curation</div>
+        <div class="bmc-item">Community & content marketing</div>
+        <div class="bmc-item">B2B sales & onboarding</div>
+      </div>
+      <div class="bmc-cell wide2 tall" style="background: rgba(217,110,40,0.05); border-color: rgba(217,110,40,0.2);">
+        <div class="bmc-cell-label" style="font-size:11px;">Value Proposition</div>
+        <div class="bmc-item">All-in-one smart habitat monitor — single device replaces 4+ analogue tools</div>
+        <div class="bmc-item">Species-specific AI alerts prevent 80% of preventable reptile deaths</div>
+        <div class="bmc-item">Remote monitoring for busy urban pet owners</div>
+        <div class="bmc-item">First dedicated reptile IoT platform with care intelligence</div>
+        <div class="bmc-item">Therapeutic companion tool (autism/therapy contexts)</div>
+      </div>
+      <div class="bmc-cell tall">
+        <div class="bmc-cell-label">Customer Relationships</div>
+        <div class="bmc-item">In-app care community forum</div>
+        <div class="bmc-item">Automated AI care tips</div>
+        <div class="bmc-item">Dedicated B2B account managers</div>
+        <div class="bmc-item">Online unboxing + setup tutorials</div>
+      </div>
+      <div class="bmc-cell tall">
+        <div class="bmc-cell-label">Customer Segments</div>
+        <div class="bmc-item">Families + children 6–12</div>
+        <div class="bmc-item">Urban young professionals</div>
+        <div class="bmc-item">Experienced hobbyists</div>
+        <div class="bmc-item">Professional breeders</div>
+        <div class="bmc-item">Zoos / research labs</div>
+      </div>
+      <div class="bmc-cell">
+        <div class="bmc-cell-label">Key Resources</div>
+        <div class="bmc-item">Sensor IP + firmware</div>
+        <div class="bmc-item">Species database (500+ species)</div>
+        <div class="bmc-item">Engineering team</div>
+        <div class="bmc-item">Supply chain (Shenzhen)</div>
+      </div>
+      <div class="bmc-cell wide2">
+        <div class="bmc-cell-label">Channels</div>
+        <div class="bmc-item">Direct-to-consumer (tonitruum.com)</div>
+        <div class="bmc-item">Specialty pet retailers (EU)</div>
+        <div class="bmc-item">Amazon / Tmall / Chewy</div>
+        <div class="bmc-item">B2B direct sales</div>
+      </div>
+      <div class="bmc-cell">
+        <div class="bmc-cell-label">Cost Structure</div>
+        <div class="bmc-item">Hardware BOM: ~€38–45/unit</div>
+        <div class="bmc-item">App + cloud infrastructure</div>
+        <div class="bmc-item">R&D + product team</div>
+        <div class="bmc-item">Marketing + distribution</div>
+      </div>
+    </div>
+
+    <!-- ── Section 7: Revenue Streams ── -->
+    <div class="section-header reveal">
+      <div class="section-num">07</div>
+      <div class="section-header-text">
+        <h2>Revenue Streams</h2>
+        <p>Hardware-led with recurring software revenue — hardware + SaaS hybrid</p>
+      </div>
+    </div>
+
+    <div class="revenue-grid">
+      <div class="revenue-card reveal">
+        <div class="rev-icon">📦</div>
+        <div class="rev-name">Hardware Sales</div>
+        <div class="rev-pct">55%</div>
+        <div class="rev-desc">Sensor hub unit sales at €149–199. Bundled starter kits with accessories.</div>
+      </div>
+      <div class="revenue-card reveal">
+        <div class="rev-icon">🔄</div>
+        <div class="rev-name">Subscription (Pro)</div>
+        <div class="rev-pct">28%</div>
+        <div class="rev-desc">€4.99/mo per device. Advanced AI alerts, data export, multi-terrarium dashboard.</div>
+      </div>
+      <div class="revenue-card reveal">
+        <div class="rev-icon">🏢</div>
+        <div class="rev-name">B2B / Enterprise</div>
+        <div class="rev-pct">12%</div>
+        <div class="rev-desc">Annual licenses for zoos, research labs, and professional breeders. API access.</div>
+      </div>
+      <div class="revenue-card reveal">
+        <div class="rev-icon">🛒</div>
+        <div class="rev-name">Accessories & Marketplace</div>
+        <div class="rev-pct">5%</div>
+        <div class="rev-desc">Replacement probes, add-on sensors. Curated affiliate product marketplace.</div>
+      </div>
+    </div>
+
+    <!-- Revenue projection chart -->
+    <div class="chart-card reveal" style="margin-bottom:24px;">
+      <div class="chart-card-header">
+        <div>
+          <div class="chart-card-title">3-Year Revenue Projection by Stream (€K)</div>
+          <div class="chart-card-desc">Based on conservative growth scenario — EU launch 2027, China 2028, USA 2029</div>
+        </div>
+        <span class="badge badge-purple">Forecast</span>
+      </div>
+      <canvas id="revenueChart" height="200"></canvas>
+    </div>
+
+    <!-- ── Sources ── -->
+    <!-- ══ TEAM PORTRAITS ══ -->
+    <div class="section-header reveal">
+      <div class="section-num">★</div>
+      <div class="section-header-text">
+        <h2>Team Portraits — Core Members</h2>
+        <p>TONITRUUM · May Report · 6-person founding team</p>
+      </div>
+    </div>
+    <div class="team-grid reveal">
+
+      <div class="team-card" style="--member-color:#d97028;--member-bg:rgba(217,112,40,0.1);">
+        <div class="team-avatar">倪</div>
+        <div class="team-name">Xinghao Ni</div>
+        <div class="team-role">Founder · Product & Design Lead</div>
+        <div class="team-tags">
+          <span class="team-tag">Industrial Design</span>
+          <span class="team-tag">UX Strategy</span>
+          <span class="team-tag">TONITRUUM Founder</span>
+        </div>
+        <div class="team-desc">Design student at a French art school, M3 Digital project lead. Drives product design direction, brand identity, and the overall intelligent reptile ecosystem vision. Personally keeps multiple reptile species — deeply merging lived experience with product design.</div>
+        <div class="team-stat-row">
+          <div><div class="team-stat-val">M3</div><div class="team-stat-lbl">Digital Program</div></div>
+          <div><div class="team-stat-val">5+</div><div class="team-stat-lbl">Species kept</div></div>
+        </div>
+      </div>
+
+      <div class="team-card" style="--member-color:#6b9eb8;--member-bg:rgba(107,158,184,0.1);">
+        <div class="team-avatar">楠</div>
+        <div class="team-name">Wang Nan</div>
+        <div class="team-role">Co-Founder · Business Strategy</div>
+        <div class="team-tags">
+          <span class="team-tag">Business Planning</span>
+          <span class="team-tag">Market Research</span>
+          <span class="team-tag">Operations</span>
+        </div>
+        <div class="team-desc">Leads business planning and go-to-market strategy. Heads investor communications and pitch reporting for the innovation programme. Coordinates team workflow and drives end-to-end product-to-market validation.</div>
+        <div class="team-stat-row">
+          <div><div class="team-stat-val">CN</div><div class="team-stat-lbl">Market Lead</div></div>
+          <div><div class="team-stat-val">B2B</div><div class="team-stat-lbl">Channel Focus</div></div>
+        </div>
+      </div>
+
+      <div class="team-card" style="--member-color:#4a8c68;--member-bg:rgba(74,140,104,0.1);">
+        <div class="team-avatar">堃</div>
+        <div class="team-name">Ye Zhikun</div>
+        <div class="team-role">Hardware & IoT Engineering</div>
+        <div class="team-tags">
+          <span class="team-tag">Embedded Systems</span>
+          <span class="team-tag">Thermal Control</span>
+          <span class="team-tag">IoT Sensors</span>
+        </div>
+        <div class="team-desc">Leads smart thermostat hardware R&D and testing. Completed the temperature controller EVT showcase in June 2024. Drives the full technical development cycle from design to working prototype for the smart terrarium enclosure.</div>
+        <div class="team-stat-row">
+          <div><div class="team-stat-val">EVT</div><div class="team-stat-lbl">Prototype Done</div></div>
+          <div><div class="team-stat-val">IoT</div><div class="team-stat-lbl">Sensor Stack</div></div>
+        </div>
+      </div>
+
+      <div class="team-card" style="--member-color:#9b59d0;--member-bg:rgba(155,89,208,0.1);">
+        <div class="team-avatar">峰</div>
+        <div class="team-name">Wang Mufeng</div>
+        <div class="team-role">Software & App Development</div>
+        <div class="team-tags">
+          <span class="team-tag">Mobile App</span>
+          <span class="team-tag">Data Platform</span>
+          <span class="team-tag">Remote Control</span>
+        </div>
+        <div class="team-desc">Builds the mobile management app and data platform, delivering real-time habitat visualisation and remote control. Integrates the algorithm layer with the UI to support behaviour monitoring and individual reptile identification.</div>
+        <div class="team-stat-row">
+          <div><div class="team-stat-val">App</div><div class="team-stat-lbl">iOS / Android</div></div>
+          <div><div class="team-stat-val">API</div><div class="team-stat-lbl">Backend</div></div>
+        </div>
+      </div>
+
+      <div class="team-card" style="--member-color:#e05b7a;--member-bg:rgba(224,91,122,0.1);">
+        <div class="team-avatar">Rg</div>
+        <div class="team-name">Ruggero</div>
+        <div class="team-role">EU Market · Community & Sales</div>
+        <div class="team-tags">
+          <span class="team-tag">Europe Market</span>
+          <span class="team-tag">Reptile Community</span>
+          <span class="team-tag">Distributor Network</span>
+        </div>
+        <div class="team-desc">EU market lead. Deeply involved in German reptile market research and distributor network development. Manages the Kickstarter crowdfunding launch strategy and connects TONITRUUM with European reptile communities for first-round channel distribution.</div>
+        <div class="team-stat-row">
+          <div><div class="team-stat-val">EU</div><div class="team-stat-lbl">Market Lead</div></div>
+          <div><div class="team-stat-val">🇩🇪</div><div class="team-stat-lbl">Germany Focus</div></div>
+        </div>
+      </div>
+
+      <div class="team-card" style="--member-color:#f0a830;--member-bg:rgba(240,168,48,0.1);">
+        <div class="team-avatar">Sa</div>
+        <div class="team-name">Sarah</div>
+        <div class="team-role">Research & Content Strategy</div>
+        <div class="team-tags">
+          <span class="team-tag">Scientific Research</span>
+          <span class="team-tag">Content Creation</span>
+          <span class="team-tag">Community</span>
+        </div>
+        <div class="team-desc">Leads scientific research support and content strategy. Coordinates reptile expert interviews, market research analysis, and educational product content creation. Drives brand media outreach and social channel growth infrastructure.</div>
+        <div class="team-stat-row">
+          <div><div class="team-stat-val">FR</div><div class="team-stat-lbl">Base</div></div>
+          <div><div class="team-stat-val">EDU</div><div class="team-stat-lbl">Content Lead</div></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ══ PRODUCT MATRIX ══ -->
+    <div class="section-header reveal">
+      <div class="section-num">⬡</div>
+      <div class="section-header-text">
+        <h2>Product Matrix — 5 Product Lines</h2>
+        <p>TONITRUUM · Integrated hardware + software ecosystem</p>
+      </div>
+    </div>
+    <div class="product-matrix reveal">
+      <div class="product-col" style="--prod-color:#d97028;">
+        <div class="product-col-icon">🏠</div>
+        <div class="product-col-name">Smart Reptile Terrarium</div>
+        <div class="product-col-en">智能爬宠饲养箱</div>
+        <div class="product-col-desc">Multiple sizes and styles. Advanced ventilation and temperature control with full IoT sensor integration and remote management.</div>
+      </div>
+      <div class="product-col" style="--prod-color:#6b9eb8;">
+        <div class="product-col-icon">🍽</div>
+        <div class="product-col-name">Intelligent Feeding & Water</div>
+        <div class="product-col-en">智能喂食器与水源设备</div>
+        <div class="product-col-desc">Feeding bowls, water bowls, and auto-dispensers with scheduled feeding and water source monitoring for daily care safety.</div>
+      </div>
+      <div class="product-col" style="--prod-color:#4a8c68;">
+        <div class="product-col-icon">🌿</div>
+        <div class="product-col-name">Artistic Bioactive Landscaping</div>
+        <div class="product-col-en">高端艺术造景定制</div>
+        <div class="product-col-desc">Art × nature × technology — bespoke full-tank vivarium scaping with unique creative design tailored to each client and species.</div>
+      </div>
+      <div class="product-col" style="--prod-color:#9b59d0;">
+        <div class="product-col-icon">🏪</div>
+        <div class="product-col-name">Flagship Retail Store</div>
+        <div class="product-col-en">线下旗舰店</div>
+        <div class="product-col-desc">A destination for reptile enthusiasts — a tech-forward interactive experience space showcasing the full TONITRUUM smart product range.</div>
+      </div>
+      <div class="product-col" style="--prod-color:#e05b7a;">
+        <div class="product-col-icon">💡</div>
+        <div class="product-col-name">Creative Smart Devices</div>
+        <div class="product-col-en">其他创意智能设备</div>
+        <div class="product-col-desc">An expanding ecosystem of smart accessories — lighting control, humidity, temperature, water purification, and more.</div>
+      </div>
+    </div>
+
+    <!-- ══ CORE COMPETITIVENESS ══ -->
+    <div class="section-header reveal">
+      <div class="section-num">◈</div>
+      <div class="section-header-text">
+        <h2>Core Competitiveness — 4 Technical Pillars</h2>
+        <p>Scientific feeding · Precision algorithms · Environmental control · Full-stack monitoring</p>
+      </div>
+    </div>
+    <div class="comp-pillars reveal">
+
+      <div class="pillar-card">
+        <div class="pillar-icon">🥗</div>
+        <div class="pillar-name">Scientific Feeding Solutions</div>
+        <div class="pillar-items">
+          <div class="pillar-item">Nutrition management: customised feeding plans by species, age, and health status to ensure balanced diet</div>
+          <div class="pillar-item">Diet control: data-driven feed type and quantity adjustment to prevent overfeeding or deficiency</div>
+        </div>
+      </div>
+
+      <div class="pillar-card">
+        <div class="pillar-icon">🌡</div>
+        <div class="pillar-name">Professional Environment Control</div>
+        <div class="pillar-items">
+          <div class="pillar-item">Temperature: real-time smart monitoring and adjustment to maintain optimal thermal range</div>
+          <div class="pillar-item">Humidity: sensor + actuator system maintains appropriate moisture levels</div>
+          <div class="pillar-item">Lighting: simulates natural light cycles with calibrated UV output for healthy development</div>
+        </div>
+      </div>
+
+      <div class="pillar-card">
+        <div class="pillar-icon">🎯</div>
+        <div class="pillar-name">Per-Animal Precision Algorithms</div>
+        <div class="pillar-items">
+          <div class="pillar-item">Individual ID: image recognition or RFID to accurately identify each reptile and tie data to the individual</div>
+          <div class="pillar-item">Behaviour monitoring: video + analysis algorithms track activity in real time to assess health state</div>
+          <div class="pillar-item">Health assessment: ML algorithms evaluate physiological and behavioural data to flag early warnings</div>
+        </div>
+      </div>
+
+      <div class="pillar-card">
+        <div class="pillar-icon">📡</div>
+        <div class="pillar-name">Full-Stack Habitat Monitoring</div>
+        <div class="pillar-items">
+          <div class="pillar-item">Real-time data: IoT devices continuously collect environmental and physiological readings</div>
+          <div class="pillar-item">Data analysis: big-data processing generates care reports and personalised recommendations</div>
+          <div class="pillar-item">Remote control: mobile and desktop app lets owners monitor and adjust habitats from anywhere</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ══ DEVELOPMENT ROADMAP ══ -->
+    <div class="section-header reveal">
+      <div class="section-num">→</div>
+      <div class="section-header-text">
+        <h2>Development Roadmap</h2>
+        <p>2024 EVT → DVT → 2027 PVT → 2028 Mass Production → 2029 Global Launch</p>
+      </div>
+    </div>
+    <div class="card reveal" style="margin-bottom:24px;padding:20px 16px 8px;">
+      <div class="roadmap-phases" style="grid-template-columns:repeat(5,1fr);">
+        <div class="roadmap-phase-label active">2024 · EVT Prototype Validation</div>
+        <div class="roadmap-phase-label">2027 H1 · PVT Mass Production</div>
+        <div class="roadmap-phase-label">2027 H2 · Official Launch</div>
+        <div class="roadmap-phase-label">2028 · Scale Production</div>
+        <div class="roadmap-phase-label">2029 · Global Rollout</div>
+      </div>
+      <div class="roadmap-row">
+        <div class="roadmap-node">
+          <div class="roadmap-dot done"></div>
+          <div class="roadmap-date">Jun 21</div>
+          <div class="roadmap-event">Thermostat showcase · Core function validation</div>
+        </div>
+        <div class="roadmap-node">
+          <div class="roadmap-dot done"></div>
+          <div class="roadmap-date">Jul 21</div>
+          <div class="roadmap-event">Enclosure EVT prototype · Initial function demo</div>
+        </div>
+        <div class="roadmap-node">
+          <div class="roadmap-dot done"></div>
+          <div class="roadmap-date">Late Jul</div>
+          <div class="roadmap-event">Germany reptile market research · Distributor outreach</div>
+        </div>
+        <div class="roadmap-node">
+          <div class="roadmap-dot done"></div>
+          <div class="roadmap-date">Aug 1</div>
+          <div class="roadmap-event">DVT launch · ID + mechanical + structural design</div>
+        </div>
+        <div class="roadmap-node">
+          <div class="roadmap-dot done"></div>
+          <div class="roadmap-date">Early Aug</div>
+          <div class="roadmap-event">China sales channel setup · Market validation begins</div>
+        </div>
+        <div class="roadmap-node">
+          <div class="roadmap-dot done"></div>
+          <div class="roadmap-date">Sep 1</div>
+          <div class="roadmap-event">Product design finalised · Mould factory quotes</div>
+        </div>
+        <div class="roadmap-node">
+          <div class="roadmap-dot done"></div>
+          <div class="roadmap-date">Dec</div>
+          <div class="roadmap-event">Online + offline channels launched · First thermostat production run</div>
+        </div>
+        <div class="roadmap-node">
+          <div class="roadmap-dot done"></div>
+          <div class="roadmap-date">2027 Feb–Apr</div>
+          <div class="roadmap-event">Tooling + materials + assembly · 45 days · Mould complete</div>
+        </div>
+        <div class="roadmap-node">
+          <div class="roadmap-dot inprogress"></div>
+          <div class="roadmap-date">2027 May</div>
+          <div class="roadmap-event">PVT complete · Small-batch production · Initial inventory</div>
+        </div>
+        <div class="roadmap-node">
+          <div class="roadmap-dot future"></div>
+          <div class="roadmap-date">2027 Jun–Jul</div>
+          <div class="roadmap-event">Concept reveal · Pre-order · Launch event warm-up</div>
+        </div>
+        <div class="roadmap-node">
+          <div class="roadmap-dot future"></div>
+          <div class="roadmap-date">2027 Aug–Sep</div>
+          <div class="roadmap-event">Official launch · Launch event · Social media growth</div>
+        </div>
+        <div class="roadmap-node">
+          <div class="roadmap-dot future" style="border-color:rgba(217,110,40,0.4);"></div>
+          <div class="roadmap-date">Kickstarter</div>
+          <div class="roadmap-event">Design crowdfunding campaign · EU market entry</div>
+        </div>
+        <div class="roadmap-node">
+          <div class="roadmap-dot future"></div>
+          <div class="roadmap-date">2027 Q4</div>
+          <div class="roadmap-event">EU distributor network expansion · B2B client development</div>
+        </div>
+        <div class="roadmap-node">
+          <div class="roadmap-dot future"></div>
+          <div class="roadmap-date">2028 Q1</div>
+          <div class="roadmap-event">Large-scale production validation · Supply chain stabilisation</div>
+        </div>
+        <div class="roadmap-node">
+          <div class="roadmap-dot future"></div>
+          <div class="roadmap-date">2028 Q2</div>
+          <div class="roadmap-event">China market entry · Flagship store opening</div>
+        </div>
+        <div class="roadmap-node">
+          <div class="roadmap-dot future"></div>
+          <div class="roadmap-date">2028 Q3</div>
+          <div class="roadmap-event">US market launch · Series A funding closed</div>
+        </div>
+        <div class="roadmap-node">
+          <div class="roadmap-dot future"></div>
+          <div class="roadmap-date">2029 Q1</div>
+          <div class="roadmap-event">Global official launch · Autism therapy product line released</div>
+        </div>
+        <div class="roadmap-node">
+          <div class="roadmap-dot future" style="border-color:rgba(46,184,166,0.5);"></div>
+          <div class="roadmap-date" style="color:#2eb8a6;">2029 H2</div>
+          <div class="roadmap-event">Multi-market global coverage · Full platform ecosystem live</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ FUNDING PLAN ══ -->
+    <div class="section-header reveal">
+      <div class="section-num">¥</div>
+      <div class="section-header-text">
+        <h2>Funding Roadmap</h2>
+        <p>Self-funded → Angel → Pre-A · Total target ¥3.3M RMB</p>
+      </div>
+    </div>
+    <div class="reveal" style="margin-bottom:24px;">
+      <div class="funding-ladder">
+        <div class="funding-step">
+          <div class="funding-bar-wrap"><div class="funding-bar" style="height:20px;" data-h="20"></div></div>
+          <div class="funding-amount">¥150K</div>
+          <div class="funding-self">Self ¥80K</div>
+          <div class="funding-label">Seed</div>
+        </div>
+        <div class="funding-step">
+          <div class="funding-bar-wrap"><div class="funding-bar" style="height:25px;" data-h="25"></div></div>
+          <div class="funding-amount">¥170K</div>
+          <div class="funding-self">Self ¥100K</div>
+          <div class="funding-label">Round 2</div>
+        </div>
+        <div class="funding-step">
+          <div class="funding-bar-wrap"><div class="funding-bar" style="height:30px;" data-h="30"></div></div>
+          <div class="funding-amount">¥200K</div>
+          <div class="funding-self">Self ¥130K</div>
+          <div class="funding-label">Round 3</div>
+        </div>
+        <div class="funding-step">
+          <div class="funding-bar-wrap"><div class="funding-bar" style="height:38px;" data-h="38"></div></div>
+          <div class="funding-amount">¥250K</div>
+          <div class="funding-self">Self ¥150K</div>
+          <div class="funding-label">Round 4</div>
+        </div>
+        <div class="funding-step">
+          <div class="funding-bar-wrap"><div class="funding-bar" style="height:46px;" data-h="46"></div></div>
+          <div class="funding-amount">¥300K</div>
+          <div class="funding-self">Self ¥170K</div>
+          <div class="funding-label">Round 5</div>
+        </div>
+        <div class="funding-step">
+          <div class="funding-bar-wrap"><div class="funding-bar angel" style="height:62px;" data-h="62"></div></div>
+          <div class="funding-amount" style="color:#9b59d0;">Angel</div>
+          <div class="funding-self">Self ¥200K</div>
+          <div class="funding-label">Angel</div>
+        </div>
+        <div class="funding-step">
+          <div class="funding-bar-wrap"><div class="funding-bar series" style="height:80px;" data-h="80"></div></div>
+          <div class="funding-amount" style="color:#2eb8a6;">¥1M</div>
+          <div class="funding-self">Self ¥250K</div>
+          <div class="funding-label">Pre-A</div>
+        </div>
+        <div class="funding-step">
+          <div class="funding-bar-wrap"><div class="funding-bar total" style="height:100px;" data-h="100"></div></div>
+          <div class="funding-amount" style="color:#e05b7a;">¥3M</div>
+          <div class="funding-self">Self ¥300K</div>
+          <div class="funding-label">Series A</div>
+        </div>
+      </div>
+      <div style="text-align:right;font-size:12px;font-weight:700;color:var(--text-primary);padding-right:8px;margin-top:4px;">
+        Total target: <span style="color:var(--accent-orange);font-size:16px;">¥3.3M</span> RMB
+      </div>
+    </div>
+
+    <div class="source-list reveal">
+      <div class="source-list-title">Data Sources & References</div>
+      <div class="source-item" data-num="1">FACCO / KANTAR — Enquête nationale sur la population des animaux de compagnie en France, 2025. facco.fr</div>
+      <div class="source-item" data-num="2">FEDIAF — European Pet Food Industry — Facts & Figures 2024. fediaf.org</div>
+      <div class="source-item" data-num="3">APPA — American Pet Products Association National Pet Owners Survey 2025–2026. americanpetproducts.org</div>
+      <div class="source-item" data-num="4">Coherent Market Insights / EIN Presswire — Reptile Enclosure Market Size to Surpass US$2.16 Billion by 2030. einpresswire.com, 2024</div>
+      <div class="source-item" data-num="5">Arizton Advisory & Intelligence — Pet Tech Market Size, Industry Share, Trends 2024–2030. arizton.com</div>
+      <div class="source-item" data-num="6">Grand View Research — North America and Europe Exotic Companion Animal Market Report, 2024. grandviewresearch.com</div>
+      <div class="source-item" data-num="7">Statista — Reptile population in the European Union by country, 2023. statista.com</div>
+      <div class="source-item" data-num="8">Lucintel — Reptile Pet Supply Market Analysis 2024–2030. lucintel.com</div>
+      <div class="source-item" data-num="9">Euromonitor International — Pet Care in China, Country Report, 2023. euromonitor.com</div>
+      <div class="source-item" data-num="10">JPFA (Japan Pet Food Association) — Nationwide Survey on Pet Ownership, 2022. jpfa.or.jp</div>
+      <div class="source-item" data-num="11">ABINPET — Mercado Pet Brasil, Relatório Anual 2023. abinpet.org.br</div>
+      <div class="source-item" data-num="12">ZZF / IVH — Heimtierdaten Deutschland 2023 — Anzahl der Heimtiere nach Tierart. ivh-online.de</div>
+      <div class="source-item" data-num="13">PFMA (Pet Food Manufacturers' Association) — Pet Population 2023, UK. pfma.org.uk</div>
+      <div class="source-item" data-num="14">Animal Medicines Australia — Pets in Australia: A National Survey of Pets and People, 2022. animalmedicinesaustralia.org.au</div>
+      <div class="source-item" data-num="15">Assalco-Zoomark — Il mercato degli animali da compagnia in Italia, 2023. assalco.it</div>
+    </div>
+
+    <!-- ── COMPETITIVE LANDSCAPE ── -->
+    <div class="section-header reveal" style="margin-top:40px">
+      <div class="section-num">C</div>
+      <div class="section-header-text">
+        <h2>China Market — Competitive Landscape &amp; Pricing</h2>
+        <p>Current market products, brands, and retail price ranges — sourced from Taobao, Pinduoduo, physical stores, and the Asia Pet Show</p>
+      </div>
+    </div>
+
+    <!-- Segment overview -->
+    <div class="comp-seg-grid">
+      <div class="comp-seg reveal">
+        <div class="comp-seg-badge badge-budget">Budget / Commodity</div>
+        <div class="comp-seg-title">Basic Enclosures</div>
+        <div class="comp-seg-sub">Simple glass tanks, panoramic enclosures — no smart features, sold on Taobao / Pinduoduo</div>
+        <div class="comp-brands">
+          <span class="comp-brand-tag">爬宠商城</span>
+          <span class="comp-brand-tag">全景爬虹</span>
+          <span class="comp-brand-tag">汕头良品精匠</span>
+          <span class="comp-brand-tag">barbarous</span>
+          <span class="comp-brand-tag">森品</span>
+        </div>
+        <div class="comp-price-range">¥29 – ¥580</div>
+        <div class="comp-price-label">Enclosure body only</div>
+        <div class="comp-items">
+          <div class="comp-item"><span class="comp-item-name">Simple glass 20×20×15cm</span><span class="comp-item-price">¥29</span></div>
+          <div class="comp-item"><span class="comp-item-name">Simple glass 30×30×20cm</span><span class="comp-item-price">¥64</span></div>
+          <div class="comp-item"><span class="comp-item-name">Simple glass 50×30×35cm</span><span class="comp-item-price">¥135</span></div>
+          <div class="comp-divider"></div>
+          <div class="comp-item"><span class="comp-item-name">Panoramic 全景 60cm slide</span><span class="comp-item-price">¥211</span></div>
+          <div class="comp-item"><span class="comp-item-name">Panoramic 全景 100cm slide</span><span class="comp-item-price">¥435</span></div>
+          <div class="comp-item"><span class="comp-item-name">Panoramic 全景 120cm double-door</span><span class="comp-item-price">¥580</span></div>
+          <div class="comp-divider"></div>
+          <div class="comp-item"><span class="comp-item-name">40×40×60cm tall box</span><span class="comp-item-price">¥207</span></div>
+          <div class="comp-item"><span class="comp-item-name">78×40×60cm tall box</span><span class="comp-item-price">¥347</span></div>
+        </div>
+      </div>
+
+      <div class="comp-seg reveal">
+        <div class="comp-seg-badge badge-mid">Mid-range / Modular</div>
+        <div class="comp-seg-title">Stacking Panoramic Enclosures (基础品牌)</div>
+        <div class="comp-seg-sub">Full-view glass panels, aluminium column frames, stackable — dominant category on Taobao</div>
+        <div class="comp-brands">
+          <span class="comp-brand-tag">基础品牌 全景爬虹</span>
+          <span class="comp-brand-tag">超爬</span>
+        </div>
+        <div class="comp-price-range">¥83 – ¥399</div>
+        <div class="comp-price-label">Enclosure body + frame</div>
+        <div class="comp-items">
+          <div class="comp-item"><span class="comp-item-name">20×20×15cm 翻盖小号</span><span class="comp-item-price">¥83</span></div>
+          <div class="comp-item"><span class="comp-item-name">30×30×20cm 翻盖中号</span><span class="comp-item-price">¥128</span></div>
+          <div class="comp-item"><span class="comp-item-name">30×40×25cm 翻盖大号</span><span class="comp-item-price">¥188</span></div>
+          <div class="comp-divider"></div>
+          <div class="comp-item"><span class="comp-item-name">30×30×20cm 铝合金金柱叠加缸</span><span class="comp-item-price">¥135</span></div>
+          <div class="comp-item"><span class="comp-item-name">55×30×18cm 铝合金金柱叠加</span><span class="comp-item-price">¥195</span></div>
+          <div class="comp-item"><span class="comp-item-name">55×30×30cm 铝合金金柱叠加</span><span class="comp-item-price">¥209</span></div>
+          <div class="comp-divider"></div>
+          <div class="comp-item"><span class="comp-item-name">【叠加】双层 30×30×20cm 矮支柱</span><span class="comp-item-price">¥265</span></div>
+          <div class="comp-item"><span class="comp-item-name">【叠加】双层 55×30×30cm 高支柱</span><span class="comp-item-price">¥389</span></div>
+          <div class="comp-item"><span class="comp-item-name">【高叠加】双层 55×30×18cm 高支柱</span><span class="comp-item-price">¥359–399</span></div>
+        </div>
+      </div>
+
+      <div class="comp-seg reveal">
+        <div class="comp-seg-badge badge-smart">Smart / Integrated</div>
+        <div class="comp-seg-title">Smart Reptile Enclosures</div>
+        <div class="comp-seg-sub">Thermostat-integrated warming boxes and smart terraria — closest to TONITRUUM's category</div>
+        <div class="comp-brands">
+          <span class="comp-brand-tag">维度爬箱</span>
+          <span class="comp-brand-tag">赛博智能爬虹</span>
+        </div>
+        <div class="comp-price-range">¥390 – ¥850</div>
+        <div class="comp-price-label">Smart enclosure (no sensor platform)</div>
+        <div class="comp-items">
+          <div class="comp-item"><span class="comp-item-name">维度 334 单层暖箱 抽屉款</span><span class="comp-item-price">¥390</span></div>
+          <div class="comp-item"><span class="comp-item-name">维度 334 单层暖箱 前开门款</span><span class="comp-item-price">¥450</span></div>
+          <div class="comp-item"><span class="comp-item-name">维度 334 双层暖箱 抽屉款</span><span class="comp-item-price">¥490</span></div>
+          <div class="comp-item"><span class="comp-item-name">维度 334 双层暖箱 前开门款</span><span class="comp-item-price">¥650</span></div>
+          <div class="comp-item"><span class="comp-item-name">维度 334 三层暖箱 抽屉款</span><span class="comp-item-price">¥780</span></div>
+          <div class="comp-item"><span class="comp-item-name">维度 334 三层暖箱 前开门款</span><span class="comp-item-price">¥850</span></div>
+          <div class="comp-divider"></div>
+          <div class="comp-item"><span class="comp-item-name">维度睡角巨人魔物 21–35cm 抽屉</span><span class="comp-item-price">¥238</span></div>
+          <div class="comp-item"><span class="comp-item-name">维度睡角巨人魔物 31–45cm 抽屉</span><span class="comp-item-price">¥338</span></div>
+          <div class="comp-divider"></div>
+          <div class="comp-item"><span class="comp-item-name">赛博智能爬虹 2.0</span><span class="comp-item-price hi">¥814</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Accessories pricing by category -->
+    <div class="chart-card reveal" style="margin-top:16px">
+      <div class="chart-card-header">
+        <div>
+          <div class="chart-card-title">Accessories Price Map — Heating &amp; Lighting</div>
+          <div class="chart-card-desc">Separate purchase required with any basic enclosure. Typical owner total = enclosure + ¥200–600 in accessories.</div>
+        </div>
+      </div>
+      <div class="comp-cat-grid">
+        <div class="comp-cat">
+          <div class="comp-cat-icon">🌡️</div>
+          <div class="comp-cat-name">Heating Pads — Basic (恒温加热垫)</div>
+          <div class="comp-cat-rows">
+            <div class="comp-cat-row"><span class="comp-cat-row-label">10W</span><span class="comp-cat-row-price">¥88</span></div>
+            <div class="comp-cat-row"><span class="comp-cat-row-label">20W</span><span class="comp-cat-row-price">¥111</span></div>
+            <div class="comp-cat-row"><span class="comp-cat-row-label">30W</span><span class="comp-cat-row-price">¥126</span></div>
+            <div class="comp-cat-row"><span class="comp-cat-row-label">40W</span><span class="comp-cat-row-price">¥149</span></div>
+            <div class="comp-cat-row" style="margin-top:6px;border-top:1px solid var(--border);padding-top:6px"><span class="comp-cat-row-label">Smart 10W (智能)</span><span class="comp-cat-row-price">¥267</span></div>
+            <div class="comp-cat-row"><span class="comp-cat-row-label">Smart 20W</span><span class="comp-cat-row-price">¥295</span></div>
+            <div class="comp-cat-row"><span class="comp-cat-row-label">Smart 30W</span><span class="comp-cat-row-price">¥327</span></div>
+            <div class="comp-cat-row"><span class="comp-cat-row-label">Smart 40W</span><span class="comp-cat-row-price">¥351</span></div>
+          </div>
+        </div>
+        <div class="comp-cat">
+          <div class="comp-cat-icon">🔌</div>
+          <div class="comp-cat-name">Heating Pads — 4th Gen (四代加热垫)</div>
+          <div class="comp-cat-rows">
+            <div class="comp-cat-row"><span class="comp-cat-row-label">5W 14×15cm (with thermostat)</span><span class="comp-cat-row-price">¥18.92</span></div>
+            <div class="comp-cat-row"><span class="comp-cat-row-label">12W 28×15cm</span><span class="comp-cat-row-price">¥25.71</span></div>
+            <div class="comp-cat-row"><span class="comp-cat-row-label">24W 28×28cm</span><span class="comp-cat-row-price">¥39.29</span></div>
+            <div class="comp-cat-row"><span class="comp-cat-row-label">38W 42×28cm</span><span class="comp-cat-row-price">¥52.19</span></div>
+            <div class="comp-cat-row"><span class="comp-cat-row-label">60W 65×28cm</span><span class="comp-cat-row-price">¥78.88</span></div>
+            <div class="comp-cat-row" style="margin-top:6px;border-top:1px solid var(--border);padding-top:6px"><span class="comp-cat-row-label">5W (no thermostat)</span><span class="comp-cat-row-price">¥11.16</span></div>
+            <div class="comp-cat-row"><span class="comp-cat-row-label">24W (no thermostat)</span><span class="comp-cat-row-price">¥29.1</span></div>
+            <div class="comp-cat-row"><span class="comp-cat-row-label">60W (no thermostat)</span><span class="comp-cat-row-price">¥56.26</span></div>
+          </div>
+        </div>
+        <div class="comp-cat">
+          <div class="comp-cat-icon">💡</div>
+          <div class="comp-cat-name">UV / UVA Lighting (米道灯)</div>
+          <div class="comp-cat-rows">
+            <div class="comp-cat-row"><span class="comp-cat-row-label">4th Gen 5.0 UVB+UVA 二合一</span><span class="comp-cat-row-price">¥64.8</span></div>
+            <div class="comp-cat-row"><span class="comp-cat-row-label">4th Gen 10.0 UVB+UVA</span><span class="comp-cat-row-price">¥88.8</span></div>
+            <div class="comp-cat-row"><span class="comp-cat-row-label">4th Gen 15.0 UVB+UVA</span><span class="comp-cat-row-price">¥124</span></div>
+            <div class="comp-cat-row"><span class="comp-cat-row-label">晒背灯 5.0 单个装</span><span class="comp-cat-row-price">¥132.6</span></div>
+            <div class="comp-cat-row"><span class="comp-cat-row-label">晒背灯 15.0 两个装</span><span class="comp-cat-row-price">¥220</span></div>
+            <div class="comp-cat-row"><span class="comp-cat-row-label">晒背灯 15.0 三个装</span><span class="comp-cat-row-price">¥318</span></div>
+            <div class="comp-cat-row" style="margin-top:6px;border-top:1px solid var(--border);padding-top:6px"><span class="comp-cat-row-label">套餐A UVB5.0 适合20–45缸</span><span class="comp-cat-row-price">¥170</span></div>
+            <div class="comp-cat-row"><span class="comp-cat-row-label">套餐C UVB10.0 适合60–90缸</span><span class="comp-cat-row-price">¥210</span></div>
+            <div class="comp-cat-row"><span class="comp-cat-row-label">套餐D UVB15.0 适合120–150缸</span><span class="comp-cat-row-price">¥250</span></div>
+          </div>
+        </div>
+        <div class="comp-cat">
+          <div class="comp-cat-icon">🌿</div>
+          <div class="comp-cat-name">Rainforest &amp; Ceramic Lights</div>
+          <div class="comp-cat-rows">
+            <div class="comp-cat-row"><span class="comp-cat-row-label">雨林灯 四色晨昏小号 10cm支架</span><span class="comp-cat-row-price">¥69</span></div>
+            <div class="comp-cat-row"><span class="comp-cat-row-label">雨林灯 四色晨昏中号 22cm支架</span><span class="comp-cat-row-price">¥114</span></div>
+            <div class="comp-cat-row"><span class="comp-cat-row-label">雨林灯 四色晨昏大号 44cm支架</span><span class="comp-cat-row-price">¥144</span></div>
+            <div class="comp-cat-row" style="margin-top:6px;border-top:1px solid var(--border);padding-top:6px"><span class="comp-cat-row-label">陶瓷灯 50W (30–40缸)</span><span class="comp-cat-row-price">¥19.9</span></div>
+            <div class="comp-cat-row"><span class="comp-cat-row-label">陶瓷灯 75W (50缸)</span><span class="comp-cat-row-price">¥19.9</span></div>
+            <div class="comp-cat-row"><span class="comp-cat-row-label">陶瓷灯 100W (50–90缸)</span><span class="comp-cat-row-price">¥19.9</span></div>
+            <div class="comp-cat-row"><span class="comp-cat-row-label">陶瓷灯 150W (120缸)</span><span class="comp-cat-row-price">¥19.9</span></div>
+            <div class="comp-cat-row" style="margin-top:6px;border-top:1px solid var(--border);padding-top:6px"><span class="comp-cat-row-label">灯架 晒背加热二合一小号</span><span class="comp-cat-row-price">¥93</span></div>
+            <div class="comp-cat-row"><span class="comp-cat-row-label">灯架 晒背加热二合一大号</span><span class="comp-cat-row-price">¥124</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Market insights -->
+    <div class="comp-insight-row">
+      <div class="comp-insight reveal">
+        <div class="comp-insight-label">Asia Pet Show — Factory Insight</div>
+        <div class="comp-insight-val">60×45×35cm PE enclosure sells for <strong>$15 USD</strong> at factory price. Standard high-enclosure full-mould PE: <strong>¥45</strong>. Top seller on Pinduoduo in this category.</div>
+      </div>
+      <div class="comp-insight reveal">
+        <div class="comp-insight-label">Offline Store Advice (Hangzhou / Shanghai / Guangzhou)</div>
+        <div class="comp-insight-val">Store owners recommend: start with a cheap tank. Entry setup (corn snake + basic tank) should stay <strong>under ¥700</strong>. Physical stores: 爬来爬去, 玄武纪 (HZ) · HSBG (SH) · 唐朝 (GZ).</div>
+      </div>
+      <div class="comp-insight reveal">
+        <div class="comp-insight-label">TONITRUUM Positioning Gap</div>
+        <div class="comp-insight-val">No existing CN brand integrates <strong>sensors + software + enclosure</strong> in one product. Smart warmers (¥390–850) have basic thermostat only — no CO₂, no weight, no app platform, no camera.</div>
+      </div>
+    </div>
+
+    <!-- ── PRICING FORMULA + CALCULATOR ── -->
+    <div class="section-header reveal" style="margin-top:40px">
+      <div class="section-num">F</div>
+      <div class="section-header-text">
+        <h2>Pricing Formula &amp; Live Calculator</h2>
+        <p>Structured cost model with an interactive calculator — adjust inputs to see real-time CN/EU retail prices and gross margins</p>
+      </div>
+    </div>
+    <div class="pf-wrap">
+      <!-- Left: formulas -->
+      <div>
+        <div class="pf-box reveal">
+          <div class="pf-name">Unit Full Cost Formula</div>
+          <div class="pf-eq">
+            <span class="v">C_unit</span> <span class="op">=</span>
+            <span class="v"> C_mat</span> <span class="op">+</span>
+            <span class="v"> C_elec</span> <span class="op">+</span>
+            <span class="v"> C_asm</span> <span class="op">+</span>
+            <span class="v"> C_pkg</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="op">+</span>
+            <span class="v"> C_frt</span> <span class="op">+</span>
+            <span class="v"> C_war</span> <span class="op">+</span>
+            <span class="v"> C_NRE</span> <span class="op">/</span>
+            <span class="k"> N</span>
+          </div>
+          <div class="pf-note">C_NRE = one-time engineering costs (industrial design, tooling, etc.), amortised over batch size N. Larger N → lower per-unit cost.</div>
+        </div>
+        <div class="pf-box reveal">
+          <div class="pf-name">China D2C Pricing</div>
+          <div class="pf-eq"><span class="v">P_CN</span> <span class="op">=</span> <span class="v"> C_unit</span> <span class="op">×</span> <span class="c"> [2.3 ~ 3.2]</span></div>
+          <div class="pf-note">Target gross margin 55–65%, inclusive of D2C platform commission and marketing costs.</div>
+        </div>
+        <div class="pf-box reveal">
+          <div class="pf-name">Europe Pricing (Full VAT Chain)</div>
+          <div class="pf-eq">
+            <span class="v">C_landed</span> <span class="op">=</span> <span class="v"> C_unit</span> <span class="op">/ 7.9979</span> <span class="op">+</span> <span class="v"> Logistics</span><br>
+            <span class="v">P_EU_ex</span> <span class="op">=</span> <span class="v"> C_landed</span> <span class="op">×</span> <span class="c"> [2.5 ~ 3.5]</span><br>
+            <span class="v">P_EU_inc</span> <span class="op">=</span> <span class="v"> P_EU_ex</span> <span class="op">×</span> <span class="c"> 1.20</span>
+          </div>
+          <div class="pf-note">EU target GM 60–70% — must cover VAT, warehousing, damage rate, returns and local support costs.</div>
+        </div>
+        <div class="pf-box reveal">
+          <div class="pf-name">Consumer Final Price</div>
+          <div class="pf-eq">
+            <span class="v">P_final</span> <span class="op">=</span> <span class="v"> P_retail</span>
+            <span class="op"> −</span> <span class="v"> Coupon</span>
+            <span class="op"> −</span> <span class="v"> Launch</span>
+            <span class="op"> −</span> <span class="v"> Bundle</span>
+          </div>
+          <div class="pf-note">Pet insurance in Europe typically covers veterinary costs only — not hardware. Consumer out-of-pocket depends primarily on retail price and promotion mechanics.</div>
+        </div>
+      </div>
+      <!-- Right: calculator -->
+      <div class="reveal">
+        <div class="calc-box">
+          <div class="calc-title">Live Cost Calculator</div>
+          <div class="calc-2col">
+            <div class="calc-field"><label>Materials (¥)</label><input class="calc-input" id="c-mat" type="number" value="280"></div>
+            <div class="calc-field"><label>Electronics BOM (¥)</label><input class="calc-input" id="c-elec" type="number" value="500"></div>
+            <div class="calc-field"><label>Assembly labour (¥)</label><input class="calc-input" id="c-asm" type="number" value="120"></div>
+            <div class="calc-field"><label>Packaging (¥)</label><input class="calc-input" id="c-pkg" type="number" value="80"></div>
+            <div class="calc-field"><label>Factory → warehouse (¥)</label><input class="calc-input" id="c-frt" type="number" value="60"></div>
+            <div class="calc-field"><label>Warranty reserve (%)</label><input class="calc-input" id="c-war" type="number" value="3"></div>
+          </div>
+          <div class="calc-field"><label>One-time NRE cost (¥)</label><input class="calc-input" id="c-nre" type="number" value="7000"></div>
+          <div class="calc-field"><label>Amortisation batch N (units)</label><input class="calc-input" id="c-n" type="number" value="1000"></div>
+          <div class="calc-2col">
+            <div class="calc-field"><label>EUR/CNY rate</label><input class="calc-input" id="c-rate" type="number" value="7.9979" step="0.01"></div>
+            <div class="calc-field"><label>EU last-mile logistics (€/unit)</label><input class="calc-input" id="c-eu-log" type="number" value="18"></div>
+          </div>
+          <div class="calc-2col">
+            <div class="calc-field">
+              <label>China multiplier</label>
+              <select class="calc-select" id="c-cn-mult">
+                <option value="2.3">×2.3 (GM 57%)</option>
+                <option value="2.8" selected>×2.8 (GM 64%)</option>
+                <option value="3.2">×3.2 (GM 69%)</option>
+              </select>
+            </div>
+            <div class="calc-field">
+              <label>EU multiplier</label>
+              <select class="calc-select" id="c-eu-mult">
+                <option value="2.5">×2.5 (GM 60%)</option>
+                <option value="3.0" selected>×3.0 (GM 67%)</option>
+                <option value="3.5">×3.5 (GM 71%)</option>
+              </select>
+            </div>
+          </div>
+          <div class="calc-div"></div>
+          <div class="calc-result">
+            <div class="calc-rl">Unit full cost</div>
+            <div class="calc-rv" id="r-unit">¥ —</div>
+            <div class="calc-rsub" id="r-unit-sub">(incl. NRE amortisation)</div>
+          </div>
+          <div class="calc-result">
+            <div class="calc-rl">China retail price</div>
+            <div class="calc-rv gold" id="r-cn">¥ —</div>
+            <div class="calc-rsub" id="r-cn-sub">Gross margin —</div>
+            <div class="calc-bar"><div class="calc-bar-fill" id="r-cn-bar" style="width:0%;background:linear-gradient(90deg,var(--accent-orange),#e8a060)"></div></div>
+          </div>
+          <div class="calc-result">
+            <div class="calc-rl">EU price ex VAT</div>
+            <div class="calc-rv blue" id="r-eu-ex">€ —</div>
+          </div>
+          <div class="calc-result">
+            <div class="calc-rl">EU price inc VAT (×1.20)</div>
+            <div class="calc-rv green" id="r-eu-inc">€ —</div>
+            <div class="calc-rsub" id="r-eu-sub">Gross margin —</div>
+            <div class="calc-bar"><div class="calc-bar-fill" id="r-eu-bar" style="width:0%"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── PRODUCT MATRIX ── -->
+    <div class="section-header reveal" style="margin-top:40px">
+      <div class="section-num">P</div>
+      <div class="section-header-text">
+        <h2>Product Line &amp; Pricing</h2>
+        <p>Five SKUs covering the full range of reptile enclosure needs — from nano arboreal to large terrestrial</p>
+      </div>
+    </div>
+    <div class="prod-grid">
+      <div class="prod-card reveal">
+        <div class="prod-glow"></div>
+        <div class="prod-sz">30 × 30 × 45 cm</div>
+        <div class="prod-name">Nano Tree</div>
+        <div class="prod-sub">Small arboreal enclosure</div>
+        <div class="prod-tags">
+          <span class="prod-tag">Tree Geckos</span>
+          <span class="prod-tag">Tree Frogs</span>
+          <span class="prod-tag">Invertebrates</span>
+        </div>
+        <div class="prod-price">
+          <div class="prod-row"><span class="prod-label">China</span><span class="prod-val">¥1,499–1,999</span></div>
+          <div class="prod-row"><span class="prod-label">EU ex VAT</span><span class="prod-val">€219–269</span></div>
+          <div class="prod-vat">inc VAT (×1.20): €263–323</div>
+        </div>
+      </div>
+      <div class="prod-card reveal">
+        <div class="prod-glow"></div>
+        <div class="prod-sz">45 × 45 × 45 cm</div>
+        <div class="prod-name">Cube Standard</div>
+        <div class="prod-sub">Mid-size cube — <span style="color:var(--accent-orange)">★ Flagship</span></div>
+        <div class="prod-tags">
+          <span class="prod-tag">Crested Gecko</span>
+          <span class="prod-tag">Day Gecko</span>
+          <span class="prod-tag">Rainforest</span>
+        </div>
+        <div class="prod-price">
+          <div class="prod-row"><span class="prod-label">China</span><span class="prod-val">¥2,299–2,999</span></div>
+          <div class="prod-row"><span class="prod-label">EU ex VAT</span><span class="prod-val">€329–399</span></div>
+          <div class="prod-vat">inc VAT: €395–479</div>
+        </div>
+      </div>
+      <div class="prod-card reveal">
+        <div class="prod-glow"></div>
+        <div class="prod-sz">60 × 45 × 45 cm</div>
+        <div class="prod-name">Terrestrial</div>
+        <div class="prod-sub">Mid-size ground-dwelling</div>
+        <div class="prod-tags">
+          <span class="prod-tag">Leopard Gecko</span>
+          <span class="prod-tag">Hognose Snake</span>
+          <span class="prod-tag">Ball Python</span>
+        </div>
+        <div class="prod-price">
+          <div class="prod-row"><span class="prod-label">China</span><span class="prod-val">¥2,999–3,999</span></div>
+          <div class="prod-row"><span class="prod-label">EU ex VAT</span><span class="prod-val">€419–499</span></div>
+          <div class="prod-vat">inc VAT: €503–599</div>
+        </div>
+      </div>
+      <div class="prod-card reveal">
+        <div class="prod-glow"></div>
+        <div class="prod-sz">90 × 45 × 45 cm</div>
+        <div class="prod-name">Large Horizontal</div>
+        <div class="prod-sub">Large terrestrial / semi-arboreal</div>
+        <div class="prod-tags">
+          <span class="prod-tag">Corn Snake</span>
+          <span class="prod-tag">King Snake</span>
+          <span class="prod-tag">Bearded Dragon</span>
+        </div>
+        <div class="prod-price">
+          <div class="prod-row"><span class="prod-label">China</span><span class="prod-val">¥4,599–5,999</span></div>
+          <div class="prod-row"><span class="prod-label">EU ex VAT</span><span class="prod-val">€599–749</span></div>
+          <div class="prod-vat">inc VAT: €719–899</div>
+        </div>
+      </div>
+      <div class="prod-card reveal">
+        <div class="prod-glow"></div>
+        <div class="prod-sz">90 × 45 × 60 cm</div>
+        <div class="prod-name">Large Tall</div>
+        <div class="prod-sub">Large tall arboreal / display</div>
+        <div class="prod-tags">
+          <span class="prod-tag">Chameleon</span>
+          <span class="prod-tag">Arboreal Geckos</span>
+          <span class="prod-tag">Display Vivarium</span>
+        </div>
+        <div class="prod-price">
+          <div class="prod-row"><span class="prod-label">China</span><span class="prod-val">¥5,599–7,999</span></div>
+          <div class="prod-row"><span class="prod-label">EU ex VAT</span><span class="prod-val">€749–999</span></div>
+          <div class="prod-vat">inc VAT: €899–1,199</div>
+        </div>
+      </div>
+    </div>
+    <p class="chart-source" style="margin-top:12px">Reference: Exo Terra 45×45×45 cm ≈ €130–145; 90×45×45 cm ≈ €222; 90×45×60 cm ≈ €340. TONITRUUM smart premium is justified by sensor stack + software platform.</p>
+
+    <!-- ── SPECIES MARKET PRICE × PRODUCT MATCH ── -->
+    <div class="section-header reveal" style="margin-top:36px">
+      <div class="section-num">S</div>
+      <div class="section-header-text">
+        <h2>Species Market Prices × Recommended Setup</h2>
+        <p>European market reference prices for popular captive-bred species, matched to the appropriate TONITRUUM product and total budget estimate</p>
+      </div>
+    </div>
+    <div class="sp-ftabs">
+      <button class="sp-ftab act" data-cat="all">All Species</button>
+      <button class="sp-ftab" data-cat="gecko">Geckos</button>
+      <button class="sp-ftab" data-cat="snake">Snakes</button>
+      <button class="sp-ftab" data-cat="lizard">Lizards</button>
+      <button class="sp-ftab" data-cat="frog">Tree Frogs</button>
+    </div>
+    <div class="sp-grid">
+
+      <!-- 1 Crested Gecko -->
+      <div class="sp-card reveal" data-cat="gecko">
+        <div class="sp-glow" style="background:linear-gradient(90deg,transparent,var(--accent-blue),transparent)"></div>
+        <div class="sp-ctag ct-gecko">Gecko</div>
+        <span class="sp-emoji">🦎</span>
+        <div class="sp-cn">Crested Gecko</div>
+        <div class="sp-en">Correlophus ciliatus</div>
+        <div class="sp-sci">New Caledonia</div>
+        <div class="sp-bands">
+          <div class="sp-pb"><span class="sp-pbl">Common morph</span><span class="sp-pbr com">€50 – €150</span></div>
+          <div class="sp-pb"><span class="sp-pbl">Rare morph</span><span class="sp-pbr rare">€250 – €800</span></div>
+        </div>
+        <div class="sp-diff"><span class="sp-dfll">Difficulty</span><div class="sp-stars"><div class="sp-star on"></div><div class="sp-star on"></div><div class="sp-star off"></div><div class="sp-star off"></div><div class="sp-star off"></div></div><span style="font-size:.62rem;color:var(--text-muted)">Beginner friendly</span></div>
+        <div class="sp-match">
+          <div class="sp-ml">Recommended TONITRUUM</div>
+          <div class="sp-mp">Cube Standard</div>
+          <div class="sp-msz">45 × 45 × 45 cm · arboreal</div>
+          <div class="sp-mpr">€329 – 399 <span class="vat">ex VAT · inc VAT €395–479</span></div>
+          <div class="sp-budget">
+            <div class="sp-bl">Total setup budget</div>
+            <div class="sp-bv">€379 – €1,199</div>
+            <div class="sp-budbar"><div class="sp-budbar-fill" style="width:55%"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2 Leopard Gecko -->
+      <div class="sp-card reveal" data-cat="gecko">
+        <div class="sp-glow" style="background:linear-gradient(90deg,transparent,var(--accent-blue),transparent)"></div>
+        <div class="sp-ctag ct-gecko">Gecko</div>
+        <span class="sp-emoji">🦎</span>
+        <div class="sp-cn">Leopard Gecko</div>
+        <div class="sp-en">Eublepharis macularius</div>
+        <div class="sp-sci">Pakistan / Afghanistan</div>
+        <div class="sp-bands">
+          <div class="sp-pb"><span class="sp-pbl">Common morph</span><span class="sp-pbr com">€30 – €100</span></div>
+          <div class="sp-pb"><span class="sp-pbl">Rare morph</span><span class="sp-pbr rare">€200 – €600</span></div>
+        </div>
+        <div class="sp-diff"><span class="sp-dfll">Difficulty</span><div class="sp-stars"><div class="sp-star on"></div><div class="sp-star on"></div><div class="sp-star off"></div><div class="sp-star off"></div><div class="sp-star off"></div></div><span style="font-size:.62rem;color:var(--text-muted)">Top beginner pick</span></div>
+        <div class="sp-match">
+          <div class="sp-ml">Recommended TONITRUUM</div>
+          <div class="sp-mp">Terrestrial</div>
+          <div class="sp-msz">60 × 45 × 45 cm · terrestrial</div>
+          <div class="sp-mpr">€419 – 499 <span class="vat">ex VAT · inc VAT €503–599</span></div>
+          <div class="sp-budget">
+            <div class="sp-bl">Total setup budget</div>
+            <div class="sp-bv">€449 – €1,099</div>
+            <div class="sp-budbar"><div class="sp-budbar-fill" style="width:48%"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3 Gargoyle Gecko -->
+      <div class="sp-card reveal" data-cat="gecko">
+        <div class="sp-glow" style="background:linear-gradient(90deg,transparent,var(--accent-blue),transparent)"></div>
+        <div class="sp-ctag ct-gecko">Gecko</div>
+        <span class="sp-emoji">🦎</span>
+        <div class="sp-cn">Gargoyle Gecko</div>
+        <div class="sp-en">Rhacodactylus auriculatus</div>
+        <div class="sp-sci">New Caledonia</div>
+        <div class="sp-bands">
+          <div class="sp-pb"><span class="sp-pbl">Common morph</span><span class="sp-pbr com">€80 – €250</span></div>
+          <div class="sp-pb"><span class="sp-pbl">Rare morph</span><span class="sp-pbr rare">€350 – €700</span></div>
+        </div>
+        <div class="sp-diff"><span class="sp-dfll">Difficulty</span><div class="sp-stars"><div class="sp-star on"></div><div class="sp-star on"></div><div class="sp-star off"></div><div class="sp-star off"></div><div class="sp-star off"></div></div><span style="font-size:.62rem;color:var(--text-muted)">Intermediate</span></div>
+        <div class="sp-match">
+          <div class="sp-ml">Recommended TONITRUUM</div>
+          <div class="sp-mp">Cube Standard</div>
+          <div class="sp-msz">45 × 45 × 45 cm · arboreal</div>
+          <div class="sp-mpr">€329 – 399 <span class="vat">ex VAT · inc VAT €395–479</span></div>
+          <div class="sp-budget">
+            <div class="sp-bl">Total setup budget</div>
+            <div class="sp-bv">€409 – €1,099</div>
+            <div class="sp-budbar"><div class="sp-budbar-fill" style="width:52%"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4 Giant Day Gecko -->
+      <div class="sp-card reveal" data-cat="gecko">
+        <div class="sp-glow" style="background:linear-gradient(90deg,transparent,var(--accent-blue),transparent)"></div>
+        <div class="sp-ctag ct-gecko">Gecko</div>
+        <span class="sp-emoji">🦎</span>
+        <div class="sp-cn">Giant Day Gecko</div>
+        <div class="sp-en">Phelsuma grandis</div>
+        <div class="sp-sci">Madagascar</div>
+        <div class="sp-bands">
+          <div class="sp-pb"><span class="sp-pbl">Common</span><span class="sp-pbr com">€60 – €180</span></div>
+          <div class="sp-pb"><span class="sp-pbl">Rare morph</span><span class="sp-pbr rare">€200 – €450</span></div>
+        </div>
+        <div class="sp-diff"><span class="sp-dfll">Difficulty</span><div class="sp-stars"><div class="sp-star on"></div><div class="sp-star on"></div><div class="sp-star on"></div><div class="sp-star off"></div><div class="sp-star off"></div></div><span style="font-size:.62rem;color:var(--text-muted)">Some experience</span></div>
+        <div class="sp-match">
+          <div class="sp-ml">Recommended TONITRUUM</div>
+          <div class="sp-mp">Cube Standard</div>
+          <div class="sp-msz">45 × 45 × 45 cm · high humidity + UV</div>
+          <div class="sp-mpr">€329 – 399 <span class="vat">ex VAT · inc VAT €395–479</span></div>
+          <div class="sp-budget">
+            <div class="sp-bl">Total setup budget</div>
+            <div class="sp-bv">€389 – €849</div>
+            <div class="sp-budbar"><div class="sp-budbar-fill" style="width:44%"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5 Satanic Leaf-tailed Gecko -->
+      <div class="sp-card reveal" data-cat="gecko">
+        <div class="sp-glow" style="background:linear-gradient(90deg,transparent,var(--accent-blue),transparent)"></div>
+        <div class="sp-ctag ct-gecko">Gecko</div>
+        <span class="sp-emoji">🍂</span>
+        <div class="sp-cn">Satanic Leaf-tailed Gecko</div>
+        <div class="sp-en">Uroplatus phantasticus</div>
+        <div class="sp-sci">Madagascar</div>
+        <div class="sp-bands">
+          <div class="sp-pb"><span class="sp-pbl">Market price</span><span class="sp-pbr com">€100 – €400</span></div>
+          <div class="sp-pb"><span class="sp-pbl">CB individual</span><span class="sp-pbr rare">€280 – €550</span></div>
+        </div>
+        <div class="sp-diff"><span class="sp-dfll">Difficulty</span><div class="sp-stars"><div class="sp-star on"></div><div class="sp-star on"></div><div class="sp-star on"></div><div class="sp-star on"></div><div class="sp-star off"></div></div><span style="font-size:.62rem;color:var(--text-muted)">Advanced</span></div>
+        <div class="sp-match">
+          <div class="sp-ml">Recommended TONITRUUM</div>
+          <div class="sp-mp">Nano Tree</div>
+          <div class="sp-msz">30 × 30 × 45 cm · high humidity arboreal</div>
+          <div class="sp-mpr">€219 – 269 <span class="vat">ex VAT · inc VAT €263–323</span></div>
+          <div class="sp-budget">
+            <div class="sp-bl">Total setup budget</div>
+            <div class="sp-bv">€319 – €819</div>
+            <div class="sp-budbar"><div class="sp-budbar-fill" style="width:40%"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 6 Corn Snake -->
+      <div class="sp-card reveal" data-cat="snake">
+        <div class="sp-glow" style="background:linear-gradient(90deg,transparent,var(--accent-green),transparent)"></div>
+        <div class="sp-ctag ct-snake">Snake</div>
+        <span class="sp-emoji">🐍</span>
+        <div class="sp-cn">Corn Snake</div>
+        <div class="sp-en">Pantherophis guttatus</div>
+        <div class="sp-sci">Eastern North America</div>
+        <div class="sp-bands">
+          <div class="sp-pb"><span class="sp-pbl">Common morph</span><span class="sp-pbr com">€30 – €80</span></div>
+          <div class="sp-pb"><span class="sp-pbl">Rare morph</span><span class="sp-pbr rare">€100 – €350</span></div>
+        </div>
+        <div class="sp-diff"><span class="sp-dfll">Difficulty</span><div class="sp-stars"><div class="sp-star on"></div><div class="sp-star off"></div><div class="sp-star off"></div><div class="sp-star off"></div><div class="sp-star off"></div></div><span style="font-size:.62rem;color:var(--text-muted)">Perfect starter</span></div>
+        <div class="sp-match">
+          <div class="sp-ml">Recommended TONITRUUM</div>
+          <div class="sp-mp">Large Horizontal</div>
+          <div class="sp-msz">90 × 45 × 45 cm · ample roaming space</div>
+          <div class="sp-mpr">€599 – 749 <span class="vat">ex VAT · inc VAT €719–899</span></div>
+          <div class="sp-budget">
+            <div class="sp-bl">Total setup budget</div>
+            <div class="sp-bv">€629 – €1,099</div>
+            <div class="sp-budbar"><div class="sp-budbar-fill" style="width:62%"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 7 Ball Python -->
+      <div class="sp-card reveal" data-cat="snake">
+        <div class="sp-glow" style="background:linear-gradient(90deg,transparent,var(--accent-green),transparent)"></div>
+        <div class="sp-ctag ct-snake">Snake</div>
+        <span class="sp-emoji">🐍</span>
+        <div class="sp-cn">Ball Python</div>
+        <div class="sp-en">Python regius</div>
+        <div class="sp-sci">West / Central Africa</div>
+        <div class="sp-bands">
+          <div class="sp-pb"><span class="sp-pbl">Common morph</span><span class="sp-pbr com">€50 – €200</span></div>
+          <div class="sp-pb"><span class="sp-pbl">Designer morph</span><span class="sp-pbr rare">€500 – €5,000+</span></div>
+        </div>
+        <div class="sp-diff"><span class="sp-dfll">Difficulty</span><div class="sp-stars"><div class="sp-star on"></div><div class="sp-star on"></div><div class="sp-star off"></div><div class="sp-star off"></div><div class="sp-star off"></div></div><span style="font-size:.62rem;color:var(--text-muted)">Beginner recommended</span></div>
+        <div class="sp-match">
+          <div class="sp-ml">Recommended TONITRUUM</div>
+          <div class="sp-mp">Terrestrial</div>
+          <div class="sp-msz">60 × 45 × 45 cm · precise thermal gradient</div>
+          <div class="sp-mpr">€419 – 499 <span class="vat">ex VAT · inc VAT €503–599</span></div>
+          <div class="sp-budget">
+            <div class="sp-bl">Total setup budget</div>
+            <div class="sp-bv">€469 – €5,499+</div>
+            <div class="sp-budbar"><div class="sp-budbar-fill" style="width:75%"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 8 Western Hognose Snake -->
+      <div class="sp-card reveal" data-cat="snake">
+        <div class="sp-glow" style="background:linear-gradient(90deg,transparent,var(--accent-green),transparent)"></div>
+        <div class="sp-ctag ct-snake">Snake</div>
+        <span class="sp-emoji">🐍</span>
+        <div class="sp-cn">Western Hognose Snake</div>
+        <div class="sp-en">Heterodon nasicus</div>
+        <div class="sp-sci">Central North America</div>
+        <div class="sp-bands">
+          <div class="sp-pb"><span class="sp-pbl">Common morph</span><span class="sp-pbr com">€80 – €200</span></div>
+          <div class="sp-pb"><span class="sp-pbl">Rare morph</span><span class="sp-pbr rare">€300 – €700</span></div>
+        </div>
+        <div class="sp-diff"><span class="sp-dfll">Difficulty</span><div class="sp-stars"><div class="sp-star on"></div><div class="sp-star on"></div><div class="sp-star off"></div><div class="sp-star off"></div><div class="sp-star off"></div></div><span style="font-size:.62rem;color:var(--text-muted)">Intermediate</span></div>
+        <div class="sp-match">
+          <div class="sp-ml">Recommended TONITRUUM</div>
+          <div class="sp-mp">Terrestrial</div>
+          <div class="sp-msz">60 × 45 × 45 cm · temperature gradient</div>
+          <div class="sp-mpr">€419 – 499 <span class="vat">ex VAT · inc VAT €503–599</span></div>
+          <div class="sp-budget">
+            <div class="sp-bl">Total setup budget</div>
+            <div class="sp-bv">€499 – €1,199</div>
+            <div class="sp-budbar"><div class="sp-budbar-fill" style="width:50%"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 9 California King Snake -->
+      <div class="sp-card reveal" data-cat="snake">
+        <div class="sp-glow" style="background:linear-gradient(90deg,transparent,var(--accent-green),transparent)"></div>
+        <div class="sp-ctag ct-snake">Snake</div>
+        <span class="sp-emoji">🐍</span>
+        <div class="sp-cn">California King Snake</div>
+        <div class="sp-en">Lampropeltis californiae</div>
+        <div class="sp-sci">Western North America</div>
+        <div class="sp-bands">
+          <div class="sp-pb"><span class="sp-pbl">Common morph</span><span class="sp-pbr com">€40 – €120</span></div>
+          <div class="sp-pb"><span class="sp-pbl">Rare morph</span><span class="sp-pbr rare">€150 – €400</span></div>
+        </div>
+        <div class="sp-diff"><span class="sp-dfll">Difficulty</span><div class="sp-stars"><div class="sp-star on"></div><div class="sp-star off"></div><div class="sp-star off"></div><div class="sp-star off"></div><div class="sp-star off"></div></div><span style="font-size:.62rem;color:var(--text-muted)">Beginner friendly</span></div>
+        <div class="sp-match">
+          <div class="sp-ml">Recommended TONITRUUM</div>
+          <div class="sp-mp">Large Horizontal</div>
+          <div class="sp-msz">90 × 45 × 45 cm · high activity needs</div>
+          <div class="sp-mpr">€599 – 749 <span class="vat">ex VAT · inc VAT €719–899</span></div>
+          <div class="sp-budget">
+            <div class="sp-bl">Total setup budget</div>
+            <div class="sp-bv">€639 – €1,149</div>
+            <div class="sp-budbar"><div class="sp-budbar-fill" style="width:60%"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 10 Bearded Dragon -->
+      <div class="sp-card reveal" data-cat="lizard">
+        <div class="sp-glow" style="background:linear-gradient(90deg,transparent,var(--accent-orange),transparent)"></div>
+        <div class="sp-ctag ct-lizard">Lizard</div>
+        <span class="sp-emoji">🦖</span>
+        <div class="sp-cn">Bearded Dragon</div>
+        <div class="sp-en">Pogona vitticeps</div>
+        <div class="sp-sci">Inland Australia</div>
+        <div class="sp-bands">
+          <div class="sp-pb"><span class="sp-pbl">Common morph</span><span class="sp-pbr com">€40 – €120</span></div>
+          <div class="sp-pb"><span class="sp-pbl">Rare morph</span><span class="sp-pbr rare">€150 – €500</span></div>
+        </div>
+        <div class="sp-diff"><span class="sp-dfll">Difficulty</span><div class="sp-stars"><div class="sp-star on"></div><div class="sp-star on"></div><div class="sp-star off"></div><div class="sp-star off"></div><div class="sp-star off"></div></div><span style="font-size:.62rem;color:var(--text-muted)">Beginner recommended</span></div>
+        <div class="sp-match">
+          <div class="sp-ml">Recommended TONITRUUM</div>
+          <div class="sp-mp">Large Horizontal</div>
+          <div class="sp-msz">90 × 45 × 45 cm · high-power UV + basking</div>
+          <div class="sp-mpr">€599 – 749 <span class="vat">ex VAT · inc VAT €719–899</span></div>
+          <div class="sp-budget">
+            <div class="sp-bl">Total setup budget</div>
+            <div class="sp-bv">€639 – €1,249</div>
+            <div class="sp-budbar"><div class="sp-budbar-fill" style="width:63%"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 11 Veiled Chameleon -->
+      <div class="sp-card reveal" data-cat="lizard">
+        <div class="sp-glow" style="background:linear-gradient(90deg,transparent,var(--accent-orange),transparent)"></div>
+        <div class="sp-ctag ct-lizard">Lizard</div>
+        <span class="sp-emoji">🦎</span>
+        <div class="sp-cn">Veiled Chameleon</div>
+        <div class="sp-en">Chamaeleo calyptratus</div>
+        <div class="sp-sci">Yemen / Saudi Arabia</div>
+        <div class="sp-bands">
+          <div class="sp-pb"><span class="sp-pbl">Juvenile / CB</span><span class="sp-pbr com">€60 – €200</span></div>
+          <div class="sp-pb"><span class="sp-pbl">Adult / import</span><span class="sp-pbr rare">€200 – €500</span></div>
+        </div>
+        <div class="sp-diff"><span class="sp-dfll">Difficulty</span><div class="sp-stars"><div class="sp-star on"></div><div class="sp-star on"></div><div class="sp-star on"></div><div class="sp-star on"></div><div class="sp-star off"></div></div><span style="font-size:.62rem;color:var(--text-muted)">Advanced</span></div>
+        <div class="sp-match">
+          <div class="sp-ml">Recommended TONITRUUM</div>
+          <div class="sp-mp">Large Tall</div>
+          <div class="sp-msz">90 × 45 × 60 cm · arboreal + misting system</div>
+          <div class="sp-mpr">€749 – 999 <span class="vat">ex VAT · inc VAT €899–1,199</span></div>
+          <div class="sp-budget">
+            <div class="sp-bl">Total setup budget</div>
+            <div class="sp-bv">€809 – €1,499</div>
+            <div class="sp-budbar"><div class="sp-budbar-fill" style="width:78%"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 12 Blue-tongued Skink -->
+      <div class="sp-card reveal" data-cat="lizard">
+        <div class="sp-glow" style="background:linear-gradient(90deg,transparent,var(--accent-orange),transparent)"></div>
+        <div class="sp-ctag ct-lizard">Lizard</div>
+        <span class="sp-emoji">🦎</span>
+        <div class="sp-cn">Blue-tongued Skink</div>
+        <div class="sp-en">Tiliqua scincoides intermedia</div>
+        <div class="sp-sci">Northern Australia</div>
+        <div class="sp-bands">
+          <div class="sp-pb"><span class="sp-pbl">CB individual</span><span class="sp-pbr com">€120 – €350</span></div>
+          <div class="sp-pb"><span class="sp-pbl">Rare morph</span><span class="sp-pbr rare">€400 – €900</span></div>
+        </div>
+        <div class="sp-diff"><span class="sp-dfll">Difficulty</span><div class="sp-stars"><div class="sp-star on"></div><div class="sp-star on"></div><div class="sp-star off"></div><div class="sp-star off"></div><div class="sp-star off"></div></div><span style="font-size:.62rem;color:var(--text-muted)">Docile temperament</span></div>
+        <div class="sp-match">
+          <div class="sp-ml">Recommended TONITRUUM</div>
+          <div class="sp-mp">Large Horizontal</div>
+          <div class="sp-msz">90 × 45 × 45 cm · thermal gradient control</div>
+          <div class="sp-mpr">€599 – 749 <span class="vat">ex VAT · inc VAT €719–899</span></div>
+          <div class="sp-budget">
+            <div class="sp-bl">Total setup budget</div>
+            <div class="sp-bv">€719 – €1,649</div>
+            <div class="sp-budbar"><div class="sp-budbar-fill" style="width:70%"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 13 White's Tree Frog -->
+      <div class="sp-card reveal" data-cat="frog">
+        <div class="sp-glow" style="background:linear-gradient(90deg,transparent,#5ab870,transparent)"></div>
+        <div class="sp-ctag ct-frog">Tree Frog</div>
+        <span class="sp-emoji">🐸</span>
+        <div class="sp-cn">White's Tree Frog</div>
+        <div class="sp-en">Litoria caerulea</div>
+        <div class="sp-sci">Australia / New Guinea</div>
+        <div class="sp-bands">
+          <div class="sp-pb"><span class="sp-pbl">Common individual</span><span class="sp-pbr com">€20 – €60</span></div>
+          <div class="sp-pb"><span class="sp-pbl">Albino / morph</span><span class="sp-pbr rare">€80 – €200</span></div>
+        </div>
+        <div class="sp-diff"><span class="sp-dfll">Difficulty</span><div class="sp-stars"><div class="sp-star on"></div><div class="sp-star on"></div><div class="sp-star off"></div><div class="sp-star off"></div><div class="sp-star off"></div></div><span style="font-size:.62rem;color:var(--text-muted)">Top beginner pick</span></div>
+        <div class="sp-match">
+          <div class="sp-ml">Recommended TONITRUUM</div>
+          <div class="sp-mp">Nano Tree</div>
+          <div class="sp-msz">30 × 30 × 45 cm · high humidity arboreal</div>
+          <div class="sp-mpr">€219 – 269 <span class="vat">ex VAT · inc VAT €263–323</span></div>
+          <div class="sp-budget">
+            <div class="sp-bl">Total setup budget</div>
+            <div class="sp-bv">€239 – €469</div>
+            <div class="sp-budbar"><div class="sp-budbar-fill" style="width:28%"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 14 Red-eyed Tree Frog -->
+      <div class="sp-card reveal" data-cat="frog">
+        <div class="sp-glow" style="background:linear-gradient(90deg,transparent,#5ab870,transparent)"></div>
+        <div class="sp-ctag ct-frog">Tree Frog</div>
+        <span class="sp-emoji">🐸</span>
+        <div class="sp-cn">Red-eyed Tree Frog</div>
+        <div class="sp-en">Agalychnis callidryas</div>
+        <div class="sp-sci">Central American Rainforest</div>
+        <div class="sp-bands">
+          <div class="sp-pb"><span class="sp-pbl">CB juvenile</span><span class="sp-pbr com">€60 – €150</span></div>
+          <div class="sp-pb"><span class="sp-pbl">Import / adult</span><span class="sp-pbr rare">€150 – €350</span></div>
+        </div>
+        <div class="sp-diff"><span class="sp-dfll">Difficulty</span><div class="sp-stars"><div class="sp-star on"></div><div class="sp-star on"></div><div class="sp-star on"></div><div class="sp-star off"></div><div class="sp-star off"></div></div><span style="font-size:.62rem;color:var(--text-muted)">Some experience</span></div>
+        <div class="sp-match">
+          <div class="sp-ml">Recommended TONITRUUM</div>
+          <div class="sp-mp">Cube Standard</div>
+          <div class="sp-msz">45 × 45 × 45 cm · rainforest simulation</div>
+          <div class="sp-mpr">€329 – 399 <span class="vat">ex VAT · inc VAT €395–479</span></div>
+          <div class="sp-budget">
+            <div class="sp-bl">Total setup budget</div>
+            <div class="sp-bv">€389 – €749</div>
+            <div class="sp-budbar"><div class="sp-budbar-fill" style="width:42%"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 15 Tomato Frog -->
+      <div class="sp-card reveal" data-cat="frog">
+        <div class="sp-glow" style="background:linear-gradient(90deg,transparent,#5ab870,transparent)"></div>
+        <div class="sp-ctag ct-frog">Tree Frog</div>
+        <span class="sp-emoji">🐸</span>
+        <div class="sp-cn">Tomato Frog</div>
+        <div class="sp-en">Dyscophus antongilii</div>
+        <div class="sp-sci">Madagascar</div>
+        <div class="sp-bands">
+          <div class="sp-pb"><span class="sp-pbl">CB bred</span><span class="sp-pbr com">€40 – €120</span></div>
+          <div class="sp-pb"><span class="sp-pbl">Adult female</span><span class="sp-pbr rare">€120 – €280</span></div>
+        </div>
+        <div class="sp-diff"><span class="sp-dfll">Difficulty</span><div class="sp-stars"><div class="sp-star on"></div><div class="sp-star on"></div><div class="sp-star off"></div><div class="sp-star off"></div><div class="sp-star off"></div></div><span style="font-size:.62rem;color:var(--text-muted)">Moderate</span></div>
+        <div class="sp-match">
+          <div class="sp-ml">Recommended TONITRUUM</div>
+          <div class="sp-mp">Nano Tree</div>
+          <div class="sp-msz">30 × 30 × 45 cm · humid terrestrial</div>
+          <div class="sp-mpr">€219 – 269 <span class="vat">ex VAT · inc VAT €263–323</span></div>
+          <div class="sp-budget">
+            <div class="sp-bl">Total setup budget</div>
+            <div class="sp-bv">€259 – €549</div>
+            <div class="sp-budbar"><div class="sp-budbar-fill" style="width:30%"></div></div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /sp-grid -->
+    <p class="chart-source" style="margin-top:12px">※ Animal prices are European market CB (captive-bred) reference ranges and vary by morph, sex, breeder, and lineage. TONITRUUM prices are ex VAT suggested retail. For reference only — not purchase advice.</p>
+
+  </main>
+</div>
+
+<script>
+// ── Sidebar clock ──
+function updateTime() {
+  const el = document.getElementById('sidebarTime');
+  if (el) el.textContent = new Date().toLocaleTimeString('en-GB', {hour:'2-digit',minute:'2-digit',second:'2-digit'});
+}
+updateTime(); setInterval(updateTime, 1000);
+
+// ── Scroll Reveal ──
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); revealObserver.unobserve(e.target); } });
+}, { threshold: 0.08, rootMargin: '0px 0px -30px 0px' });
+document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+// ── KPI counter animation ──
+function animateCounter(el, target, isFloat, suffix) {
+  const duration = 1600;
+  const start = performance.now();
+  const from = 0;
+  function step(now) {
+    const p = Math.min((now - start) / duration, 1);
+    const ease = 1 - Math.pow(1 - p, 3);
+    const val = from + (target - from) * ease;
+    el.textContent = isFloat ? val.toFixed(1) : Math.round(val).toString();
+    if (p < 1) requestAnimationFrame(step);
+    else el.textContent = isFloat ? target.toFixed(2) : target.toString();
+  }
+  requestAnimationFrame(step);
+}
+
+const kpiObserver = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      const card = e.target;
+      const raw = card.dataset.count;
+      const target = parseFloat(raw);
+      const isFloat = raw.includes('.');
+      const numEl = card.querySelector('.count-num');
+      if (numEl) animateCounter(numEl, target, isFloat);
+      card.classList.add('animated');
+      kpiObserver.unobserve(card);
+    }
+  });
+}, { threshold: 0.3 });
+document.querySelectorAll('.kpi-card[data-count]').forEach(el => kpiObserver.observe(el));
+
+// ── Geo bars animation ──
+const geoObserver = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.querySelectorAll('.geo-bar-fill').forEach((bar, i) => {
+        setTimeout(() => { bar.style.width = bar.dataset.pct + '%'; }, i * 80);
+      });
+      geoObserver.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.2 });
+const geoBarsEl = document.getElementById('geoBars');
+if (geoBarsEl) geoObserver.observe(geoBarsEl);
+
+// ── Chart.js global defaults ──
+Chart.defaults.color = '#5a5855';
+Chart.defaults.borderColor = 'rgba(255,255,255,0.06)';
+Chart.defaults.font.family = "-apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif";
+Chart.defaults.font.size = 11;
+
+// ── 1. Reptile Enclosure Market Growth ──
+new Chart(document.getElementById('growthChart'), {
+  type: 'line',
+  data: {
+    labels: ['2023','2024','2025','2026','2027','2028','2029','2030'],
+    datasets: [{
+      label: 'Reptile Enclosure Market ($bn)',
+      data: [1.29, 1.39, 1.50, 1.61, 1.73, 1.87, 2.01, 2.16],
+      borderColor: '#d96e28',
+      backgroundColor: 'rgba(217,110,40,0.08)',
+      borderWidth: 2,
+      pointBackgroundColor: '#d96e28',
+      pointRadius: 4,
+      pointHoverRadius: 6,
+      fill: true,
+      tension: 0.4
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: true,
+    plugins: { legend: { display: false } },
+    scales: {
+      y: { beginAtZero: false, min: 1.0, ticks: { callback: v => '$' + v + 'B' }, grid: { color: 'rgba(255,255,255,0.05)' } },
+      x: { grid: { display: false } }
+    }
+  }
+});
+
+// ── 2. Pet Tech vs Reptile Comparison ──
+new Chart(document.getElementById('compareChart'), {
+  type: 'bar',
+  data: {
+    labels: ['2024', '2026', '2028', '2030'],
+    datasets: [
+      {
+        label: 'Pet Tech Market ($bn)',
+        data: [7.63, 10.1, 13.2, 17.25],
+        backgroundColor: 'rgba(107,158,184,0.7)',
+        borderColor: '#6b9eb8', borderWidth: 1, borderRadius: 4
+      },
+      {
+        label: 'Reptile Enclosure ($bn)',
+        data: [1.39, 1.61, 1.87, 2.16],
+        backgroundColor: 'rgba(217,110,40,0.7)',
+        borderColor: '#d96e28', borderWidth: 1, borderRadius: 4
+      },
+      {
+        label: 'Exotic Pets Market ($bn)',
+        data: [1.85, 2.13, 2.30, 2.49],
+        backgroundColor: 'rgba(74,140,104,0.7)',
+        borderColor: '#4a8c68', borderWidth: 1, borderRadius: 4
+      }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: true,
+    plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, padding: 12 } } },
+    scales: {
+      y: { beginAtZero: true, ticks: { callback: v => '$' + v + 'B' }, grid: { color: 'rgba(255,255,255,0.05)' } },
+      x: { grid: { display: false } }
+    }
+  }
+});
+
+// ── 3. France Pet Population ──
+new Chart(document.getElementById('francePetChart'), {
+  type: 'doughnut',
+  data: {
+    labels: ['Cats', 'Fish (fresh)', 'Dogs', 'Birds', 'Small mammals', 'Terrarium animals', 'Fish (marine)'],
+    datasets: [{
+      data: [16.07, 15.1, 8.15, 8.1, 3.7, 2.5, 0.6],
+      backgroundColor: [
+        'rgba(107,158,184,0.8)', 'rgba(74,140,104,0.8)', 'rgba(217,110,40,0.8)',
+        'rgba(122,106,176,0.8)', 'rgba(184,74,58,0.8)', 'rgba(58,138,122,0.8)',
+        'rgba(90,88,85,0.5)'
+      ],
+      borderColor: '#1a1918', borderWidth: 2
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: true,
+    plugins: {
+      legend: { position: 'right', labels: { boxWidth: 10, padding: 8, font: { size: 10 } } },
+      tooltip: { callbacks: { label: ctx => ctx.label + ': ' + ctx.raw + 'M' } }
+    },
+    cutout: '60%'
+  }
+});
+
+// ── 4. USA Specialty Pets ──
+new Chart(document.getElementById('usaPetChart'), {
+  type: 'bar',
+  data: {
+    labels: ['Freshwater Fish', 'Birds', 'Reptiles', 'Small Animals', 'Saltwater Fish', 'Horses'],
+    datasets: [{
+      label: 'Households (M)',
+      data: [11.5, 6.1, 6.0, 6.0, 2.9, 2.6],
+      backgroundColor: [
+        'rgba(74,140,104,0.7)', 'rgba(122,106,176,0.7)', 'rgba(217,110,40,0.85)',
+        'rgba(107,158,184,0.7)', 'rgba(58,138,122,0.7)', 'rgba(90,88,85,0.5)'
+      ],
+      borderRadius: 4, borderWidth: 0
+    }]
+  },
+  options: {
+    indexAxis: 'y',
+    responsive: true, maintainAspectRatio: true,
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { beginAtZero: true, ticks: { callback: v => v + 'M' }, grid: { color: 'rgba(255,255,255,0.05)' } },
+      y: { grid: { display: false } }
+    }
+  }
+});
+
+// ── 5. Market Opportunity Radar ──
+new Chart(document.getElementById('radarChart'), {
+  type: 'radar',
+  data: {
+    labels: ['Market Size', 'Growth Rate', 'Accessibility', 'Competition', 'Regulatory'],
+    datasets: [
+      {
+        label: 'Europe',
+        data: [7, 8, 9, 6, 8],
+        borderColor: '#4a8c68', backgroundColor: 'rgba(74,140,104,0.12)',
+        borderWidth: 2, pointRadius: 3
+      },
+      {
+        label: 'China',
+        data: [9, 9, 6, 7, 5],
+        borderColor: '#6b9eb8', backgroundColor: 'rgba(107,158,184,0.12)',
+        borderWidth: 2, pointRadius: 3
+      },
+      {
+        label: 'North America',
+        data: [10, 8, 7, 5, 9],
+        borderColor: '#d96e28', backgroundColor: 'rgba(217,110,40,0.12)',
+        borderWidth: 2, pointRadius: 3
+      }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: true,
+    plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, padding: 10 } } },
+    scales: {
+      r: {
+        min: 0, max: 10, ticks: { stepSize: 2, font: { size: 9 } },
+        grid: { color: 'rgba(255,255,255,0.07)' },
+        angleLines: { color: 'rgba(255,255,255,0.07)' },
+        pointLabels: { font: { size: 10 } }
+      }
+    }
+  }
+});
+
+// ── 6. Competitive Scatter ──
+new Chart(document.getElementById('scatterChart'), {
+  type: 'scatter',
+  data: {
+    datasets: [
+      { label: 'Lucky Reptile Thermo Pro II', data: [{x: 83, y: 1}], backgroundColor: 'rgba(90,88,85,0.8)', pointRadius: 8 },
+      { label: 'Zoo Med Repti Fogger', data: [{x: 99, y: 2}], backgroundColor: 'rgba(107,158,184,0.8)', pointRadius: 8 },
+      { label: 'Inkbird IoT Sensor', data: [{x: 22, y: 3}], backgroundColor: 'rgba(122,106,176,0.8)', pointRadius: 8 },
+      { label: 'Exo Terra Vivarium', data: [{x: 320, y: 2}], backgroundColor: 'rgba(74,140,104,0.8)', pointRadius: 8 },
+      { label: 'Arcadia Controllers', data: [{x: 80, y: 4}], backgroundColor: 'rgba(184,74,58,0.8)', pointRadius: 8 },
+      { label: 'TONITRUUM', data: [{x: 174, y: 9}], backgroundColor: '#d96e28', pointRadius: 14, pointStyle: 'star' }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: true,
+    plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, padding: 8, font: { size: 10 } } } },
+    scales: {
+      x: { title: { display: true, text: 'Price (€)', color: '#5a5855' }, min: 0, max: 400, grid: { color: 'rgba(255,255,255,0.05)' } },
+      y: { title: { display: true, text: 'Intelligence Score (1–10)', color: '#5a5855' }, min: 0, max: 10, grid: { color: 'rgba(255,255,255,0.05)' } }
+    }
+  }
+});
+
+// ── 7. Segment Donut ──
+new Chart(document.getElementById('segmentChart'), {
+  type: 'doughnut',
+  data: {
+    labels: ['Families & Children', 'Urban Professionals', 'Hobbyists', 'B2B / Professional'],
+    datasets: [{
+      data: [38, 28, 22, 12],
+      backgroundColor: ['rgba(217,110,40,0.8)', 'rgba(107,158,184,0.8)', 'rgba(122,106,176,0.8)', 'rgba(74,140,104,0.8)'],
+      borderColor: '#1a1918', borderWidth: 2
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: true,
+    plugins: {
+      legend: { position: 'bottom', labels: { boxWidth: 10, padding: 10, font: { size: 10 } } },
+      tooltip: { callbacks: { label: ctx => ctx.label + ': ' + ctx.raw + '%' } }
+    },
+    cutout: '55%'
+  }
+});
+
+// ── 8. Integrated vs Modular decision ──
+new Chart(document.getElementById('decisionChart'), {
+  type: 'bar',
+  data: {
+    labels: ['Setup ease', 'User experience', 'Cost efficiency', 'Upgrade path', 'Market fit', 'Support load'],
+    datasets: [
+      {
+        label: 'Integrated (chosen)',
+        data: [9, 9, 7, 6, 9, 8],
+        backgroundColor: 'rgba(217,110,40,0.75)', borderRadius: 3, borderWidth: 0
+      },
+      {
+        label: 'Modular',
+        data: [5, 6, 8, 9, 6, 5],
+        backgroundColor: 'rgba(90,88,85,0.5)', borderRadius: 3, borderWidth: 0
+      }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: true,
+    plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, padding: 10 } } },
+    scales: {
+      y: { min: 0, max: 10, grid: { color: 'rgba(255,255,255,0.05)' } },
+      x: { grid: { display: false }, ticks: { font: { size: 9 } } }
+    }
+  }
+});
+
+// ── Pricing Calculator ──
+function calcPrice(){
+  const g=id=>{const el=document.getElementById(id); return el?parseFloat(el.value)||0:0;};
+  const mat=g('c-mat'),elec=g('c-elec'),asm=g('c-asm'),pkg=g('c-pkg'),frt=g('c-frt');
+  const warPct=g('c-war')/100,nre=g('c-nre'),n=Math.max(1,g('c-n'));
+  const rate=g('c-rate')||7.9979,euLog=g('c-eu-log');
+  const cnMultEl=document.getElementById('c-cn-mult');
+  const euMultEl=document.getElementById('c-eu-mult');
+  if(!cnMultEl||!euMultEl) return;
+  const cnMult=parseFloat(cnMultEl.value);
+  const euMult=parseFloat(euMultEl.value);
+  const base=mat+elec+asm+pkg+frt;
+  const war=base*warPct;
+  const unit=base+war+nre/n;
+  const pCN=unit*cnMult;
+  const cnGM=(1-1/cnMult)*100;
+  const landed=unit/rate+euLog;
+  const pEUex=landed*euMult;
+  const pEUinc=pEUex*1.20;
+  const euGM=(1-landed/pEUex)*100;
+  const set=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};
+  const setW=(id,v)=>{const el=document.getElementById(id);if(el)el.style.width=v;};
+  set('r-unit','¥ '+unit.toFixed(0));
+  set('r-unit-sub','NRE amortisation ¥'+(nre/n).toFixed(1)+'/unit · Warranty ¥'+war.toFixed(0));
+  set('r-cn','¥ '+Math.round(pCN).toLocaleString());
+  set('r-cn-sub','Gross margin '+cnGM.toFixed(1)+'%');
+  setW('r-cn-bar',Math.min(cnGM,100)+'%');
+  set('r-eu-ex','€ '+pEUex.toFixed(0));
+  set('r-eu-inc','€ '+pEUinc.toFixed(0));
+  set('r-eu-sub','Gross margin '+euGM.toFixed(1)+'% (ex VAT)');
+  setW('r-eu-bar',Math.min(euGM,100)+'%');
+}
+document.querySelectorAll('.calc-input,.calc-select').forEach(el=>el.addEventListener('input',calcPrice));
+calcPrice();
+
+// ── Species filter tabs ──
+document.querySelectorAll('.sp-ftab').forEach(tab=>{
+  tab.addEventListener('click',()=>{
+    document.querySelectorAll('.sp-ftab').forEach(t=>t.classList.remove('act'));
+    tab.classList.add('act');
+    const cat=tab.dataset.cat;
+    document.querySelectorAll('.sp-card').forEach(card=>{
+      card.classList.toggle('hide',cat!=='all'&&card.dataset.cat!==cat);
+    });
+  });
+});
+
+// ── 9. Revenue Projection ──
+new Chart(document.getElementById('revenueChart'), {
+  type: 'bar',
+  data: {
+    labels: ['2027 (EU Launch)', '2028 (+ China)', '2029 (+ USA)'],
+    datasets: [
+      { label: 'Hardware', data: [107, 324, 781], backgroundColor: 'rgba(217,110,40,0.8)', borderRadius: 4, borderWidth: 0 },
+      { label: 'Subscription', data: [52, 180, 426], backgroundColor: 'rgba(107,158,184,0.8)', borderRadius: 4, borderWidth: 0 },
+      { label: 'B2B', data: [28, 68, 170], backgroundColor: 'rgba(74,140,104,0.8)', borderRadius: 4, borderWidth: 0 },
+      { label: 'Accessories', data: [8, 16, 43], backgroundColor: 'rgba(122,106,176,0.6)', borderRadius: 4, borderWidth: 0 }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: true,
+    plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, padding: 10 } } },
+    scales: {
+      x: { stacked: true, grid: { display: false } },
+      y: { stacked: true, ticks: { callback: v => '€' + v + 'K' }, grid: { color: 'rgba(255,255,255,0.05)' } }
+    }
+  }
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Patient Care Monitor — PetCare Pro</title>
+<link rel="stylesheet" href="shared.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+.patient-hero {
+  display:flex; align-items:center; gap:20px;
+  background:linear-gradient(135deg,#0f1535 0%,#151f45 100%);
+  border:1px solid #1e2d6b; border-radius:16px; padding:22px; margin-bottom:18px;
+}
+.avatar-ring {
+  width:72px; height:72px; border-radius:50%;
+  background:linear-gradient(135deg,#3b82f6,#6366f1);
+  display:flex; align-items:center; justify-content:center;
+  font-size:32px; flex-shrink:0; box-shadow:0 0 24px rgba(59,130,246,.35);
+}
+.meta-chip {
+  display:inline-flex; align-items:center; gap:5px;
+  padding:3px 10px; border-radius:5px; font-size:11px; color:#a0aec0;
+  background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.08);
+}
+.score-ring-wrap { text-align:center; }
+.score-big { font-size:44px; font-weight:900; line-height:1; color:#4299e1; }
+.score-lbl { font-size:11px; color:#4b5563; text-transform:uppercase; letter-spacing:.7px; margin-top:4px; }
+.score-delta { font-size:12px; color:#48bb78; margin-top:4px; }
+
+.meal-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+.meal-tile {
+  background:#0d111c; border:1px solid #1f2937; border-radius:10px;
+  padding:14px; text-align:center;
+}
+.meal-icon { font-size:22px; margin-bottom:6px; }
+.meal-time { font-size:20px; font-weight:700; color:#e2e8f0; }
+.meal-lbl  { font-size:10px; text-transform:uppercase; letter-spacing:.7px; color:#4b5563; margin-bottom:4px; }
+
+.log-card {
+  display:flex; align-items:flex-start; gap:12px; padding:11px;
+  border-radius:8px; margin-bottom:8px; border-left:3px solid;
+  background:#0d111c;
+}
+.log-card.safe    { border-color:#48bb78; }
+.log-card.caution { border-color:#ed8936; }
+.log-card.risk    { border-color:#fc8181; }
+
+.mood-bar-wrap {
+  height:14px; background:#111827; border-radius:7px; overflow:hidden; position:relative; flex:1;
+}
+.mood-bar-fill { height:100%; border-radius:7px; transition:width 1.5s ease; }
+.mood-bar-thumb {
+  position:absolute; top:-3px;
+  width:20px; height:20px; border-radius:50%;
+  background:white; border:3px solid #4299e1; transform:translateX(-50%);
+  transition:left 1.5s ease; box-shadow:0 0 8px rgba(66,153,225,.5);
+}
+
+.risk-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:8px; }
+.risk-tile { padding:12px; border-radius:8px; border:1px solid; }
+.r-none   { background:rgba(72,187,120,.07); border-color:rgba(72,187,120,.25); }
+.r-low    { background:rgba(118,228,247,.07); border-color:rgba(118,228,247,.25); }
+.r-med    { background:rgba(237,137,54,.07); border-color:rgba(237,137,54,.25); }
+.r-high   { background:rgba(252,129,129,.07); border-color:rgba(252,129,129,.25); }
+.r-lbl { font-size:11px; color:#6b7280; text-transform:uppercase; letter-spacing:.6px; }
+.r-val { font-size:14px; font-weight:700; margin-top:4px; }
+.r-none .r-val { color:#68d391; }
+.r-low  .r-val { color:#76e4f7; }
+.r-med  .r-val { color:#f6ad55; }
+
+.timeline-v { position:relative; padding-left:40px; }
+.timeline-v::before { content:''; position:absolute; left:16px; top:0; bottom:0; width:2px; background:#1f2937; }
+.tl-item { position:relative; margin-bottom:14px; }
+.tl-dot {
+  position:absolute; left:-32px; top:0;
+  width:28px; height:28px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-size:12px; border:2px solid; background:#111827;
+}
+.tl-dot.done  { border-color:#48bb78; color:#68d391; }
+.tl-dot.now   { border-color:#4299e1; color:#63b3ed; }
+.tl-dot.pend  { border-color:#374151; color:#4b5563; }
+.tl-time { font-size:11px; color:#4b5563; }
+.tl-title{ font-size:13px; font-weight:600; margin-top:2px; }
+.tl-desc { font-size:12px; color:#6b7280; margin-top:3px; line-height:1.5; }
+</style>
+</head>
+<body>
+<div class="app-container">
+  <nav class="sidebar">
+    <div class="sidebar-logo" style="justify-content:center;padding:24px 12px 20px;">
+  <img src="assets/tonitruum-logo-white.png" alt="TONITRUUM"
+       style="width:100%;height:auto;max-width:180px;opacity:0.85;">
+</div>
+    <ul class="nav-list">
+      <li class="nav-section">Monitor</li>
+      <li class="nav-item"><a href="index.html"><span class="nav-icon">⬡</span>Habitat Monitor</a></li>
+      <li class="nav-section">Clinical</li>
+      <li class="nav-item active"><a href="autism.html"><span class="nav-icon">♡</span>Patient Care</a></li>
+      <li class="nav-item"><a href="assessment.html"><span class="nav-icon">≡</span>Assessments</a></li>
+      <li class="nav-item"><a href="parent-form.html"><span class="nav-icon">✎</span>Parent Reports</a></li>
+      <li class="nav-item"><a href="medical.html"><span class="nav-icon">✚</span>Medical Consult</a></li>
+      <li class="nav-section">Strategy</li>
+      <li class="nav-item"><a href="service.html"><span class="nav-icon">◎</span>Service Overview</a></li>
+      <li class="nav-item"><a href="stakeholder.html"><span class="nav-icon">◉</span>Stakeholder Map</a></li>
+      <li class="nav-item"><a href="product.html"><span class="nav-icon">◈</span>Product Design</a></li>
+      <li class="nav-section">Project</li>
+      <li class="nav-item"><a href="phase0.html"><span class="nav-icon">◫</span>Phase 0 Origin</a></li>
+      <li class="nav-item"><a href="phase1.html"><span class="nav-icon">◧</span>Phase 1 Research</a></li>
+      <li class="nav-item"><a href="founder.html"><span class="nav-icon">◐</span>Founder</a></li>
+      <li class="nav-item"><a href="research.html"><span class="nav-icon">◇</span>Reptile Therapy</a></li>
+      <li class="nav-item"><a href="market.html"><span class="nav-icon">◆</span>Business Model</a></li>
+      <li class="nav-section">Play</li>
+      <li class="nav-item"><a href="game.html"><span class="nav-icon">◎</span>Cricket Hunter</a></li>
+    
+    
+    </ul>
+    <div class="sidebar-footer"><div class="sys-status"><span class="status-indicator status-good"></span>All Systems Online</div><div class="sys-time" id="sidebarTime"></div></div>
+  </nav>
+
+  <main class="main-content">
+    <header class="page-header">
+      <div>
+        <h1 class="page-title">Patient Monitoring Center</h1>
+        <p class="page-desc">Animal-Assisted Therapy · Behavior Tracking · Real-Time Welfare</p>
+      </div>
+      <div class="header-actions">
+        <button class="btn btn-outline" onclick="showToast('Data refreshed','info')">↻ Refresh</button>
+        <button class="btn btn-primary">⬇ Generate Report</button>
+      </div>
+    </header>
+
+    <!-- Patient Hero -->
+    <div class="patient-hero">
+      <div class="avatar-ring">👦</div>
+      <div style="flex:1;">
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+          <span style="font-size:21px;font-weight:800;">Alex M.</span>
+          <span class="badge badge-blue">ASD Level 2</span>
+          <span class="badge badge-green" id="dayStatus">Today: Good Day ✓</span>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;">
+          <span class="meta-chip">📅 8 yrs 4 mo</span>
+          <span class="meta-chip">📍 Therapy Unit B</span>
+          <span class="meta-chip">👩‍⚕️ Lead: Dr. Lee</span>
+          <span class="meta-chip">🐸 AAT Week 3</span>
+          <span class="meta-chip" style="border-color:rgba(237,137,54,.3);color:#f6ad55;">⚠ Moderate Monitoring</span>
+        </div>
+      </div>
+      <div class="score-ring-wrap">
+        <div class="score-big" id="overallScore">76</div>
+        <div class="score-lbl">Daily Wellness Score</div>
+        <div class="score-delta">↑ +3 vs Yesterday</div>
+      </div>
+    </div>
+
+    <!-- Stat row -->
+    <div class="stats-row" style="grid-template-columns:repeat(4,1fr);">
+      <div class="stat-card" style="border-left:3px solid #48bb78;">
+        <div class="stat-value" style="color:#48bb78;">3/3</div>
+        <div class="stat-label">Meals Completed Today</div>
+        <div class="stat-delta delta-up">✓ On Schedule</div>
+      </div>
+      <div class="stat-card" style="border-left:3px solid #4299e1;">
+        <div class="stat-value" style="color:#4299e1;">42 min</div>
+        <div class="stat-label">Animal Interaction Today</div>
+        <div class="stat-delta delta-up">↑ Weekly High</div>
+      </div>
+      <div class="stat-card" style="border-left:3px solid #ed8936;">
+        <div class="stat-value" style="color:#ed8936;">2</div>
+        <div class="stat-label">Emotional Episodes</div>
+        <div class="stat-delta" style="color:#a0aec0;">Same as yesterday</div>
+      </div>
+      <div class="stat-card" style="border-left:3px solid #805ad5;">
+        <div class="stat-value" style="color:#805ad5;">0</div>
+        <div class="stat-label">Animal Harm Incidents</div>
+        <div class="stat-delta delta-up">✓ 7-Day Safe Streak</div>
+      </div>
+    </div>
+
+    <div class="content-grid" style="grid-template-columns:1.2fr 1fr;">
+
+      <!-- Left -->
+      <div style="display:flex;flex-direction:column;gap:14px;">
+
+        <!-- Feeding -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">🍽️ Daily Feeding Schedule</span>
+            <span class="badge badge-green">All Completed</span>
+          </div>
+          <div class="meal-grid">
+            <div class="meal-tile" style="border-top:2px solid #f6ad55;">
+              <div class="meal-icon">🌅</div>
+              <div class="meal-lbl">Breakfast</div>
+              <div class="meal-time">07:30</div>
+              <div style="font-size:11px;color:#48bb78;margin-top:6px;">✓ Completed</div>
+              <div style="font-size:11px;color:#4b5563;margin-top:2px;">Self-fed 85%</div>
+            </div>
+            <div class="meal-tile" style="border-top:2px solid #48bb78;">
+              <div class="meal-icon">☀️</div>
+              <div class="meal-lbl">Lunch</div>
+              <div class="meal-time">12:00</div>
+              <div style="font-size:11px;color:#48bb78;margin-top:6px;">✓ Completed</div>
+              <div style="font-size:11px;color:#4b5563;margin-top:2px;">Self-fed 92%</div>
+            </div>
+            <div class="meal-tile" style="border-top:2px solid #4299e1;">
+              <div class="meal-icon">🌙</div>
+              <div class="meal-lbl">Dinner</div>
+              <div class="meal-time">18:00</div>
+              <div style="font-size:11px;color:#48bb78;margin-top:6px;">✓ Completed</div>
+              <div style="font-size:11px;color:#4b5563;margin-top:2px;">Assisted 30%</div>
+            </div>
+          </div>
+          <div style="margin-top:14px;padding:12px;background:#0d111c;border-radius:8px;border:1px solid #1f2937;">
+            <div style="font-size:12px;color:#a0aec0;margin-bottom:8px;font-weight:600;">Weekly Feeding Compliance</div>
+            <canvas id="feedChart" height="75"></canvas>
+          </div>
+        </div>
+
+        <!-- Animal interaction log -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">🐸 Animal Interaction Log</span>
+            <span class="badge badge-blue">42 min today</span>
+          </div>
+          <div style="margin-bottom:12px;">
+            <div style="font-size:11px;color:#4b5563;text-transform:uppercase;letter-spacing:.7px;margin-bottom:8px;">Observed Behaviors</div>
+            <div style="display:flex;flex-wrap:wrap;gap:5px;">
+              <span class="badge badge-green">Voluntary approach</span>
+              <span class="badge badge-green">Gentle touch</span>
+              <span class="badge badge-green">Focused observation</span>
+              <span class="badge badge-orange">Brief agitation</span>
+              <span class="badge badge-green">Vocalization attempt</span>
+              <span class="badge badge-green">Sign language</span>
+            </div>
+          </div>
+          <div>
+            <div class="log-card safe">
+              <div style="min-width:120px;font-size:11px;color:#4b5563;font-family:monospace;">09:15 – 09:45</div>
+              <div style="flex:1;">
+                <div style="font-weight:600;font-size:13px;color:#e2e8f0;">Observation Phase</div>
+                <div style="font-size:12px;color:#a0aec0;margin-top:3px;line-height:1.5;">Alex observed Maple through the glass for ~20 minutes. Pointed repeatedly and made vocalizations. Mood: calm and engaged.</div>
+              </div>
+              <span class="badge badge-green" style="flex-shrink:0;">Safe</span>
+            </div>
+            <div class="log-card safe">
+              <div style="min-width:120px;font-size:11px;color:#4b5563;font-family:monospace;">10:00 – 10:22</div>
+              <div style="flex:1;">
+                <div style="font-weight:600;font-size:13px;color:#e2e8f0;">Guided Interaction</div>
+                <div style="font-size:12px;color:#a0aec0;margin-top:3px;line-height:1.5;">Therapist guided Alex to touch enclosure glass. Learned "frog" in sign language — first successful attempt. Milestone achieved.</div>
+              </div>
+              <span class="badge badge-green" style="flex-shrink:0;">Safe</span>
+            </div>
+            <div class="log-card caution">
+              <div style="min-width:120px;font-size:11px;color:#4b5563;font-family:monospace;">10:35 – 10:40</div>
+              <div style="flex:1;">
+                <div style="font-weight:600;font-size:13px;color:#e2e8f0;">Emotional Regulation Needed</div>
+                <div style="font-size:12px;color:#a0aec0;margin-top:3px;line-height:1.5;">Rapid frog movement caused brief agitation. Tapped enclosure glass ×2. Therapist intervened; Alex calmed within 3 min — 50% faster than last week.</div>
+              </div>
+              <span class="badge badge-orange" style="flex-shrink:0;">Caution</span>
+            </div>
+            <div class="log-card safe">
+              <div style="min-width:120px;font-size:11px;color:#4b5563;font-family:monospace;">14:00 – 14:15</div>
+              <div style="flex:1;">
+                <div style="font-weight:600;font-size:13px;color:#e2e8f0;">Unprompted Independent Visit</div>
+                <div style="font-size:12px;color:#a0aec0;margin-top:3px;line-height:1.5;">Alex independently approached the enclosure, observed quietly for 10 minutes. No intervention required. Notable milestone.</div>
+              </div>
+              <span class="badge badge-green" style="flex-shrink:0;">Excellent</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right -->
+      <div style="display:flex;flex-direction:column;gap:14px;">
+
+        <!-- Mood meter -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">🧠 Real-Time Emotional State</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:14px;background:#0d111c;border-radius:10px;padding:14px;border:1px solid #1f2937;">
+            <div style="text-align:center;">
+              <div style="font-size:38px;" id="moodEmoji">😊</div>
+              <div style="font-size:11px;color:#4b5563;margin-top:3px;" id="moodLabel">Positive</div>
+            </div>
+            <div style="flex:1;">
+              <div style="display:flex;justify-content:space-between;font-size:10px;color:#4b5563;margin-bottom:6px;">
+                <span>Distressed</span><span>Neutral</span><span>Happy</span>
+              </div>
+              <div style="position:relative;height:14px;background:#111827;border-radius:7px;overflow:visible;">
+                <div style="height:14px;border-radius:7px;background:linear-gradient(90deg,#fc8181,#f6ad55,#68d391);"></div>
+                <div id="moodThumb" style="position:absolute;top:-3px;left:68%;width:20px;height:20px;border-radius:50%;background:white;border:3px solid #4299e1;transform:translateX(-50%);transition:left 1.5s;box-shadow:0 0 8px rgba(66,153,225,.5);"></div>
+              </div>
+            </div>
+            <div style="text-align:center;">
+              <div style="font-size:30px;font-weight:900;color:#4299e1;" id="moodScore">68</div>
+              <div style="font-size:10px;color:#4b5563;">Mood Index</div>
+            </div>
+          </div>
+          <div style="margin-top:12px;">
+            <canvas id="moodChart" height="95"></canvas>
+          </div>
+        </div>
+
+        <!-- Animal harm risk -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">⚠️ Animal Harm Risk Assessment</span>
+            <span class="badge badge-green">Low Risk</span>
+          </div>
+          <div class="risk-grid">
+            <div class="risk-tile r-none">
+              <div class="r-lbl">Physical Aggression</div>
+              <div class="r-val">None — 0 incidents</div>
+            </div>
+            <div class="risk-tile r-low">
+              <div class="r-lbl">Rough Handling</div>
+              <div class="r-val">Low (occasional)</div>
+            </div>
+            <div class="risk-tile r-low">
+              <div class="r-lbl">Emotional Dysregulation</div>
+              <div class="r-val">Low–Moderate</div>
+            </div>
+            <div class="risk-tile r-none">
+              <div class="r-lbl">Intentional Harm Intent</div>
+              <div class="r-val">Not Observed</div>
+            </div>
+          </div>
+          <div style="margin-top:12px;padding:10px;background:#081a0d;border:1px solid rgba(72,187,120,.25);border-radius:8px;font-size:12px;color:#68d391;line-height:1.6;">
+            <strong>Safety Conclusion:</strong> Alex–animal interactions are assessed as safe this week. Continue 1:1 supervision. Plan to reduce intervention intensity from Week 4 onward.
+          </div>
+        </div>
+
+        <!-- Behavior trend -->
+        <div class="card">
+          <div class="card-header"><span class="card-title">📈 Weekly Behavior Trends</span></div>
+          <canvas id="behavChart" height="140"></canvas>
+        </div>
+
+        <!-- Schedule -->
+        <div class="card">
+          <div class="card-header"><span class="card-title">📅 Today's Schedule</span></div>
+          <div class="timeline-v">
+            <div class="tl-item">
+              <div class="tl-dot done">✓</div>
+              <div class="tl-time">07:00 – 07:30</div>
+              <div class="tl-title" style="color:#68d391;">Morning Routine</div>
+              <div class="tl-desc">Hygiene & dressing — 70% independent today</div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-dot done">✓</div>
+              <div class="tl-time">09:00 – 10:45</div>
+              <div class="tl-title" style="color:#68d391;">Animal-Assisted Therapy (AAT)</div>
+              <div class="tl-desc">Session with Maple · Engagement rate: high</div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-dot done">✓</div>
+              <div class="tl-time">11:00 – 12:00</div>
+              <div class="tl-title" style="color:#68d391;">Speech & Language Therapy</div>
+              <div class="tl-desc">New vocab: frog, water, green (animal theme)</div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-dot now">→</div>
+              <div class="tl-time">14:00 – 16:00</div>
+              <div class="tl-title" style="color:#63b3ed;">Sensory Integration (In Progress)</div>
+              <div class="tl-desc">Phase: Tactile desensitization</div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-dot pend">○</div>
+              <div class="tl-time">16:30 – 17:30</div>
+              <div class="tl-title" style="color:#4b5563;">Family Time (Upcoming)</div>
+              <div class="tl-desc">Activity: Animal picture books with parent</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="shared.js"></script>
+<script>
+// Feeding compliance chart
+new Chart(document.getElementById('feedChart').getContext('2d'),{
+  type:'bar',
+  data:{
+    labels:['Mon','Tue','Wed','Thu','Fri','Sat','Today'],
+    datasets:[
+      {label:'Breakfast',data:[1,1,1,1,1,1,1],backgroundColor:'#f6ad55'},
+      {label:'Lunch',    data:[1,1,0,1,1,1,1],backgroundColor:'#68d391'},
+      {label:'Dinner',   data:[1,1,1,0,1,1,1],backgroundColor:'#63b3ed'}
+    ]
+  },
+  options:{responsive:true,maintainAspectRatio:true,
+    plugins:{legend:{labels:{color:'#a0aec0',font:{size:10},padding:8}}},
+    scales:{x:{stacked:true,ticks:{color:'#4b5563',font:{size:10}},grid:{color:'#1f2937'}},
+            y:{stacked:true,max:3,ticks:{color:'#4b5563',font:{size:10}},grid:{color:'#1f2937'}}}}
+});
+
+// Mood trend
+const moodData=[45,52,48,55,60,58,63,68,65,70,68,72];
+const moodLabels=['8:00','8:30','9:00','9:30','10:00','10:30','11:00','11:30','12:00','12:30','13:00','13:30'];
+new Chart(document.getElementById('moodChart').getContext('2d'),{
+  type:'line',
+  data:{labels:moodLabels,datasets:[{label:'Mood Index',data:moodData,borderColor:'#4299e1',backgroundColor:'rgba(66,153,225,0.08)',tension:.4,pointRadius:3,borderWidth:2,fill:true}]},
+  options:{responsive:true,maintainAspectRatio:true,
+    plugins:{legend:{display:false}},
+    scales:{x:{ticks:{color:'#4b5563',font:{size:10},maxTicksLimit:6},grid:{color:'#1f2937'}},
+            y:{min:0,max:100,ticks:{color:'#4b5563',font:{size:10}},grid:{color:'#1f2937'}}}}
+});
+
+// Behavior chart
+new Chart(document.getElementById('behavChart').getContext('2d'),{
+  type:'line',
+  data:{
+    labels:['Mon','Tue','Wed','Thu','Fri','Sat','Today'],
+    datasets:[
+      {label:'Safe Interactions',data:[3,4,3,5,4,6,5],borderColor:'#48bb78',tension:.4,pointRadius:4,borderWidth:2},
+      {label:'Emotional Episodes',data:[4,3,5,3,4,2,2],borderColor:'#ed8936',tension:.4,pointRadius:4,borderWidth:2},
+      {label:'Harm Incidents',    data:[1,0,1,0,0,0,0],borderColor:'#fc8181',tension:.4,pointRadius:4,borderWidth:2}
+    ]
+  },
+  options:{responsive:true,maintainAspectRatio:true,
+    plugins:{legend:{labels:{color:'#a0aec0',font:{size:10}}}},
+    scales:{x:{ticks:{color:'#4b5563',font:{size:10}},grid:{color:'#1f2937'}},
+            y:{min:0,ticks:{color:'#4b5563',font:{size:10}},grid:{color:'#1f2937'}}}}
+});
+
+// Mood simulation
+let moodVal=68;
+setInterval(()=>{
+  moodVal=Math.max(20,Math.min(95,moodVal+(Math.random()-.45)*5));
+  document.getElementById('moodScore').textContent=Math.round(moodVal);
+  document.getElementById('moodThumb').style.left=moodVal+'%';
+  const e=moodVal<35?['😭','Distressed']:moodVal<55?['😐','Neutral']:moodVal<75?['😊','Positive']:['😄','Very Happy'];
+  document.getElementById('moodEmoji').textContent=e[0];
+  document.getElementById('moodLabel').textContent=e[1];
+},4000);
+</script>
+</body>
+</html>
