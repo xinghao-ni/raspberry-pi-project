@@ -661,7 +661,7 @@ html.light-mode ::-webkit-scrollbar-track { background: transparent; }
    MINIMAL MODE
    ══════════════════════════════════════════════ */
 .minimal-toggle {
-  position: fixed; top: 14px; right: 20px; z-index: 500;
+  position: fixed; top: 76px; right: 20px; z-index: 500;
   padding: 5px 13px; border-radius: 6px;
   border: 1px solid var(--border-light);
   background: var(--bg-card); color: var(--text-muted);
