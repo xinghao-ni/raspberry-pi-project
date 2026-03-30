@@ -30,6 +30,26 @@ function toggleMinimal() {
   if (btn) btn.innerHTML = isMinimal
     ? '<span style="opacity:.7">◧</span>&nbsp;Full View'
     : '<span style="opacity:.7">◫</span>&nbsp;Minimal';
+
+  if (isMinimal) {
+    // Staggered card entrance animation each time minimal mode opens
+    const cards = document.querySelectorAll('.minimal-panel .m-card');
+    cards.forEach((card, i) => {
+      card.classList.remove('animating');
+      // Force reflow so removing the class takes effect before re-adding
+      void card.offsetWidth;
+      card.style.animationDelay = (i * 0.06) + 's';
+      card.classList.add('animating');
+    });
+    // Clean up after animation so hover transitions work cleanly
+    const last = cards[cards.length - 1];
+    if (last) {
+      const dur = 420 + (cards.length - 1) * 60;
+      setTimeout(() => {
+        cards.forEach(c => { c.classList.remove('animating'); c.style.animationDelay = ''; });
+      }, dur + 50);
+    }
+  }
 }
 
 // Sidebar clock
