@@ -13,10 +13,10 @@ function toggleTheme() {
   _updateThemeBtns(isLight);
 }
 function _updateThemeBtns(isLight) {
-  document.querySelectorAll('.theme-toggle-btn').forEach(function (btn) {
+  document.querySelectorAll('.theme-btn').forEach(function (btn) {
     btn.innerHTML = isLight
-      ? '<span style="font-size:12px">☀</span>&nbsp;Night Mode'
-      : '<span style="font-size:12px">◑</span>&nbsp;Day Mode';
+      ? '<span style="font-size:12px">◑</span>&nbsp;Night Mode'
+      : '<span style="font-size:12px">☀</span>&nbsp;Day Mode';
   });
 }
 document.addEventListener('DOMContentLoaded', function () {
@@ -32,23 +32,20 @@ function toggleMinimal() {
     : '<span style="opacity:.7">◫</span>&nbsp;Minimal';
 
   if (isMinimal) {
-    // Staggered card entrance animation each time minimal mode opens
-    const cards = document.querySelectorAll('.minimal-panel .m-card');
-    cards.forEach((card, i) => {
-      card.classList.remove('animating');
-      // Force reflow so removing the class takes effect before re-adding
-      void card.offsetWidth;
-      card.style.animationDelay = (i * 0.06) + 's';
-      card.classList.add('animating');
-    });
-    // Clean up after animation so hover transitions work cleanly
-    const last = cards[cards.length - 1];
-    if (last) {
-      const dur = 420 + (cards.length - 1) * 60;
+    // Wait two frames so the panel's display:block is painted before animating
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      const cards = document.querySelectorAll('.minimal-panel .m-card');
+      cards.forEach((card, i) => {
+        card.classList.remove('animating');
+        void card.offsetWidth; // force reflow
+        card.style.animationDelay = (i * 0.07) + 's';
+        card.classList.add('animating');
+      });
+      const dur = 420 + (cards.length - 1) * 70;
       setTimeout(() => {
         cards.forEach(c => { c.classList.remove('animating'); c.style.animationDelay = ''; });
-      }, dur + 50);
-    }
+      }, dur + 60);
+    }));
   }
 }
 

@@ -794,8 +794,9 @@ html.minimal-mode .minimal-panel { display: block; }
   gap: 12px; margin-bottom: 4px;
 }
 @keyframes mCardIn {
-  from { opacity: 0; transform: scale(0.90) translateY(18px); }
-  to   { opacity: 1; transform: scale(1)   translateY(0); }
+  0%   { opacity: 0; transform: scale(0.88) translateY(22px); filter: blur(2px); }
+  60%  { opacity: 1; filter: blur(0); }
+  100% { opacity: 1; transform: scale(1) translateY(0); filter: blur(0); }
 }
 .m-card {
   background: var(--bg-card); border: 1px solid var(--border);
@@ -803,7 +804,7 @@ html.minimal-mode .minimal-panel { display: block; }
   transition: border-color 0.2s;
 }
 .m-card.animating {
-  animation: mCardIn 0.42s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+  animation: mCardIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 .m-card.hi   { border-left: 3px solid var(--accent-orange); }
 .m-card.good { border-left: 3px solid var(--accent-green); }
