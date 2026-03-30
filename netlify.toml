@@ -1,0 +1,13 @@
+[build]
+  publish = "."
+
+[[redirects]]
+  from = "/api/neocampus"
+  to = "https://neocampus.lecolededesign.com/campus/ical/user/13369"
+  status = 200
+  force = true
+
+[[headers]]
+  for = "/api/neocampus"
+  [headers.values]
+    Access-Control-Allow-Origin = "*"
