@@ -119,10 +119,14 @@
     
     
     </ul>
-    <div class="sidebar-footer"><div class="sys-status"><span class="status-indicator status-good"></span>All Systems Online</div><div class="sys-time" id="sidebarTime"></div></div>
+    <div class="sidebar-footer"><div class="sys-status"><span class="status-indicator status-good"></span>All Systems Online
+  </div><div class="sys-time" id="sidebarTime"></div>
+    <button class="theme-toggle-btn" onclick="toggleTheme()"><span style="font-size:12px">◑</span>&nbsp;Day Mode</button>
+  </div>
   </nav>
 
   <main class="main-content">
+    <button class="minimal-toggle" id="minimalBtn" onclick="toggleMinimal()"><span style="opacity:.7">◫</span>&nbsp;Minimal</button>
     <header class="page-header">
       <div>
         <h1 class="page-title">Patient Monitoring Center</h1>
@@ -381,6 +385,53 @@
         </div>
       </div>
     </div>
+  <div class="minimal-panel" id="minimalPanel">
+  <div class="m-head">
+    <span class="m-page-title">Alex M.</span>
+    <span class="m-page-sub">ASD Level 2 · AAT Week 3 · Therapy Unit B</span>
+  </div>
+  <div class="m-section-label">Today's Status</div>
+  <div class="m-status-row">
+    <div class="m-status-pill"><div class="dot dot-green"></div>Good Day ✓</div>
+    <div class="m-status-pill"><div class="dot dot-blue"></div>Lead: Dr. Lee</div>
+    <div class="m-status-pill"><div class="dot dot-orange"></div>Moderate Monitoring</div>
+  </div>
+  <div class="m-section-label">Key Metrics</div>
+  <div class="m-grid">
+    <div class="m-card info">
+      <div class="m-val">76</div>
+      <div class="m-lbl">Daily Wellness Score</div>
+      <div class="m-delta">↑ +3 vs Yesterday</div>
+    </div>
+    <div class="m-card good">
+      <div class="m-val">3/3</div>
+      <div class="m-lbl">Meals Completed</div>
+      <div class="m-delta">✓ On Schedule</div>
+    </div>
+    <div class="m-card hi">
+      <div class="m-val">42<span style="font-size:18px;font-weight:400">min</span></div>
+      <div class="m-lbl">Animal Interaction</div>
+      <div class="m-delta">↑ Weekly High</div>
+    </div>
+    <div class="m-card warn">
+      <div class="m-val">2</div>
+      <div class="m-lbl">Emotional Episodes</div>
+      <div class="m-delta warn">Same as Yesterday</div>
+    </div>
+    <div class="m-card good">
+      <div class="m-val">0</div>
+      <div class="m-lbl">Animal Harm Incidents</div>
+      <div class="m-delta">✓ 7-Day Safe Streak</div>
+    </div>
+    <div class="m-card purple">
+      <div class="m-val">3</div>
+      <div class="m-lbl">Therapy Session Week</div>
+      <div class="m-delta neutral">Phase 03: Contact</div>
+    </div>
+  </div>
+  <div class="m-section-label">Latest Note</div>
+  <div class="m-note">Alex showed calm extended focus during reptile observation today. Initiated touch for 4 minutes — longest session to date. Recommend advancing to Phase 04 co-regulation next week.</div>
+</div>
   </main>
 </div>
 

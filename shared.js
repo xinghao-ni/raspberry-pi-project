@@ -1,5 +1,37 @@
 // ── Shared JS for all pages ──
 
+// ── Apply theme before first paint ──
+(function () {
+  if (localStorage.getItem('tonitruum-theme') === 'light')
+    document.documentElement.classList.add('light-mode');
+})();
+
+// ── Theme toggle ──
+function toggleTheme() {
+  const isLight = document.documentElement.classList.toggle('light-mode');
+  localStorage.setItem('tonitruum-theme', isLight ? 'light' : 'dark');
+  _updateThemeBtns(isLight);
+}
+function _updateThemeBtns(isLight) {
+  document.querySelectorAll('.theme-toggle-btn').forEach(function (btn) {
+    btn.innerHTML = isLight
+      ? '<span style="font-size:12px">☀</span>&nbsp;Night Mode'
+      : '<span style="font-size:12px">◑</span>&nbsp;Day Mode';
+  });
+}
+document.addEventListener('DOMContentLoaded', function () {
+  _updateThemeBtns(document.documentElement.classList.contains('light-mode'));
+});
+
+// ── Minimal mode toggle ──
+function toggleMinimal() {
+  const isMinimal = document.documentElement.classList.toggle('minimal-mode');
+  const btn = document.getElementById('minimalBtn');
+  if (btn) btn.innerHTML = isMinimal
+    ? '<span style="opacity:.7">◧</span>&nbsp;Full View'
+    : '<span style="opacity:.7">◫</span>&nbsp;Minimal';
+}
+
 // Sidebar clock
 function updateClock() {
   const el = document.getElementById('sidebarTime');

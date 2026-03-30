@@ -402,10 +402,14 @@
     
     
     </ul>
-    <div class="sidebar-footer"><div class="sys-status"><span class="status-indicator status-good"></span>All Systems Online</div><div class="sys-time" id="sidebarTime"></div></div>
+    <div class="sidebar-footer"><div class="sys-status"><span class="status-indicator status-good"></span>All Systems Online
+  </div><div class="sys-time" id="sidebarTime"></div>
+    <button class="theme-toggle-btn" onclick="toggleTheme()"><span style="font-size:12px">◑</span>&nbsp;Day Mode</button>
+  </div>
   </nav>
 
   <main class="main-content">
+    <button class="minimal-toggle" id="minimalBtn" onclick="toggleMinimal()"><span style="opacity:.7">◫</span>&nbsp;Minimal</button>
     <header class="page-header">
       <div>
         <h1 class="page-title">Parent Daily Status Report</h1>
@@ -1225,6 +1229,39 @@
       </div>
     </div>
 
+  <div class="minimal-panel" id="minimalPanel">
+  <div class="m-head">
+    <span class="m-page-title">Parent Reports</span>
+    <span class="m-page-sub">Alex M. · Family Dashboard</span>
+  </div>
+  <div class="m-section-label">Submission Summary</div>
+  <div class="m-grid" style="grid-template-columns:repeat(3,1fr)">
+    <div class="m-card good">
+      <div class="m-val">14</div>
+      <div class="m-lbl">Reports Submitted</div>
+      <div class="m-delta">✓ This Month</div>
+    </div>
+    <div class="m-card warn">
+      <div class="m-val">1</div>
+      <div class="m-lbl">Pending Today</div>
+      <div class="m-delta warn">Due by 18:00</div>
+    </div>
+    <div class="m-card info">
+      <div class="m-val">94%</div>
+      <div class="m-lbl">Completion Rate</div>
+      <div class="m-delta">↑ Excellent</div>
+    </div>
+  </div>
+  <div class="m-section-label">This Week's Home Observations</div>
+  <div class="m-status-row">
+    <div class="m-status-pill"><div class="dot dot-green"></div>Sleep: Regular (8.5h avg)</div>
+    <div class="m-status-pill"><div class="dot dot-green"></div>Appetite: Good</div>
+    <div class="m-status-pill"><div class="dot dot-orange"></div>2 Anxiety Episodes</div>
+    <div class="m-status-pill"><div class="dot dot-green"></div>School: Attended 5/5 Days</div>
+  </div>
+  <div class="m-section-label">Therapist Message</div>
+  <div class="m-note">Great progress this week! Alex showed increased confidence during the reptile handling session on Tuesday. Please continue the 10-min evening calm-down routine at home before bed.</div>
+</div>
   </main>
 </div>
 

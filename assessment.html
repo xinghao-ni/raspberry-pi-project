@@ -80,10 +80,14 @@
     
     
     </ul>
-    <div class="sidebar-footer"><div class="sys-status"><span class="status-indicator status-good"></span>All Systems Online</div><div class="sys-time" id="sidebarTime"></div></div>
+    <div class="sidebar-footer"><div class="sys-status"><span class="status-indicator status-good"></span>All Systems Online
+  </div><div class="sys-time" id="sidebarTime"></div>
+    <button class="theme-toggle-btn" onclick="toggleTheme()"><span style="font-size:12px">◑</span>&nbsp;Day Mode</button>
+  </div>
   </nav>
 
   <main class="main-content">
+    <button class="minimal-toggle" id="minimalBtn" onclick="toggleMinimal()"><span style="opacity:.7">◫</span>&nbsp;Minimal</button>
     <header class="page-header">
       <div>
         <h1 class="page-title">Psychological Assessment Center</h1>
@@ -261,6 +265,51 @@
       <div class="history-entry" style="border-color:#f6ad55;"><div style="min-width:100px;font-size:12px;color:#6b7280;">Feb 24, 2026</div><div style="flex:1;"><div style="font-size:13px;font-weight:600;">Session #6</div><div style="font-size:12px;color:#a0aec0;margin-top:2px;">CARS: 36 · Social: 45 · Language: 30 · Animal Affinity: 65</div></div><span class="badge badge-orange">Stable Progress</span></div>
       <div class="history-entry" style="border-color:#718096;"><div style="min-width:100px;font-size:12px;color:#6b7280;">Feb 10, 2026</div><div style="flex:1;"><div style="font-size:13px;font-weight:600;">Session #5 — AAT Baseline</div><div style="font-size:12px;color:#a0aec0;margin-top:2px;">CARS: 38 · Social: 38 · Language: 28 · Animal Affinity: 42</div></div><span class="badge badge-gray">Baseline</span></div>
     </div>
+  <div class="minimal-panel" id="minimalPanel">
+  <div class="m-head">
+    <span class="m-page-title">Assessment Results</span>
+    <span class="m-page-sub">Alex M. · Last Updated Nov 2025</span>
+  </div>
+  <div class="m-section-label">Diagnostic Scores</div>
+  <div class="m-grid" style="grid-template-columns:repeat(3,1fr)">
+    <div class="m-card warn">
+      <div class="m-val">72</div>
+      <div class="m-lbl">ADOS-2 Score</div>
+      <div class="m-delta warn">↑ Above Threshold</div>
+    </div>
+    <div class="m-card hi">
+      <div class="m-val">68</div>
+      <div class="m-lbl">Cognitive Index</div>
+      <div class="m-delta">Borderline Average</div>
+    </div>
+    <div class="m-card good">
+      <div class="m-val">+4</div>
+      <div class="m-lbl">3-Month Progress</div>
+      <div class="m-delta">↑ Improving</div>
+    </div>
+  </div>
+  <div class="m-section-label">Dimension Profile</div>
+  <div class="m-grid">
+    <div class="m-card info">
+      <div class="m-val" style="font-size:28px">62%</div>
+      <div class="m-lbl">Social Communication</div>
+    </div>
+    <div class="m-card warn">
+      <div class="m-val" style="font-size:28px">78%</div>
+      <div class="m-lbl">Sensory Sensitivity</div>
+    </div>
+    <div class="m-card good">
+      <div class="m-val" style="font-size:28px">48%</div>
+      <div class="m-lbl">Emotional Regulation</div>
+    </div>
+    <div class="m-card hi">
+      <div class="m-val" style="font-size:28px">55%</div>
+      <div class="m-lbl">Adaptive Behaviour</div>
+    </div>
+  </div>
+  <div class="m-section-label">Recommendation</div>
+  <div class="m-note">Continue AAT programme through Phase 04. Focus on sensory desensitisation via tactile reptile contact. Re-assess ADOS-2 at 6-month mark (May 2026).</div>
+</div>
   </main>
 </div>
 

@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Phase 3 Pitch — TONITRUUM × ASD Reptile Therapy</title>
 <link rel="stylesheet" href="shared.css">
+<script src="shared.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -76,7 +77,7 @@ img{display:block;max-width:100%}
 .sec-num{font-family:var(--mono);font-size:10px;color:var(--ink-soft);letter-spacing:.12em;margin-bottom:8px}
 .sec-tag{font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--orange);font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:8px}
 .sec-tag::after{content:'';flex:1;height:1px;background:var(--line);max-width:48px}
-.sec-h{font-size:clamp(28px,3.5vw,46px);font-weight:700;letter-spacing:-.025em;line-height:1.12;margin-bottom:12px}
+.sec-h{font-size:clamp(44px,5.5vw,80px);font-weight:700;letter-spacing:-.025em;line-height:1.12;margin-bottom:12px}
 .sec-h span{color:var(--orange)}
 .sec-h em{color:var(--ink-mid);font-style:normal}
 .sec-sub{font-size:14px;color:var(--ink-mid);line-height:1.7;max-width:660px;margin-bottom:36px}
@@ -141,7 +142,7 @@ img{display:block;max-width:100%}
 .persona-quote{font-size:11.5px;color:var(--ink-mid);line-height:1.6;font-style:italic;border-left:2px solid var(--orange);padding-left:10px}
 
 /* ═══ PULL QUOTE ═══ */
-.pull-quote{font-size:clamp(15px,1.8vw,20px);font-weight:500;color:var(--ink);line-height:1.55;border-left:3px solid var(--orange);padding-left:20px;max-width:620px;margin-bottom:12px;letter-spacing:-.01em}
+.pull-quote{font-size:clamp(18px,2.4vw,30px);font-weight:500;color:var(--ink);line-height:1.55;border-left:3px solid var(--orange);padding-left:20px;max-width:620px;margin-bottom:12px;letter-spacing:-.01em}
 .pull-source{font-size:10.5px;color:var(--ink-soft);letter-spacing:.05em}
 
 /* ═══ TIMELINE / PHASE STRIP ═══ */
@@ -222,7 +223,42 @@ img{display:block;max-width:100%}
 
 /* ═══ RESPONSIVE ═══ */
 @media(max-width:1000px){.section{padding:56px 36px}.two-col,.two-col.wide,.two-col.narrow{grid-template-columns:1fr}.three-col,.four-col{grid-template-columns:1fr 1fr}.stat-grid.g4{grid-template-columns:repeat(2,1fr)}.pathway{flex-wrap:wrap}}
-@media(max-width:700px){.main{margin-left:0}.sidebar{display:none}.section{padding:40px 20px}.sec-nav{display:none}.stat-grid.g3,.three-col{grid-template-columns:1fr}.biz-grid{grid-template-columns:1fr}}
+@media(max-width:700px){.main{margin-left:0}.sidebar{display:none}.section{padding:40px 20px}.sec-nav{display:none}.stat-grid.g3,.three-col{grid-template-columns:1fr}}
+/* ═══ ANIMATION ═══ */
+@keyframes fadeUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes scaleIn{from{opacity:0;transform:scale(0.94)}to{opacity:1;transform:scale(1)}}
+.reveal{opacity:0}
+.reveal.visible{animation:fadeUp 0.7s cubic-bezier(0.25,0.46,0.45,0.94) both}
+.reveal.delay-1{animation-delay:.08s}
+.reveal.delay-2{animation-delay:.16s}
+.reveal.delay-3{animation-delay:.26s}
+.reveal.delay-4{animation-delay:.38s}
+.reveal.delay-5{animation-delay:.52s}
+.reveal.delay-6{animation-delay:.68s}
+.reveal.scale{animation-name:scaleIn}
+
+/* ═══ LIGHT MODE LOCAL VARS ═══ */
+html.light-mode{
+  --bg:#f7f4ef; --bg-mid:#edeae4; --bg-card:#ffffff; --bg-card2:#f5f2ec;
+  --ink:#1a1918; --ink-mid:#5a5855; --ink-soft:#8a8784;
+  --line:rgba(0,0,0,0.08); --line-lt:rgba(0,0,0,0.13);
+}
+html.light-mode .hud{background:rgba(247,244,239,.95);}
+html.light-mode .progress-bar{background:rgba(0,0,0,.05);}
+html.light-mode .sec-dot{background:rgba(0,0,0,.18);}
+html.light-mode .sec-dot:hover{background:rgba(0,0,0,.4);}
+html.light-mode .sec-dot.active{background:var(--orange);}
+html.light-mode .sec-dot:hover::after,html.light-mode .sec-dot.active::after{background:var(--bg-card);border-color:var(--line);}
+html.light-mode .study-link,html.light-mode .ref-link{border-color:var(--line);color:var(--ink-soft);}
+html.light-mode .study-link:hover,html.light-mode .ref-link:hover{color:var(--orange);border-color:rgba(217,110,40,.4);}
+html.light-mode .comp-table th{border-color:var(--line);}
+html.light-mode .comp-table td{border-color:var(--line);color:var(--ink-mid);}
+html.light-mode .hud-btn{background:rgba(0,0,0,.04);border-color:var(--line);}
+html.light-mode .phase-strip{background:var(--bg-card);}
+html.light-mode .pathway-step{background:var(--bg-card);}
+html.light-mode .pathway-step:not(:last-child)::after{background:var(--bg-card);}
+
 </style>
 </head>
 <body>
@@ -250,15 +286,16 @@ img{display:block;max-width:100%}
     <li class="nav-section">Project</li>
     <li class="nav-item"><a href="phase0.html"><span class="nav-icon">◫</span>Phase 0 Origin</a></li>
     <li class="nav-item"><a href="phase1.html"><span class="nav-icon">◧</span>Phase 1 Research</a></li>
-    <li class="nav-item"><a href="founder.html"><span class="nav-icon">◐</span>Founder</a></li>
     <li class="nav-item active"><a href="phase3.html"><span class="nav-icon">◕</span>Phase 3 Pitch</a></li>
+    <li class="nav-item"><a href="founder.html"><span class="nav-icon">◐</span>Founder</a></li>
     <li class="nav-item"><a href="research.html"><span class="nav-icon">◇</span>Reptile Therapy</a></li>
     <li class="nav-item"><a href="market.html"><span class="nav-icon">◆</span>Business Model</a></li>
     <li class="nav-section">Play</li>
     <li class="nav-item"><a href="game.html"><span class="nav-icon">◎</span>Cricket Hunter</a></li>
   </ul>
   <div class="sidebar-footer">
-    <div class="sys-status"><span class="status-dot"></span>All Systems Online</div>
+    <div class="sys-status"><span class="status-dot"></span>All Systems Online
+  </div>
     <div class="sys-time" id="sidebarTime"></div>
   </div>
 </nav>
@@ -287,10 +324,10 @@ img{display:block;max-width:100%}
      COVER
      ════════════════════════════════════════════ -->
 <section class="section section-cover" id="s0" data-label="Cover">
-  <div class="cover-eyebrow">TONITRUUM × ASD Reptile Therapy · Phase 3 Proposal</div>
-  <h1 class="cover-h">Beyond<br>the <span>Diagnosis.</span></h1>
-  <p class="cover-sub">An intelligent reptile habitat system and animal-assisted therapy programme designed to improve emotional regulation, reduce sensory overload, and build connection — for children with autism and the families who care for them.</p>
-  <div class="cover-pills">
+  <div class="cover-eyebrow reveal">TONITRUUM × ASD Reptile Therapy · Phase 3 Proposal</div>
+  <h1 class="cover-h reveal">Beyond<br>the <span>Diagnosis.</span></h1>
+  <p class="cover-sub reveal delay-1">An intelligent reptile habitat system and animal-assisted therapy programme designed to improve emotional regulation, reduce sensory overload, and build connection — for children with autism and the families who care for them.</p>
+  <div class="cover-pills reveal delay-2">
     <span class="pill hi">L'École de Design Nantes · A5INT 2025–26</span>
     <span class="pill">ESP Thesis · Xinghao Ni</span>
     <span class="pill">Investors · Partners · Institutions</span>
@@ -302,11 +339,10 @@ img{display:block;max-width:100%}
      01 — USER PERSONA
      ════════════════════════════════════════════ -->
 <section class="section section-1" id="s1" data-label="01 · User Persona">
-  <div class="sec-time">0:30 – 2:30</div>
-  <div class="sec-num">01 / 08</div>
-  <div class="sec-tag">User Persona · Who We Serve</div>
-  <h2 class="sec-h">We are building for<br><span>children who feel everything</span><br><em>all at once.</em></h2>
-  <p class="sec-sub">Our primary users are children with Level 1 Autism Spectrum Disorder — and the families, therapists, and institutions around them. Before we talk about our solution, we need to understand their world.</p>
+  <div class="sec-num">01 / 06</div>
+  <div class="sec-tag reveal">User Persona · Who We Serve</div>
+  <h2 class="sec-h reveal">We are building for<br><span>children who feel everything</span><br><em>all at once.</em></h2>
+  <p class="sec-sub reveal delay-1">Our primary users are children with Level 1 Autism Spectrum Disorder — and the families, therapists, and institutions around them. Before we talk about our solution, we need to understand their world.</p>
 
   <div class="mb32">
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px">
@@ -359,7 +395,7 @@ img{display:block;max-width:100%}
     </div>
   </div>
 
-  <div class="stat-grid g4 mb32">
+  <div class="stat-grid reveal delay-2 g4 mb32">
     <div class="stat hi"><div class="stat-val">1<span class="u">/36</span></div><div class="stat-lbl">Children diagnosed with ASD — USA 2023 <a href="https://www.cdc.gov/mmwr/volumes/72/ss/ss7202a1.htm" target="_blank" style="color:var(--orange)">[CDC]</a></div></div>
     <div class="stat blue"><div class="stat-val">75<span class="u">%</span></div><div class="stat-lbl">ASD children with significant sensory processing difficulties <a href="assets/refs/animals-14-01767.pdf" target="_blank" style="color:var(--blue)">[ref]</a></div></div>
     <div class="stat green"><div class="stat-val">30<span class="u">%</span></div><div class="stat-lbl">Late diagnosis rate — especially among girls who "mask" socially</div></div>
@@ -376,11 +412,10 @@ img{display:block;max-width:100%}
      02 — PROBLEM & PAIN POINTS
      ════════════════════════════════════════════ -->
 <section class="section" id="s2" data-label="02 · Problem">
-  <div class="sec-time">2:30 – 4:00</div>
-  <div class="sec-num">02 / 08</div>
-  <div class="sec-tag">Problem & Pain Points</div>
-  <h2 class="sec-h">Current therapy is<br><span>too loud,</span> too rigid,<br><em>too scarce.</em></h2>
-  <p class="sec-sub">ABA, CBT, and speech therapy remain the dominant interventions — but for many children with ASD Level 1, they generate more stress than relief. The system is under-resourced and over-standardised.</p>
+  <div class="sec-num">02 / 06</div>
+  <div class="sec-tag reveal">Problem & Pain Points</div>
+  <h2 class="sec-h reveal">Current therapy is<br><span>too loud,</span> too rigid,<br><em>too scarce.</em></h2>
+  <p class="sec-sub reveal delay-1">ABA, CBT, and speech therapy remain the dominant interventions — but for many children with ASD Level 1, they generate more stress than relief. The system is under-resourced and over-standardised.</p>
 
   <div class="three-col mb32">
     <div class="card">
@@ -421,7 +456,7 @@ img{display:block;max-width:100%}
     </div>
   </div>
 
-  <div class="pull-quote">"The central challenge is not diagnosis — it is regulation. Reptile-assisted therapy offers a uniquely low-intrusion, high-predictability interaction model that aligns with the neurological profile of Level 1 ASD."</div>
+  <div class="pull-quote reveal">"The central challenge is not diagnosis — it is regulation. Reptile-assisted therapy offers a uniquely low-intrusion, high-predictability interaction model that aligns with the neurological profile of Level 1 ASD."</div>
   <div class="pull-source">Xinghao Ni · ESP Thesis · L'École de Design Nantes Atlantique · November 2025</div>
 </section>
 
@@ -429,11 +464,10 @@ img{display:block;max-width:100%}
      03 — SOLUTION
      ════════════════════════════════════════════ -->
 <section class="section" id="s3" data-label="03 · Solution">
-  <div class="sec-time">4:00 – 6:00</div>
-  <div class="sec-num">03 / 08</div>
-  <div class="sec-tag">Our Solution</div>
-  <h2 class="sec-h">Calm by design.<br><span>Structured by science.</span><br>Powered by technology.</h2>
-  <p class="sec-sub">TONITRUUM is an intelligent reptile habitat system and therapeutic service framework — combining precision IoT hardware, AI behaviour monitoring, and a structured 5-phase clinical protocol for ASD Level 1 children.</p>
+  <div class="sec-num">03 / 06</div>
+  <div class="sec-tag reveal">Our Solution</div>
+  <h2 class="sec-h reveal">Calm by design.<br><span>Structured by science.</span><br>Powered by technology.</h2>
+  <p class="sec-sub reveal delay-1">TONITRUUM is an intelligent reptile habitat system and therapeutic service framework — combining precision IoT hardware, AI behaviour monitoring, and a structured 5-phase clinical protocol for ASD Level 1 children.</p>
 
   <div class="two-col mb40">
     <div>
@@ -485,7 +519,7 @@ img{display:block;max-width:100%}
     </div>
   </div>
 
-  <div class="stat-grid g4">
+  <div class="stat-grid reveal delay-2 g4">
     <div class="stat hi"><div class="stat-val">12<span class="u">wk</span></div><div class="stat-lbl">Full programme duration</div></div>
     <div class="stat blue"><div class="stat-val">5</div><div class="stat-lbl">Staged therapeutic phases</div></div>
     <div class="stat green"><div class="stat-val">40<span class="u">dB</span></div><div class="stat-lbl">Max ambient sound in session environment</div></div>
@@ -497,11 +531,10 @@ img{display:block;max-width:100%}
      04 — EVIDENCE & VALIDATION
      ════════════════════════════════════════════ -->
 <section class="section section-4" id="s4" data-label="04 · Evidence">
-  <div class="sec-time">6:00 – 8:00</div>
-  <div class="sec-num">04 / 08</div>
-  <div class="sec-tag">Evidence · Research · Validation</div>
-  <h2 class="sec-h">This is not intuition.<br><em>The science</em> <span>is clear.</span></h2>
-  <p class="sec-sub">Four research pillars — neurochemistry, peer-reviewed studies, field interviews, and a real case study — converge to validate the reptile-assisted therapy model for ASD Level 1.</p>
+  <div class="sec-num">04 / 06</div>
+  <div class="sec-tag reveal">Evidence · Research · Validation</div>
+  <h2 class="sec-h reveal">This is not intuition.<br><em>The science</em> <span>is clear.</span></h2>
+  <p class="sec-sub reveal delay-1">Four research pillars — neurochemistry, peer-reviewed studies, field interviews, and a real case study — converge to validate the reptile-assisted therapy model for ASD Level 1.</p>
 
   <div class="two-col wide mb40">
     <div>
@@ -634,11 +667,10 @@ img{display:block;max-width:100%}
      05 — PRODUCT & SYSTEM
      ════════════════════════════════════════════ -->
 <section class="section" id="s5" data-label="05 · Product">
-  <div class="sec-time">8:00 – 10:00</div>
-  <div class="sec-num">05 / 08</div>
-  <div class="sec-tag">Product & System Design</div>
-  <h2 class="sec-h">Precision hardware.<br><span>Clinical intelligence.</span><br>Beautiful enough for the home.</h2>
-  <p class="sec-sub">TONITRUUM is two things in one: a premium intelligent habitat for serious reptile keepers, and a clinical-grade therapeutic platform for ASD programmes. Both use the same core system.</p>
+  <div class="sec-num">05 / 06</div>
+  <div class="sec-tag reveal">Product & System Design</div>
+  <h2 class="sec-h reveal">Precision hardware.<br><span>Clinical intelligence.</span><br>Beautiful enough for the home.</h2>
+  <p class="sec-sub reveal delay-1">TONITRUUM is two things in one: a premium intelligent habitat for serious reptile keepers, and a clinical-grade therapeutic platform for ASD programmes. Both use the same core system.</p>
 
   <div class="two-col mb40">
     <div>
@@ -667,7 +699,7 @@ img{display:block;max-width:100%}
     </div>
   </div>
 
-  <div class="stat-grid g4">
+  <div class="stat-grid reveal delay-2 g4">
     <div class="stat hi"><div class="stat-val">€149<span class="u">–199</span></div><div class="stat-lbl">Launch retail price (consumer line)</div></div>
     <div class="stat blue"><div class="stat-val">€299<span class="u">+</span></div><div class="stat-lbl">Closest competitor (Exo Terra Smart Kit)</div></div>
     <div class="stat green"><div class="stat-val">5</div><div class="stat-lbl">Product lines (starter to clinical-grade)</div></div>
@@ -679,11 +711,10 @@ img{display:block;max-width:100%}
      06 — USER FEEDBACK & VALIDATION
      ════════════════════════════════════════════ -->
 <section class="section" id="s6" data-label="06 · Feedback">
-  <div class="sec-time">10:00 – 11:30</div>
-  <div class="sec-num">06 / 08</div>
-  <div class="sec-tag">User Feedback · Field Validation</div>
-  <h2 class="sec-h">Real people.<br><span>Real responses.</span><br><em>Real signal.</em></h2>
-  <p class="sec-sub">Four field interviews, a 40-person public survey (32 valid responses), and a live case study across 5 countries — conducted September–November 2025 as part of the ESP thesis research phase.</p>
+  <div class="sec-num">06 / 06</div>
+  <div class="sec-tag reveal">User Feedback · Field Validation</div>
+  <h2 class="sec-h reveal">Real people.<br><span>Real responses.</span><br><em>Real signal.</em></h2>
+  <p class="sec-sub reveal delay-1">Four field interviews, a 40-person public survey (32 valid responses), and a live case study across 5 countries — conducted September–November 2025 as part of the ESP thesis research phase.</p>
 
   <div class="two-col wide mb40">
     <div>
@@ -713,7 +744,7 @@ img{display:block;max-width:100%}
     </div>
     <div>
       <div style="font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);font-weight:600;margin-bottom:14px">Public Survey · 40 Responses · 32 Valid · Sept 2025</div>
-      <div class="stat-grid g2 mb16">
+      <div class="stat-grid reveal delay-2 g2 mb16">
         <div class="stat hi"><div class="stat-val">81<span class="u">%</span></div><div class="stat-lbl">Had early nature/animal experience in childhood</div></div>
         <div class="stat"><div class="stat-val">63<span class="u">%</span></div><div class="stat-lbl">Positive perception of reptiles (cute, interesting, calm)</div></div>
         <div class="stat blue"><div class="stat-val">45<span class="u">%</span></div><div class="stat-lbl">Already owned reptiles at time of survey</div></div>
@@ -737,169 +768,10 @@ img{display:block;max-width:100%}
 </section>
 
 <!-- ════════════════════════════════════════════
-     07 — BUSINESS MODEL
-     ════════════════════════════════════════════ -->
-<section class="section" id="s7" data-label="07 · Business Model">
-  <div class="sec-time">11:30 – 13:00</div>
-  <div class="sec-num">07 / 08</div>
-  <div class="sec-tag">Business Model · Revenue</div>
-  <h2 class="sec-h">Hardware + subscription<br>+ clinical <span>partnerships.</span><br>Four revenue streams.</h2>
-
-  <div class="two-col mb40">
-    <div>
-      <div style="display:flex;flex-direction:column;gap:10px">
-        <div class="card accent">
-          <div class="card-icon">📦</div>
-          <div class="card-title">Stream 1 — Hardware Sales</div>
-          <div class="card-body">TONITRUUM enclosure system at €149–199 (consumer) and €350+ (clinical-grade). 5 product lines from starter kits to full clinical units with integrated AI camera and welfare monitoring.</div>
-          <span class="card-tag tag-o">B2C + B2B</span>
-        </div>
-        <div class="card blue">
-          <div class="card-icon">🔄</div>
-          <div class="card-title">Stream 2 — Platform Subscription</div>
-          <div class="card-body">Monthly SaaS subscription for the care intelligence layer: AI monitoring, behaviour alerts, vet integration, session reports, parent portal. €9–29/month consumer. €99–299/month clinical.</div>
-          <span class="card-tag tag-b">Recurring Revenue</span>
-        </div>
-        <div class="card green">
-          <div class="card-icon">🏥</div>
-          <div class="card-title">Stream 3 — Clinical Licensing</div>
-          <div class="card-body">Programme licensing fees for therapy centres, IME/SESSAD, hospitals, and school inclusion units. Includes protocol training, hardware bundle discount, data reporting suite, and annual renewal. €2,000–8,000/institution/year.</div>
-          <span class="card-tag tag-g">B2B · High Margin</span>
-        </div>
-        <div class="card purple">
-          <div class="card-icon">📊</div>
-          <div class="card-title">Stream 4 — Research Data Partnerships</div>
-          <div class="card-body">Anonymised, aggregated session and welfare data licensed to university research programmes, pharmaceutical companies studying oxytocin pathways, and policy bodies mapping ASD intervention effectiveness.</div>
-          <span class="card-tag tag-p">Long-term · Strategic</span>
-        </div>
-      </div>
-    </div>
-    <div>
-      <div style="font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);font-weight:600;margin-bottom:14px">Market Opportunity</div>
-      <div class="stat-grid g2 mb16">
-        <div class="stat hi"><div class="stat-val">$17.25<span class="u">B</span></div><div class="stat-lbl">Pet tech market size 2030</div></div>
-        <div class="stat"><div class="stat-val">14.6<span class="u">%</span></div><div class="stat-lbl">Pet tech CAGR 2024–2030</div></div>
-        <div class="stat blue"><div class="stat-val">$2.16<span class="u">B</span></div><div class="stat-lbl">Reptile enclosure market 2030</div></div>
-        <div class="stat green"><div class="stat-val">7.6<span class="u">%</span></div><div class="stat-lbl">Reptile enclosure CAGR 2023–30</div></div>
-      </div>
-      <div style="font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);font-weight:600;margin-bottom:10px">Geographic Strategy</div>
-      <div class="phase-strip">
-        <div class="phase-col now">
-          <div class="phase-lbl">Phase 1 · 2026–27</div>
-          <div class="phase-name">🇫🇷 Europe</div>
-          <ul class="phase-list"><li>2.1M reptile pets in France</li><li>Kickstarter launch</li><li>First clinical pilots</li><li>D2C + specialty retail</li></ul>
-        </div>
-        <div class="phase-col">
-          <div class="phase-lbl">Phase 2 · 2027–28</div>
-          <div class="phase-name">🇨🇳 China</div>
-          <ul class="phase-list"><li>17M exotic pet owners</li><li>Manufacturing proximity</li><li>Price validation</li><li>Flagship store</li></ul>
-        </div>
-        <div class="phase-col">
-          <div class="phase-lbl">Phase 3 · 2028–29</div>
-          <div class="phase-name">🇺🇸 N. America</div>
-          <ul class="phase-list"><li>6M reptile households</li><li>37% global pet tech</li><li>PetSmart + Petco</li><li>Series A closed</li></ul>
-        </div>
-      </div>
-      <div style="margin-top:14px;padding:14px 16px;background:rgba(217,110,40,.07);border:1px solid rgba(217,110,40,.25);border-radius:8px">
-        <div style="font-size:9.5px;color:var(--orange);font-weight:700;letter-spacing:.08em;margin-bottom:6px">FUNDING ROADMAP</div>
-        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center">
-          <div><div style="font-size:16px;font-weight:700;color:var(--ink)">¥150K</div><div style="font-size:9px;color:var(--ink-mid)">Bootstrap · Self</div></div>
-          <div><div style="font-size:16px;font-weight:700;color:var(--orange)">¥170K</div><div style="font-size:9px;color:var(--ink-mid)">Angel · Target</div></div>
-          <div><div style="font-size:16px;font-weight:700;color:var(--blue)">¥200K</div><div style="font-size:9px;color:var(--ink-mid)">Series A · 2028</div></div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ════════════════════════════════════════════
-     08 — SCALE & ROADMAP
-     ════════════════════════════════════════════ -->
-<section class="section" id="s8" data-label="08 · Roadmap">
-  <div class="sec-time">13:00 – 15:00</div>
-  <div class="sec-num">08 / 08</div>
-  <div class="sec-tag">Roadmap · Scale · Phase 3 Ask</div>
-  <h2 class="sec-h">Four years to<br><span>global scale.</span><br>Three things we need now.</h2>
-  <p class="sec-sub">From validated prototype to clinical launch to global ASD therapy product line — a clear, staged execution plan with defined milestones.</p>
-
-  <div class="roadmap mb40">
-    <div class="rm-node done">
-      <div class="rm-year">2025 ✓</div>
-      <div class="rm-item">Thermostat prototype validated</div>
-      <div class="rm-item">ESP thesis submitted</div>
-      <div class="rm-item">4 field interviews completed</div>
-      <div class="rm-item">40-person survey done</div>
-      <div class="rm-item">Germany market research</div>
-    </div>
-    <div class="rm-node now">
-      <div class="rm-year">2026 ← NOW</div>
-      <div class="rm-item">DVT launch (ID+mech design)</div>
-      <div class="rm-item">Product design finalised</div>
-      <div class="rm-item">First clinical pilot setup</div>
-      <div class="rm-item">Mould factory quotes</div>
-      <div class="rm-item">China channel setup</div>
-    </div>
-    <div class="rm-node">
-      <div class="rm-year">2027</div>
-      <div class="rm-item">PVT + small batch production</div>
-      <div class="rm-item">Kickstarter campaign</div>
-      <div class="rm-item">Official EU launch</div>
-      <div class="rm-item">EU distributor network</div>
-      <div class="rm-item">First clinical licensing deal</div>
-    </div>
-    <div class="rm-node">
-      <div class="rm-year">2028</div>
-      <div class="rm-item">Large-scale production</div>
-      <div class="rm-item">China flagship store</div>
-      <div class="rm-item">US market launch</div>
-      <div class="rm-item">Series A closed</div>
-      <div class="rm-item">ASD product line expanded</div>
-    </div>
-    <div class="rm-node">
-      <div class="rm-year">2029</div>
-      <div class="rm-item">Global official launch</div>
-      <div class="rm-item">Autism therapy line released</div>
-      <div class="rm-item">Full platform ecosystem</div>
-      <div class="rm-item">Multi-market coverage</div>
-      <div class="rm-item">Research partnership live</div>
-    </div>
-  </div>
-
-  <!-- THE ASK -->
-  <div style="font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);font-weight:600;margin-bottom:14px">Phase 3 — What We Need Now</div>
-  <div class="three-col mb40">
-    <div class="card" style="border-color:rgba(217,110,40,.4);border-width:2px">
-      <div class="card-icon">🏥</div>
-      <div class="card-title">Clinical Partner · Priority #1</div>
-      <div class="card-body">A therapy centre, IME, SESSAD, or hospital willing to run the first structured pilot — 10–20 ASD Level 1 children, 8–12 week protocol, full TONITRUUM monitoring, co-published outcome data.</div>
-      <span class="card-tag tag-o">Seeking Now</span>
-    </div>
-    <div class="card" style="border-color:rgba(217,110,40,.4);border-width:2px">
-      <div class="card-icon">💰</div>
-      <div class="card-title">Seed Funding · ¥170K Target</div>
-      <div class="card-body">¥150K self-funded already committed. Seeking ¥170K angel investment to complete DVT tooling, first production run of 200 units, and clinical pilot hardware. Kickstarter to follow in 2027.</div>
-      <span class="card-tag tag-o">¥170K Ask</span>
-    </div>
-    <div class="card" style="border-color:rgba(107,158,184,.4);border-width:2px">
-      <div class="card-icon">🤝</div>
-      <div class="card-title">EU Distribution Partner</div>
-      <div class="card-body">EU specialty pet retail partner (Terrario, Reptilis, Maxi Zoo Exotique) for initial launch channel alongside D2C webshop. Looking for 3–5 flagship stockists in France and Germany for the 2027 launch.</div>
-      <span class="card-tag tag-b">EU Launch</span>
-    </div>
-  </div>
-
-  <!-- Closing Statement -->
-  <div style="padding:28px 32px;background:rgba(217,110,40,.07);border:1px solid rgba(217,110,40,.3);border-radius:12px;max-width:860px">
-    <div style="font-size:11px;color:var(--orange);font-weight:700;letter-spacing:.1em;margin-bottom:12px">TONITRUUM · CLOSING STATEMENT</div>
-    <div style="font-size:14px;color:var(--ink);line-height:1.75">The reptile care market is analogue, isolated, and missing a $2B+ intelligence layer. The ASD therapy sector is overwhelmed, under-resourced, and searching for gentler, more natural pathways to emotional regulation. TONITRUUM is the only product in the world designed to serve both.<br><br>We have the research. We have the design. We have the case. <span style="color:var(--orange);font-weight:700">We are ready to build.</span></div>
-  </div>
-</section>
-
-<!-- ════════════════════════════════════════════
      REFERENCES
      ════════════════════════════════════════════ -->
 <section class="section" id="s-refs" data-label="References">
-  <div class="sec-tag">Full Reference List · Academic Sources</div>
+  <div class="sec-tag reveal">Full Reference List · Academic Sources</div>
   <h2 class="sec-h" style="font-size:28px;margin-bottom:8px">References &amp; Literature</h2>
   <p class="sec-sub" style="margin-bottom:28px;font-size:12px">All papers are available via PDF download or external DOI link. Local PDF files are hosted at <code style="font-family:var(--mono);font-size:10px;color:var(--orange)">/assets/refs/</code></p>
 
@@ -1205,6 +1077,17 @@ window.toggleTimer=function(){
     document.getElementById('hudTimer').style.color='var(--orange)';
   }
 };
+
+/* ── Reveal Animations ── */
+(function(){
+  const els=document.querySelectorAll('.reveal');
+  const obs=new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target);}
+    });
+  },{threshold:0.12,rootMargin:'0px 0px -40px 0px'});
+  els.forEach(el=>obs.observe(el));
+})();
 </script>
 </body>
 </html>

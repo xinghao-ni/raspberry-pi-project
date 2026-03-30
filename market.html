@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Business Model — TONITRUUM</title>
 <link rel="stylesheet" href="shared.css">
+<script src="shared.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
 /* ── Market Page Specific ── */
@@ -567,9 +568,12 @@
     
     </ul>
     <div class="sidebar-footer">
-      <div class="sys-status"><span class="status-indicator status-good"></span>All Systems Online</div>
+      <div class="sys-status"><span class="status-indicator status-good"></span>All Systems Online
+  </div>
       <div class="sys-time" id="sidebarTime"></div>
-    </div>
+    
+    <button class="theme-toggle-btn" onclick="toggleTheme()"><span style="font-size:12px">◑</span>&nbsp;Day Mode</button>
+  </div>
   </nav>
 
   <!-- ── Main ── -->

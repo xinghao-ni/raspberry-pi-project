@@ -453,13 +453,17 @@
     
     </ul>
     <div class="sidebar-footer">
-      <div class="sys-status"><span class="status-indicator status-good"></span>All Systems Online</div>
+      <div class="sys-status"><span class="status-indicator status-good"></span>All Systems Online
+  </div>
       <div class="sys-time" id="sidebarTime"></div>
-    </div>
+    
+    <button class="theme-toggle-btn" onclick="toggleTheme()"><span style="font-size:12px">◑</span>&nbsp;Day Mode</button>
+  </div>
   </nav>
 
   <!-- ── Main ── -->
   <main class="main-content">
+    <button class="minimal-toggle" id="minimalBtn" onclick="toggleMinimal()"><span style="opacity:.7">◫</span>&nbsp;Minimal</button>
     <header class="page-header">
       <div>
         <h1 class="page-title">Habitat Monitor</h1>
@@ -495,6 +499,7 @@
           <button class="cam-src-btn" onclick="switchSource(2)">Snake Discovery</button>
           <button class="cam-src-btn" onclick="switchSource(3)">Tonitruum Demo</button>
           <button class="cam-src-btn" onclick="switchSource(4)">Simulated</button>
+          <button class="cam-src-btn" onclick="switchSource(5)" style="border-color:rgba(107,158,184,.4);color:#8ab8ce;">◈ 3D Scene</button>
         </div>
 
         <!-- LIVE MODE: YouTube embed -->
@@ -537,6 +542,30 @@
               <span class="cam-rec">REC</span>
             </div>
             <div class="nv-toggle" id="nvToggle" onclick="toggleNV()">NIGHT VISION</div>
+          </div>
+        </div>
+
+        <!-- GAUSSIAN SPLAT 3D SCENE -->
+        <div class="camera-wrap" id="gsPanel" style="display:none;">
+          <div style="position:relative;width:100%;padding-top:56.25%;background:#0a0a09;">
+            <iframe
+              src="https://lumalabs.ai/capture/150089d7-ef41-492c-ae2f-a71974b65d94"
+              style="position:absolute;top:0;left:0;width:100%;height:100%;border:none;"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; xr-spatial-tracking"
+              allowfullscreen
+              title="3D Gaussian Splat Scene"
+            ></iframe>
+          </div>
+          <div class="cam-overlay" style="pointer-events:none;">
+            <div class="live-chip" style="border-color:rgba(107,158,184,.35);color:rgba(107,158,184,.9);">
+              <div class="live-dot" style="background:#6b9eb8;animation:none;"></div>3D
+            </div>
+            <div class="cam-id">Gaussian Splat · Luma AI</div>
+            <div class="cam-footer">
+              <span class="cam-spec">3D Scene · Interactive</span>
+              <a href="https://lumalabs.ai/capture/150089d7-ef41-492c-ae2f-a71974b65d94" target="_blank"
+                 style="color:rgba(107,158,184,.85);font-size:10px;font-weight:600;letter-spacing:.08em;text-decoration:none;pointer-events:all;">↗ OPEN</a>
+            </div>
           </div>
         </div>
 
@@ -837,6 +866,57 @@
         </div>
       </div>
     </div>
+  <div class="minimal-panel" id="minimalPanel">
+  <div class="m-head">
+    <span class="m-page-title">Habitat Monitor</span>
+    <span class="m-page-sub">LIVE · TONITRUUM-01</span>
+  </div>
+  <div class="m-section-label">Environment</div>
+  <div class="m-grid">
+    <div class="m-card hi">
+      <div class="m-val">31.2<span style="font-size:18px;font-weight:400">°C</span></div>
+      <div class="m-lbl">Basking Zone</div>
+      <div class="m-delta">✓ Optimal Range</div>
+    </div>
+    <div class="m-card info">
+      <div class="m-val">24.1<span style="font-size:18px;font-weight:400">°C</span></div>
+      <div class="m-lbl">Cool Zone</div>
+      <div class="m-delta">✓ Optimal Range</div>
+    </div>
+    <div class="m-card good">
+      <div class="m-val">58<span style="font-size:18px;font-weight:400">%</span></div>
+      <div class="m-lbl">Humidity</div>
+      <div class="m-delta">✓ Normal</div>
+    </div>
+    <div class="m-card purple">
+      <div class="m-val">3.2<span style="font-size:18px;font-weight:400"> UVI</span></div>
+      <div class="m-lbl">UVB Index</div>
+      <div class="m-delta">✓ Active Basking</div>
+    </div>
+  </div>
+  <div class="m-section-label">Animal Status</div>
+  <div class="m-status-row">
+    <div class="m-status-pill"><div class="dot dot-green"></div>Basking — Normal</div>
+    <div class="m-status-pill"><div class="dot dot-green"></div>Feeding Completed</div>
+    <div class="m-status-pill"><div class="dot dot-green"></div>No Stress Detected</div>
+    <div class="m-status-pill"><div class="dot dot-blue"></div>AI Vision Active</div>
+  </div>
+  <div class="m-section-label">Session</div>
+  <div class="m-grid" style="grid-template-columns:repeat(3,1fr)">
+    <div class="m-card good">
+      <div class="m-val">7</div>
+      <div class="m-lbl">Day Streak — No Incidents</div>
+    </div>
+    <div class="m-card hi">
+      <div class="m-val">42<span style="font-size:18px;font-weight:400">min</span></div>
+      <div class="m-lbl">Interaction Today</div>
+    </div>
+    <div class="m-card info">
+      <div class="m-val">3/3</div>
+      <div class="m-lbl">Meals Completed</div>
+    </div>
+  </div>
+</div>
   </main>
 </div>
 
@@ -1225,15 +1305,27 @@ function switchSource(idx) {
     b.classList.toggle('active', i === idx));
 
   const pill = document.getElementById('camStatusPill');
-  if (!src.channel && !src.videoId) {
+  const liveP = document.getElementById('livePanel');
+  const simP  = document.getElementById('simPanel');
+  const gsP   = document.getElementById('gsPanel');
+
+  // Hide all panels first
+  liveP.style.display = 'none';
+  simP.style.display  = 'none';
+  gsP.style.display   = 'none';
+
+  if (idx === 5) {
+    // Gaussian Splat 3D scene
+    gsP.style.display = '';
+    pill.textContent = '3D Scene · Gaussian Splat';
+    pill.className   = 'status-pill pill-ok';
+  } else if (!src.channel && !src.videoId) {
     // Simulated
-    document.getElementById('livePanel').style.display = 'none';
-    document.getElementById('simPanel').style.display  = '';
+    simP.style.display = '';
     pill.textContent = 'Simulated · Demo';
     pill.className   = 'status-pill pill-warn';
   } else {
-    document.getElementById('livePanel').style.display = '';
-    document.getElementById('simPanel').style.display  = 'none';
+    liveP.style.display = '';
     const embedSrc = src.videoId
       ? `https://www.youtube.com/embed/${src.videoId}?autoplay=1&mute=1&loop=1&playlist=${src.videoId}&controls=1&modestbranding=1&rel=0`
       : `https://www.youtube.com/embed/live_stream?channel=${src.channel}&autoplay=1&mute=1&controls=1&modestbranding=1&rel=0`;

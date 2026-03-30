@@ -102,10 +102,14 @@
     
     
     </ul>
-    <div class="sidebar-footer"><div class="sys-status"><span class="status-indicator status-good"></span>All Systems Online</div><div class="sys-time" id="sidebarTime"></div></div>
+    <div class="sidebar-footer"><div class="sys-status"><span class="status-indicator status-good"></span>All Systems Online
+  </div><div class="sys-time" id="sidebarTime"></div>
+    <button class="theme-toggle-btn" onclick="toggleTheme()"><span style="font-size:12px">◑</span>&nbsp;Day Mode</button>
+  </div>
   </nav>
 
   <main class="main-content">
+    <button class="minimal-toggle" id="minimalBtn" onclick="toggleMinimal()"><span style="opacity:.7">◫</span>&nbsp;Minimal</button>
     <header class="page-header">
       <div>
         <h1 class="page-title">Medical & Psychological Consultation</h1>
@@ -421,6 +425,43 @@
         <button class="btn btn-primary" onclick="showToast('Consultation request submitted — Dr. Lee will respond within 24h','success')">📨 Submit Request</button>
       </div>
     </div>
+  <div class="minimal-panel" id="minimalPanel">
+  <div class="m-head">
+    <span class="m-page-title">Medical Consultation</span>
+    <span class="m-page-sub">Alex M. · Clinical Team Summary</span>
+  </div>
+  <div class="m-section-label">Care Team</div>
+  <div class="m-status-row">
+    <div class="m-status-pill"><div class="dot dot-green"></div>Dr. Sarah Lee — On Duty</div>
+    <div class="m-status-pill"><div class="dot dot-blue"></div>Dr. James Wang — Thursday Clinic</div>
+    <div class="m-status-pill"><div class="dot dot-green"></div>Emma Chen (AAT) — On Duty</div>
+  </div>
+  <div class="m-section-label">Active Treatment</div>
+  <div class="m-grid">
+    <div class="m-card good">
+      <div class="m-val" style="font-size:20px">Week 3</div>
+      <div class="m-lbl">AAT Programme · Phase 03</div>
+      <div class="m-delta">On Track ✓</div>
+    </div>
+    <div class="m-card info">
+      <div class="m-val" style="font-size:20px">No Rx</div>
+      <div class="m-lbl">Active Medications</div>
+      <div class="m-delta neutral">Supplement: Omega-3</div>
+    </div>
+    <div class="m-card warn">
+      <div class="m-val" style="font-size:20px">Thu</div>
+      <div class="m-lbl">Next Appointment</div>
+      <div class="m-delta warn">Dr. Wang · 14:00</div>
+    </div>
+    <div class="m-card hi">
+      <div class="m-val" style="font-size:20px">7/10</div>
+      <div class="m-lbl">Progress Score</div>
+      <div class="m-delta">↑ Improving</div>
+    </div>
+  </div>
+  <div class="m-section-label">Clinical Note</div>
+  <div class="m-note">AAT integration showing positive response. Cortisol indicators trending down post-session. Continue current programme. Discuss sensory diet modifications at Thursday consultation.</div>
+</div>
   </main>
 </div>
 
