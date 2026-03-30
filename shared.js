@@ -13,7 +13,9 @@ function toggleTheme() {
   _updateThemeBtns(isLight);
 }
 function _updateThemeBtns(isLight) {
-  document.querySelectorAll('.theme-btn').forEach(function (btn) {
+  // Only update buttons that explicitly have the theme-btn class,
+  // never touch #minimalBtn which shares the same base style class
+  document.querySelectorAll('.theme-btn:not(#minimalBtn)').forEach(function (btn) {
     btn.innerHTML = isLight
       ? '<span style="font-size:12px">◑</span>&nbsp;Night Mode'
       : '<span style="font-size:12px">☀</span>&nbsp;Day Mode';
@@ -32,19 +34,19 @@ function toggleMinimal() {
     : '<span style="opacity:.7">◫</span>&nbsp;Minimal';
 
   if (isMinimal) {
-    // Wait two frames so the panel's display:block is painted before animating
+    // Double rAF: let the panel's display:block paint before animating cards
     requestAnimationFrame(() => requestAnimationFrame(() => {
-      const cards = document.querySelectorAll('.minimal-panel .m-card');
-      cards.forEach((card, i) => {
-        card.classList.remove('animating');
-        void card.offsetWidth; // force reflow
-        card.style.animationDelay = (i * 0.07) + 's';
-        card.classList.add('animating');
+      document.querySelectorAll('.minimal-panel .m-card').forEach((card, i) => {
+        card.animate([
+          { opacity: 0, transform: 'scale(0.88) translateY(20px)', filter: 'blur(3px)' },
+          { opacity: 1, transform: 'scale(1) translateY(0)',        filter: 'blur(0px)' }
+        ], {
+          duration: 480,
+          delay: i * 65,
+          easing: 'cubic-bezier(0.22, 1, 0.36, 1)',
+          fill: 'backwards'
+        });
       });
-      const dur = 420 + (cards.length - 1) * 70;
-      setTimeout(() => {
-        cards.forEach(c => { c.classList.remove('animating'); c.style.animationDelay = ''; });
-      }, dur + 60);
     }));
   }
 }

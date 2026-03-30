@@ -458,7 +458,7 @@
       <div class="sys-time" id="sidebarTime"></div>
     
     <button class="theme-toggle-btn" style="margin-top:4px;border-color:rgba(217,110,40,.3);color:var(--accent-orange);" onclick="toggleMinimal()" id="minimalBtn"><span style="font-size:12px">◫</span>&nbsp;Minimal Mode</button>
-    <button class="theme-toggle-btn" onclick="toggleTheme()"><span style="font-size:12px">◑</span>&nbsp;Day Mode</button>
+    <button class="theme-toggle-btn theme-btn" onclick="toggleTheme()"><span style="font-size:12px">◑</span>&nbsp;Day Mode</button>
   </div>
   </nav>
 
@@ -1954,6 +1954,9 @@ Rules:
   }
   if (apiKey) apikeyBar.style.display = 'none';
   setInterval(syncSensorStrip, 8000);
+
+  // Default to 3D Scene on load
+  switchSource(5);
 
 })();
 </script>
