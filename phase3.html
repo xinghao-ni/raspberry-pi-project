@@ -3,1067 +3,1208 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Phase 3 — TONITRUUM Pitch</title>
+<title>Phase 3 Pitch — TONITRUUM × ASD Reptile Therapy</title>
 <link rel="stylesheet" href="shared.css">
 <style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-:root {
-  --bg:        #0f0f0e;
-  --bg-mid:    #141312;
-  --bg-card:   #1a1918;
-  --ink:       #ede9e4;
-  --ink-mid:   #8a8784;
-  --ink-soft:  #5a5855;
-  --orange:    #d96e28;
-  --orange-lt: #e8884a;
-  --blue:      #6b9eb8;
-  --green:     #4a8c68;
-  --purple:    #7a6ab0;
-  --line:      rgba(255,255,255,0.07);
-  --line-lt:   rgba(255,255,255,0.13);
-  --ff:        -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
-  --ff-mono:   'SF Mono', 'Fira Code', monospace;
-  --ease:      cubic-bezier(0.25,0.46,0.45,0.94);
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0f0f0e; --bg-mid:#141312; --bg-card:#1a1918; --bg-card2:#1e1d1b;
+  --ink:#ede9e4; --ink-mid:#8a8784; --ink-soft:#5a5855;
+  --orange:#d96e28; --orange-lt:#e8884a; --orange-dim:rgba(217,110,40,0.12);
+  --blue:#6b9eb8; --green:#4a8c68; --purple:#7a6ab0; --teal:#3a8a7a;
+  --line:rgba(255,255,255,0.07); --line-lt:rgba(255,255,255,0.13);
+  --ff:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;
+  --mono:'SF Mono','Fira Code',monospace;
+  --ease:cubic-bezier(0.25,0.46,0.45,0.94);
+  --r:10px;
 }
-html { scroll-behavior: smooth; }
-body {
-  font-family: var(--ff);
-  background: var(--bg);
-  color: var(--ink);
-  -webkit-font-smoothing: antialiased;
-}
-a { text-decoration: none; color: inherit; }
+html{scroll-behavior:smooth}
+body{font-family:var(--ff);background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{text-decoration:none;color:inherit}
+img{display:block;max-width:100%}
 
-/* ── Sidebar (shared pattern) ── */
-.sidebar {
-  width: 220px; background: var(--bg-mid);
-  border-right: 1px solid var(--line);
-  display: flex; flex-direction: column;
-  position: fixed; top: 0; left: 0; height: 100vh; z-index: 300;
-}
-.sidebar-logo {
-  display: flex; align-items: center; justify-content: center;
-  padding: 24px 12px 20px; border-bottom: 1px solid var(--line);
-}
-.nav-list { list-style: none; padding: 8px; flex: 1; overflow-y: auto; }
-.nav-section {
-  font-size: 9px; font-weight: 600; letter-spacing: 0.1em;
-  text-transform: uppercase; color: var(--ink-mid);
-  opacity: 0.45; padding: 12px 12px 4px;
-  pointer-events: none; user-select: none;
-}
-.nav-section:first-child { padding-top: 4px; }
-.nav-icon { width: 16px; text-align: center; font-size: 13px; opacity: 0.7; flex-shrink: 0; }
-.nav-item { margin-bottom: 1px; }
-.nav-item a {
-  display: flex; align-items: center; gap: 9px;
-  padding: 6px 10px 6px 12px; border-radius: 5px;
-  font-size: 11.5px; color: var(--ink-soft); letter-spacing: 0.01em;
-  transition: color 0.2s, background 0.2s;
-}
-.nav-item a:hover { color: var(--ink); background: rgba(255,255,255,0.04); }
-.nav-item.active a {
-  color: var(--ink); background: rgba(255,255,255,0.05);
-  border-left: 2px solid var(--orange); padding-left: 8px;
-}
-.sidebar-footer {
-  padding: 12px 16px; border-top: 1px solid var(--line);
-  font-size: 10px; color: var(--ink-soft); letter-spacing: 0.03em;
-}
-.sys-status { display: flex; align-items: center; margin-bottom: 4px; }
-.status-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: #4a8c68; margin-right: 6px; }
-.sys-time { font-family: var(--ff-mono); font-size: 11px; }
+/* ═══ SIDEBAR ═══ */
+.sidebar{width:220px;background:var(--bg-mid);border-right:1px solid var(--line);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:300}
+.sidebar-logo{display:flex;align-items:center;justify-content:center;padding:24px 12px 20px;border-bottom:1px solid var(--line)}
+.nav-list{list-style:none;padding:8px;flex:1;overflow-y:auto}
+.nav-section{font-size:9px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-mid);opacity:.45;padding:12px 12px 4px;pointer-events:none;user-select:none}
+.nav-section:first-child{padding-top:4px}
+.nav-icon{width:16px;text-align:center;font-size:13px;opacity:.7;flex-shrink:0}
+.nav-item{margin-bottom:1px}
+.nav-item a{display:flex;align-items:center;gap:9px;padding:6px 10px 6px 12px;border-radius:5px;font-size:11.5px;color:var(--ink-soft);letter-spacing:.01em;transition:color .2s,background .2s}
+.nav-item a:hover{color:var(--ink);background:rgba(255,255,255,.04)}
+.nav-item.active a{color:var(--ink);background:rgba(255,255,255,.05);border-left:2px solid var(--orange);padding-left:8px}
+.sidebar-footer{padding:12px 16px;border-top:1px solid var(--line);font-size:10px;color:var(--ink-soft)}
+.sys-status{display:flex;align-items:center;margin-bottom:4px}
+.status-dot{width:6px;height:6px;border-radius:50%;background:#4a8c68;margin-right:6px;display:inline-block}
+.sys-time{font-family:var(--mono);font-size:11px}
 
-/* ── Main ── */
-.page-wrap { display: flex; min-height: 100vh; }
-.main { margin-left: 220px; flex: 1; }
+/* ═══ LAYOUT ═══ */
+.page-wrap{display:flex;min-height:100vh}
+.main{margin-left:220px;flex:1}
 
-/* ── Presentation HUD ── */
-.hud {
-  position: fixed; top: 0; left: 220px; right: 0; z-index: 200;
-  height: 52px; background: rgba(15,15,14,0.92); backdrop-filter: blur(16px);
-  border-bottom: 1px solid var(--line);
-  display: flex; align-items: center; padding: 0 36px;
-  justify-content: space-between;
-}
-.hud-left { display: flex; align-items: center; gap: 20px; }
-.hud-slide {
-  font-family: var(--ff-mono); font-size: 11px; color: var(--ink-mid);
-}
-.hud-slide strong { color: var(--orange); }
-.hud-title { font-size: 11px; color: var(--ink-mid); letter-spacing: 0.04em; }
-.hud-right { display: flex; align-items: center; gap: 12px; }
-.hud-timer {
-  font-family: var(--ff-mono); font-size: 13px; color: var(--orange);
-  background: rgba(217,110,40,0.1); border: 1px solid rgba(217,110,40,0.25);
-  padding: 3px 10px; border-radius: 4px; letter-spacing: 0.06em;
-}
-.hud-btn {
-  width: 28px; height: 28px; border-radius: 5px;
-  background: rgba(255,255,255,0.04); border: 1px solid var(--line);
-  color: var(--ink-mid); font-size: 12px;
-  cursor: pointer; display: flex; align-items: center; justify-content: center;
-  transition: all 0.15s; font-family: var(--ff);
-}
-.hud-btn:hover { color: var(--ink); border-color: rgba(255,255,255,0.2); }
-.hud-btn:disabled { opacity: 0.3; cursor: default; }
-.progress-bar {
-  position: fixed; top: 52px; left: 220px; right: 0; z-index: 199;
-  height: 2px; background: rgba(255,255,255,0.06);
-}
-.progress-fill {
-  height: 100%; background: var(--orange);
-  transition: width 0.4s var(--ease);
-}
+/* ═══ TOP HUD ═══ */
+.hud{position:sticky;top:0;z-index:200;height:52px;background:rgba(15,15,14,.95);backdrop-filter:blur(16px);border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 40px;justify-content:space-between}
+.hud-left{display:flex;align-items:center;gap:16px}
+.hud-badge{font-size:9px;padding:3px 9px;border-radius:12px;background:rgba(217,110,40,.15);border:1px solid rgba(217,110,40,.35);color:var(--orange);font-weight:700;letter-spacing:.08em}
+.hud-title{font-size:11px;color:var(--ink-mid);letter-spacing:.04em}
+.hud-right{display:flex;align-items:center;gap:10px}
+.hud-timer{font-family:var(--mono);font-size:12px;color:var(--orange);background:rgba(217,110,40,.08);border:1px solid rgba(217,110,40,.2);padding:3px 10px;border-radius:4px}
+.hud-btn{width:26px;height:26px;border-radius:4px;background:rgba(255,255,255,.04);border:1px solid var(--line);color:var(--ink-mid);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;transition:all .15s;font-family:var(--ff)}
+.hud-btn:hover{color:var(--ink);border-color:rgba(255,255,255,.2)}
+.progress-bar{position:sticky;top:52px;z-index:199;height:2px;background:rgba(255,255,255,.05)}
+.progress-fill{height:100%;background:var(--orange);transition:width .5s var(--ease);width:0%}
 
-/* ── Slide Dots ── */
-.slide-dots {
-  position: fixed; right: 20px; top: 50%;
-  transform: translateY(-50%); z-index: 200;
-  display: flex; flex-direction: column; gap: 6px;
-}
-.slide-dot {
-  width: 5px; height: 5px; border-radius: 50%;
-  background: rgba(255,255,255,0.2);
-  cursor: pointer; transition: all 0.2s;
-}
-.slide-dot.active { background: var(--orange); transform: scale(1.4); }
-.slide-dot:hover  { background: rgba(255,255,255,0.5); }
+/* ═══ SECTION NAV DOTS ═══ */
+.sec-nav{position:fixed;right:18px;top:50%;transform:translateY(-50%);z-index:200;display:flex;flex-direction:column;gap:7px}
+.sec-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.18);cursor:pointer;transition:all .2s;position:relative}
+.sec-dot:hover::after,.sec-dot.active::after{content:attr(data-label);position:absolute;right:14px;top:50%;transform:translateY(-50%);background:var(--bg-card);border:1px solid var(--line);color:var(--ink-mid);font-size:9px;padding:3px 7px;border-radius:4px;white-space:nowrap;pointer-events:none;font-family:var(--ff)}
+.sec-dot.active{background:var(--orange);transform:scale(1.5)}
+.sec-dot:hover{background:rgba(255,255,255,.45)}
 
-/* ── Slides Container ── */
-.slides { padding-top: 54px; }
+/* ═══ SECTION WRAPPER ═══ */
+.section{padding:80px 72px;border-bottom:1px solid var(--line);position:relative;overflow:hidden}
+.section:last-child{border-bottom:none}
 
-/* ── Individual Slide ── */
-.slide {
-  min-height: calc(100vh - 54px);
-  padding: 64px 72px;
-  display: flex; flex-direction: column;
-  justify-content: center;
-  border-bottom: 1px solid var(--line);
-  position: relative; overflow: hidden;
-}
-.slide::before {
-  content: '';
-  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-  pointer-events: none;
-}
+/* Section accents */
+.section::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;pointer-events:none}
+.section-cover{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;background:radial-gradient(ellipse at 30% 40%,rgba(217,110,40,.1) 0%,transparent 60%),radial-gradient(ellipse at 75% 70%,rgba(107,158,184,.07) 0%,transparent 50%)}
+.section-1::before{background:radial-gradient(circle at 100% 0%,rgba(74,140,104,.05) 0%,transparent 50%)}
+.section-4::before{background:radial-gradient(circle at 0% 100%,rgba(122,106,176,.05) 0%,transparent 50%)}
 
-/* Slide 1: Cover */
-.slide-cover {
-  background: radial-gradient(ellipse at 30% 40%, rgba(217,110,40,0.1) 0%, transparent 60%),
-              radial-gradient(ellipse at 70% 70%, rgba(107,158,184,0.06) 0%, transparent 50%);
-  align-items: center; text-align: center;
-}
-.cover-eyebrow {
-  font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
-  color: var(--orange); font-weight: 600; margin-bottom: 20px;
-}
-.cover-title {
-  font-size: clamp(48px, 6vw, 80px); font-weight: 700;
-  letter-spacing: -0.03em; line-height: 1.05; margin-bottom: 16px;
-}
-.cover-title span { color: var(--orange); }
-.cover-sub {
-  font-size: 16px; color: var(--ink-mid); max-width: 520px;
-  line-height: 1.6; margin: 0 auto 36px;
-}
-.cover-meta {
-  display: flex; align-items: center; gap: 24px;
-  justify-content: center; flex-wrap: wrap;
-}
-.cover-pill {
-  font-size: 10.5px; padding: 5px 14px; border-radius: 20px;
-  border: 1px solid var(--line); color: var(--ink-mid);
-  letter-spacing: 0.06em;
-}
-.cover-pill.hi { border-color: rgba(217,110,40,0.4); color: var(--orange); }
+/* ═══ TYPOGRAPHY ═══ */
+.sec-num{font-family:var(--mono);font-size:10px;color:var(--ink-soft);letter-spacing:.12em;margin-bottom:8px}
+.sec-tag{font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--orange);font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.sec-tag::after{content:'';flex:1;height:1px;background:var(--line);max-width:48px}
+.sec-h{font-size:clamp(28px,3.5vw,46px);font-weight:700;letter-spacing:-.025em;line-height:1.12;margin-bottom:12px}
+.sec-h span{color:var(--orange)}
+.sec-h em{color:var(--ink-mid);font-style:normal}
+.sec-sub{font-size:14px;color:var(--ink-mid);line-height:1.7;max-width:660px;margin-bottom:36px}
+.sec-time{position:absolute;top:80px;right:72px;font-size:9px;color:var(--ink-soft);letter-spacing:.1em;font-family:var(--mono)}
 
-/* Slide heading pattern */
-.slide-tag {
-  font-size: 9.5px; letter-spacing: 0.18em; text-transform: uppercase;
-  color: var(--orange); font-weight: 600; margin-bottom: 10px;
-  display: flex; align-items: center; gap: 8px;
-}
-.slide-tag::after {
-  content: ''; flex: 1; height: 1px; background: var(--line); max-width: 60px;
-}
-.slide-h {
-  font-size: clamp(32px, 4vw, 52px); font-weight: 700;
-  letter-spacing: -0.02em; line-height: 1.1; margin-bottom: 14px;
-}
-.slide-h span { color: var(--orange); }
-.slide-h em { color: var(--ink-mid); font-style: normal; }
-.slide-sub {
-  font-size: 15px; color: var(--ink-mid); max-width: 600px;
-  line-height: 1.65; margin-bottom: 40px;
-}
-.slide-num {
-  position: absolute; top: 64px; right: 72px;
-  font-family: var(--ff-mono); font-size: 10px; color: var(--ink-soft);
-  letter-spacing: 0.1em;
-}
-.slide-time {
-  position: absolute; bottom: 32px; right: 72px;
-  font-size: 9.5px; color: var(--ink-soft); letter-spacing: 0.08em;
-}
+/* Cover */
+.cover-eyebrow{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--orange);font-weight:700;margin-bottom:20px}
+.cover-h{font-size:clamp(44px,6vw,80px);font-weight:700;letter-spacing:-.035em;line-height:1.05;margin-bottom:18px}
+.cover-h span{color:var(--orange)}
+.cover-sub{font-size:16px;color:var(--ink-mid);max-width:560px;margin:0 auto 36px;line-height:1.65}
+.cover-pills{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.pill{font-size:10px;padding:5px 14px;border-radius:20px;border:1px solid var(--line);color:var(--ink-mid);letter-spacing:.05em}
+.pill.hi{border-color:rgba(217,110,40,.4);color:var(--orange);background:rgba(217,110,40,.07)}
 
-/* ── Stat Grid ── */
-.stat-grid {
-  display: grid; gap: 14px;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-  max-width: 900px;
-}
-.stat-card {
-  background: var(--bg-card); border: 1px solid var(--line);
-  border-radius: 10px; padding: 20px;
-}
-.stat-value {
-  font-size: 38px; font-weight: 700; letter-spacing: -0.02em;
-  line-height: 1; margin-bottom: 6px; color: var(--ink);
-}
-.stat-value .unit { font-size: 18px; color: var(--ink-mid); font-weight: 500; }
-.stat-label { font-size: 10px; color: var(--ink-mid); text-transform: uppercase; letter-spacing: 0.07em; line-height: 1.4; }
-.stat-card.hi { border-color: rgba(217,110,40,0.3); }
-.stat-card.hi .stat-value { color: var(--orange); }
+/* ═══ LAYOUT COMPONENTS ═══ */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start}
+.two-col.wide{grid-template-columns:1.3fr 1fr}
+.two-col.narrow{grid-template-columns:1fr 1.4fr}
+.three-col{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.four-col{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
 
-/* ── Two-col layout ── */
-.two-col {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: start;
-  max-width: 960px;
-}
-.two-col-wide { grid-template-columns: 1.2fr 1fr; }
+/* ═══ STAT CARDS ═══ */
+.stat-grid{display:grid;gap:12px}
+.stat-grid.g2{grid-template-columns:repeat(2,1fr)}
+.stat-grid.g3{grid-template-columns:repeat(3,1fr)}
+.stat-grid.g4{grid-template-columns:repeat(4,1fr)}
+.stat{background:var(--bg-card);border:1px solid var(--line);border-radius:var(--r);padding:18px 20px}
+.stat.hi{border-color:rgba(217,110,40,.3)}
+.stat.blue{border-color:rgba(107,158,184,.3)}
+.stat.green{border-color:rgba(74,140,104,.3)}
+.stat.purple{border-color:rgba(122,106,176,.3)}
+.stat-val{font-size:34px;font-weight:700;letter-spacing:-.02em;line-height:1;margin-bottom:6px}
+.stat.hi .stat-val{color:var(--orange)}
+.stat.blue .stat-val{color:var(--blue)}
+.stat.green .stat-val{color:var(--green)}
+.stat.purple .stat-val{color:var(--purple)}
+.stat-val .u{font-size:16px;font-weight:500;color:var(--ink-mid)}
+.stat-lbl{font-size:10px;color:var(--ink-mid);text-transform:uppercase;letter-spacing:.07em;line-height:1.4}
 
-/* ── Feature List ── */
-.feature-list { display: flex; flex-direction: column; gap: 14px; }
-.feature-item {
-  display: flex; align-items: flex-start; gap: 14px;
-  padding: 16px; background: var(--bg-card);
-  border: 1px solid var(--line); border-radius: 8px;
-}
-.feature-icon {
-  width: 32px; height: 32px; border-radius: 7px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 15px; flex-shrink: 0;
-  background: rgba(217,110,40,0.12);
-}
-.feature-body {}
-.feature-title { font-size: 13px; font-weight: 600; color: var(--ink); margin-bottom: 2px; }
-.feature-desc  { font-size: 11px; color: var(--ink-mid); line-height: 1.5; }
+/* ═══ CARDS ═══ */
+.card{background:var(--bg-card);border:1px solid var(--line);border-radius:var(--r);padding:20px}
+.card.accent{border-left:3px solid var(--orange)}
+.card.blue{border-left:3px solid var(--blue)}
+.card.green{border-left:3px solid var(--green)}
+.card.purple{border-left:3px solid var(--purple)}
+.card-icon{font-size:22px;margin-bottom:10px}
+.card-title{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:6px}
+.card-body{font-size:11.5px;color:var(--ink-mid);line-height:1.65}
+.card-tag{display:inline-block;margin-top:10px;font-size:8.5px;padding:2px 7px;border-radius:3px;font-weight:700;letter-spacing:.06em}
+.tag-o{background:rgba(217,110,40,.2);color:var(--orange)}
+.tag-b{background:rgba(107,158,184,.2);color:var(--blue)}
+.tag-g{background:rgba(74,140,104,.2);color:var(--green)}
+.tag-p{background:rgba(122,106,176,.2);color:var(--purple)}
 
-/* ── Timeline ── */
-.phase-timeline {
-  display: flex; gap: 0; align-items: stretch;
-  background: var(--bg-card); border: 1px solid var(--line);
-  border-radius: 10px; overflow: hidden;
-  max-width: 860px;
-}
-.phase-col {
-  flex: 1; padding: 20px 18px;
-  border-right: 1px solid var(--line); position: relative;
-}
-.phase-col:last-child { border-right: none; }
-.phase-col.current { background: rgba(217,110,40,0.07); }
-.phase-col.current::before {
-  content: 'CURRENT';
-  position: absolute; top: 8px; right: 10px;
-  font-size: 7.5px; letter-spacing: 0.12em; color: var(--orange);
-  font-weight: 700; background: rgba(217,110,40,0.2);
-  padding: 2px 6px; border-radius: 3px;
-}
-.phase-label {
-  font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase;
-  color: var(--ink-soft); font-weight: 600; margin-bottom: 6px;
-}
-.phase-name { font-size: 14px; font-weight: 700; color: var(--ink); margin-bottom: 8px; }
-.phase-items { list-style: none; }
-.phase-items li {
-  font-size: 10.5px; color: var(--ink-mid); padding: 2px 0;
-  display: flex; align-items: flex-start; gap: 6px;
-}
-.phase-items li::before { content: '—'; color: var(--orange); flex-shrink: 0; }
+/* ═══ PERSONA CARD ═══ */
+.persona{background:var(--bg-card);border:1px solid var(--line);border-radius:12px;padding:24px;display:flex;gap:20px;align-items:flex-start}
+.persona-avatar{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;background:rgba(217,110,40,.12);border:1px solid rgba(217,110,40,.25)}
+.persona-name{font-size:15px;font-weight:700;color:var(--ink);margin-bottom:2px}
+.persona-role{font-size:10.5px;color:var(--orange);letter-spacing:.05em;margin-bottom:8px;font-weight:600}
+.persona-tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px}
+.persona-tag{font-size:9px;padding:2px 7px;border-radius:3px;background:rgba(255,255,255,.05);color:var(--ink-mid);border:1px solid var(--line)}
+.persona-quote{font-size:11.5px;color:var(--ink-mid);line-height:1.6;font-style:italic;border-left:2px solid var(--orange);padding-left:10px}
 
-/* ── Roadmap ── */
-.roadmap-row {
-  display: flex; gap: 10px; align-items: stretch;
-  max-width: 900px; overflow-x: auto;
-  padding-bottom: 4px;
-}
-.roadmap-node {
-  flex: 1; min-width: 100px;
-  background: var(--bg-card); border: 1px solid var(--line);
-  border-radius: 8px; padding: 14px 12px;
-  position: relative;
-}
-.roadmap-node.done { border-color: rgba(217,110,40,0.3); }
-.roadmap-node.now  { border-color: var(--orange); background: rgba(217,110,40,0.08); }
-.roadmap-year {
-  font-family: var(--ff-mono); font-size: 9px; font-weight: 700;
-  color: var(--orange); letter-spacing: 0.08em; margin-bottom: 6px;
-}
-.roadmap-item { font-size: 10px; color: var(--ink-mid); line-height: 1.5; margin-bottom: 3px; }
-.roadmap-item::before { content: '· '; color: var(--orange); }
+/* ═══ PULL QUOTE ═══ */
+.pull-quote{font-size:clamp(15px,1.8vw,20px);font-weight:500;color:var(--ink);line-height:1.55;border-left:3px solid var(--orange);padding-left:20px;max-width:620px;margin-bottom:12px;letter-spacing:-.01em}
+.pull-source{font-size:10.5px;color:var(--ink-soft);letter-spacing:.05em}
 
-/* ── Team Grid ── */
-.team-grid {
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 12px; max-width: 900px;
-}
-.team-card {
-  background: var(--bg-card); border: 1px solid var(--line); border-radius: 10px;
-  padding: 16px; text-align: center;
-}
-.team-avatar {
-  width: 44px; height: 44px; border-radius: 50%;
-  background: rgba(217,110,40,0.15); border: 1px solid rgba(217,110,40,0.3);
-  margin: 0 auto 10px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 16px;
-}
-.team-name { font-size: 12px; font-weight: 600; color: var(--ink); margin-bottom: 3px; }
-.team-role { font-size: 9.5px; color: var(--ink-mid); line-height: 1.4; }
+/* ═══ TIMELINE / PHASE STRIP ═══ */
+.phase-strip{display:flex;gap:0;border:1px solid var(--line);border-radius:var(--r);overflow:hidden;background:var(--bg-card)}
+.phase-col{flex:1;padding:18px 16px;border-right:1px solid var(--line);position:relative}
+.phase-col:last-child{border-right:none}
+.phase-col.now{background:rgba(217,110,40,.07)}
+.phase-col.now::before{content:'NOW';position:absolute;top:8px;right:8px;font-size:7px;letter-spacing:.1em;background:rgba(217,110,40,.25);color:var(--orange);padding:2px 5px;border-radius:3px;font-weight:700}
+.phase-lbl{font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);font-weight:600;margin-bottom:5px}
+.phase-name{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:8px}
+.phase-list{list-style:none}
+.phase-list li{font-size:10px;color:var(--ink-mid);padding:2px 0;display:flex;align-items:flex-start;gap:5px;line-height:1.4}
+.phase-list li::before{content:'—';color:var(--orange);flex-shrink:0}
 
-/* ── Ask Cards ── */
-.ask-grid {
-  display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px;
-  max-width: 860px;
-}
-.ask-card {
-  background: var(--bg-card); border: 1px solid var(--line);
-  border-radius: 10px; padding: 22px;
-}
-.ask-card.hi { border-color: rgba(217,110,40,0.4); }
-.ask-icon { font-size: 22px; margin-bottom: 12px; }
-.ask-title { font-size: 14px; font-weight: 700; color: var(--ink); margin-bottom: 8px; }
-.ask-desc { font-size: 11px; color: var(--ink-mid); line-height: 1.6; }
-.ask-tag {
-  display: inline-block; margin-top: 10px;
-  font-size: 9px; padding: 3px 8px; border-radius: 3px;
-  background: rgba(217,110,40,0.15); color: var(--orange);
-  font-weight: 700; letter-spacing: 0.06em;
-}
+/* ═══ SERVICE PATHWAY ═══ */
+.pathway{display:flex;gap:0;align-items:stretch;max-width:100%}
+.pathway-step{flex:1;padding:16px 14px;background:var(--bg-card);border:1px solid var(--line);position:relative;display:flex;flex-direction:column;gap:8px}
+.pathway-step:not(:last-child){border-right:none}
+.pathway-step:not(:last-child)::after{content:'›';position:absolute;right:-8px;top:50%;transform:translateY(-50%);color:var(--orange);font-size:14px;z-index:1;background:var(--bg-card);padding:2px 0;line-height:1}
+.pathway-step:first-child{border-radius:8px 0 0 8px}
+.pathway-step:last-child{border-radius:0 8px 8px 0}
+.pathway-num{font-family:var(--mono);font-size:9px;color:var(--orange);font-weight:700;letter-spacing:.08em}
+.pathway-title{font-size:11.5px;font-weight:700;color:var(--ink)}
+.pathway-body{font-size:10px;color:var(--ink-mid);line-height:1.5;flex:1}
+.pathway-time{font-size:9px;color:var(--ink-soft);font-family:var(--mono)}
 
-/* ── Blockquote ── */
-.pull-quote {
-  font-size: clamp(18px, 2.2vw, 26px); font-weight: 500;
-  color: var(--ink); line-height: 1.5; max-width: 680px;
-  border-left: 3px solid var(--orange); padding-left: 24px;
-  margin-bottom: 16px; letter-spacing: -0.01em;
-}
-.pull-source { font-size: 11px; color: var(--ink-soft); letter-spacing: 0.04em; }
+/* ═══ RESEARCH STUDY CARD ═══ */
+.study-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.study{background:var(--bg-card);border:1px solid var(--line);border-radius:var(--r);padding:16px 18px}
+.study-ref{font-size:9px;color:var(--orange);font-weight:700;letter-spacing:.06em;margin-bottom:6px}
+.study-title{font-size:12px;font-weight:600;color:var(--ink);margin-bottom:5px;line-height:1.35}
+.study-finding{font-size:11px;color:var(--ink-mid);line-height:1.55;margin-bottom:10px}
+.study-links{display:flex;gap:8px}
+.study-link{font-size:9.5px;padding:3px 9px;border-radius:4px;border:1px solid var(--line);color:var(--ink-mid);transition:all .2s;display:inline-flex;align-items:center;gap:4px}
+.study-link:hover{color:var(--orange);border-color:rgba(217,110,40,.4)}
+.study-link svg{width:9px;height:9px;flex-shrink:0}
 
-/* ── Competitive Table ── */
-.comp-table { width: 100%; max-width: 700px; border-collapse: collapse; }
-.comp-table th {
-  font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase;
-  color: var(--ink-soft); font-weight: 600; padding: 0 12px 10px;
-  text-align: left; border-bottom: 1px solid var(--line);
-}
-.comp-table td {
-  padding: 10px 12px; font-size: 12px; color: var(--ink-mid);
-  border-bottom: 1px solid var(--line);
-}
-.comp-table tr.ours td { color: var(--ink); background: rgba(217,110,40,0.07); }
-.comp-table tr.ours td:first-child { color: var(--orange); font-weight: 700; }
-.price-hi { color: var(--orange); font-weight: 700; font-family: var(--ff-mono); }
+/* ═══ COMPARISON TABLE ═══ */
+.table-wrap{overflow-x:auto}
+.comp-table{width:100%;border-collapse:collapse}
+.comp-table th{font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);font-weight:600;padding:8px 14px;text-align:left;border-bottom:1px solid var(--line)}
+.comp-table td{padding:9px 14px;font-size:11.5px;color:var(--ink-mid);border-bottom:1px solid var(--line)}
+.comp-table tr:last-child td{border-bottom:none}
+.comp-table tr.ours td{background:rgba(217,110,40,.06);color:var(--ink)}
+.comp-table tr.ours td:first-child{color:var(--orange);font-weight:700}
+.check{color:var(--green)}
+.cross{color:var(--ink-soft)}
 
-/* ── Responsive ── */
-@media (max-width: 900px) {
-  .slide { padding: 48px 32px; }
-  .two-col { grid-template-columns: 1fr; }
-  .ask-grid { grid-template-columns: 1fr 1fr; }
-  .slide-num { display: none; }
-}
-@media (max-width: 700px) {
-  .main { margin-left: 0; }
-  .sidebar { display: none; }
-  .hud { left: 0; }
-  .progress-bar { left: 0; }
-  .slide { padding: 48px 24px; }
-  .stat-grid { grid-template-columns: repeat(2, 1fr); }
-}
+/* ═══ ROADMAP ═══ */
+.roadmap{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px}
+.rm-node{flex:1;min-width:110px;background:var(--bg-card);border:1px solid var(--line);border-radius:8px;padding:14px 12px}
+.rm-node.done{border-color:rgba(217,110,40,.3)}
+.rm-node.now{border-color:var(--orange);background:rgba(217,110,40,.07)}
+.rm-year{font-family:var(--mono);font-size:9px;font-weight:700;color:var(--orange);letter-spacing:.06em;margin-bottom:6px}
+.rm-item{font-size:9.5px;color:var(--ink-mid);line-height:1.5;margin-bottom:3px;display:flex;gap:4px;align-items:flex-start}
+.rm-item::before{content:'·';color:var(--orange);flex-shrink:0}
+
+/* ═══ REFERENCES ═══ */
+.ref-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:10px}
+.ref-item{background:var(--bg-card);border:1px solid var(--line);border-radius:8px;padding:13px 15px;display:flex;gap:12px;align-items:flex-start}
+.ref-num{font-family:var(--mono);font-size:10px;color:var(--orange);font-weight:700;min-width:22px;padding-top:1px}
+.ref-body{min-width:0;flex:1}
+.ref-citation{font-size:11px;color:var(--ink);line-height:1.5;margin-bottom:6px}
+.ref-citation em{color:var(--ink-mid);font-style:normal}
+.ref-links{display:flex;gap:6px;flex-wrap:wrap}
+.ref-link{font-size:9px;padding:2px 8px;border-radius:3px;border:1px solid var(--line);color:var(--ink-soft);transition:all .15s;display:inline-flex;align-items:center;gap:3px}
+.ref-link:hover{color:var(--orange);border-color:rgba(217,110,40,.4)}
+
+/* ═══ BIZ MODEL ═══ */
+.biz-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+
+/* ═══ DIVIDER ═══ */
+.divider{border:none;border-top:1px solid var(--line);margin:32px 0}
+.mb16{margin-bottom:16px}
+.mb24{margin-bottom:24px}
+.mb32{margin-bottom:32px}
+.mb40{margin-bottom:40px}
+
+/* ═══ RESPONSIVE ═══ */
+@media(max-width:1000px){.section{padding:56px 36px}.two-col,.two-col.wide,.two-col.narrow{grid-template-columns:1fr}.three-col,.four-col{grid-template-columns:1fr 1fr}.stat-grid.g4{grid-template-columns:repeat(2,1fr)}.pathway{flex-wrap:wrap}}
+@media(max-width:700px){.main{margin-left:0}.sidebar{display:none}.section{padding:40px 20px}.sec-nav{display:none}.stat-grid.g3,.three-col{grid-template-columns:1fr}.biz-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 <div class="page-wrap">
 
-  <!-- ── Sidebar ── -->
-  <nav class="sidebar">
-    <div class="sidebar-logo">
-      <img src="assets/tonitruum-logo-white.png" alt="TONITRUUM"
-           style="width:100%;height:auto;max-width:180px;opacity:0.85;">
-    </div>
-    <ul class="nav-list">
-      <li class="nav-section">Dashboard</li>
-      <li class="nav-item"><a href="today.html"><span class="nav-icon">◷</span>Today</a></li>
-      <li class="nav-section">Monitor</li>
-      <li class="nav-item"><a href="index.html"><span class="nav-icon">⬡</span>Habitat Monitor</a></li>
-      <li class="nav-section">Clinical</li>
-      <li class="nav-item"><a href="autism.html"><span class="nav-icon">♡</span>Patient Care</a></li>
-      <li class="nav-item"><a href="assessment.html"><span class="nav-icon">≡</span>Assessments</a></li>
-      <li class="nav-item"><a href="parent-form.html"><span class="nav-icon">✎</span>Parent Reports</a></li>
-      <li class="nav-item"><a href="medical.html"><span class="nav-icon">✚</span>Medical Consult</a></li>
-      <li class="nav-section">Strategy</li>
-      <li class="nav-item"><a href="service.html"><span class="nav-icon">◎</span>Service Overview</a></li>
-      <li class="nav-item"><a href="stakeholder.html"><span class="nav-icon">◉</span>Stakeholder Map</a></li>
-      <li class="nav-item"><a href="product.html"><span class="nav-icon">◈</span>Product Design</a></li>
-      <li class="nav-section">Project</li>
-      <li class="nav-item"><a href="phase0.html"><span class="nav-icon">◫</span>Phase 0 Origin</a></li>
-      <li class="nav-item"><a href="phase1.html"><span class="nav-icon">◧</span>Phase 1 Research</a></li>
-      <li class="nav-item"><a href="founder.html"><span class="nav-icon">◐</span>Founder</a></li>
-      <li class="nav-item active"><a href="phase3.html"><span class="nav-icon">◕</span>Phase 3 Pitch</a></li>
-      <li class="nav-item"><a href="research.html"><span class="nav-icon">◇</span>Reptile Therapy</a></li>
-      <li class="nav-item"><a href="market.html"><span class="nav-icon">◆</span>Business Model</a></li>
-      <li class="nav-section">Play</li>
-      <li class="nav-item"><a href="game.html"><span class="nav-icon">◎</span>Cricket Hunter</a></li>
-    </ul>
-    <div class="sidebar-footer">
-      <div class="sys-status"><span class="status-dot"></span>All Systems Online</div>
-      <div class="sys-time" id="sidebarTime"></div>
-    </div>
-  </nav>
+<!-- ═══ SIDEBAR ═══ -->
+<nav class="sidebar">
+  <div class="sidebar-logo">
+    <img src="assets/tonitruum-logo-white.png" alt="TONITRUUM" style="width:100%;height:auto;max-width:180px;opacity:.85">
+  </div>
+  <ul class="nav-list">
+    <li class="nav-section">Dashboard</li>
+    <li class="nav-item"><a href="today.html"><span class="nav-icon">◷</span>Today</a></li>
+    <li class="nav-section">Monitor</li>
+    <li class="nav-item"><a href="index.html"><span class="nav-icon">⬡</span>Habitat Monitor</a></li>
+    <li class="nav-section">Clinical</li>
+    <li class="nav-item"><a href="autism.html"><span class="nav-icon">♡</span>Patient Care</a></li>
+    <li class="nav-item"><a href="assessment.html"><span class="nav-icon">≡</span>Assessments</a></li>
+    <li class="nav-item"><a href="parent-form.html"><span class="nav-icon">✎</span>Parent Reports</a></li>
+    <li class="nav-item"><a href="medical.html"><span class="nav-icon">✚</span>Medical Consult</a></li>
+    <li class="nav-section">Strategy</li>
+    <li class="nav-item"><a href="service.html"><span class="nav-icon">◎</span>Service Overview</a></li>
+    <li class="nav-item"><a href="stakeholder.html"><span class="nav-icon">◉</span>Stakeholder Map</a></li>
+    <li class="nav-item"><a href="product.html"><span class="nav-icon">◈</span>Product Design</a></li>
+    <li class="nav-section">Project</li>
+    <li class="nav-item"><a href="phase0.html"><span class="nav-icon">◫</span>Phase 0 Origin</a></li>
+    <li class="nav-item"><a href="phase1.html"><span class="nav-icon">◧</span>Phase 1 Research</a></li>
+    <li class="nav-item"><a href="founder.html"><span class="nav-icon">◐</span>Founder</a></li>
+    <li class="nav-item active"><a href="phase3.html"><span class="nav-icon">◕</span>Phase 3 Pitch</a></li>
+    <li class="nav-item"><a href="research.html"><span class="nav-icon">◇</span>Reptile Therapy</a></li>
+    <li class="nav-item"><a href="market.html"><span class="nav-icon">◆</span>Business Model</a></li>
+    <li class="nav-section">Play</li>
+    <li class="nav-item"><a href="game.html"><span class="nav-icon">◎</span>Cricket Hunter</a></li>
+  </ul>
+  <div class="sidebar-footer">
+    <div class="sys-status"><span class="status-dot"></span>All Systems Online</div>
+    <div class="sys-time" id="sidebarTime"></div>
+  </div>
+</nav>
 
-  <!-- ── Main ── -->
-  <div class="main">
+<!-- ═══ MAIN ═══ -->
+<div class="main">
 
-    <!-- HUD -->
-    <div class="hud">
-      <div class="hud-left">
-        <div class="hud-slide"><strong id="hudCurrent">01</strong> / <span id="hudTotal">12</span></div>
-        <div class="hud-title" id="hudSlideTitle">Cover</div>
+<!-- HUD -->
+<div class="hud">
+  <div class="hud-left">
+    <span class="hud-badge">Phase 3 Pitch · 15 min</span>
+    <span class="hud-title" id="hudSection">Cover</span>
+  </div>
+  <div class="hud-right">
+    <div class="hud-timer" id="hudTimer" title="Click to start timer" style="cursor:pointer" onclick="toggleTimer()">▶ Start</div>
+    <button class="hud-btn" onclick="scrollToSection(-1)">‹</button>
+    <button class="hud-btn" onclick="scrollToSection(1)">›</button>
+  </div>
+</div>
+<div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+
+<!-- Section Nav Dots -->
+<div class="sec-nav" id="secNav"></div>
+
+<!-- ════════════════════════════════════════════
+     COVER
+     ════════════════════════════════════════════ -->
+<section class="section section-cover" id="s0" data-label="Cover">
+  <div class="cover-eyebrow">TONITRUUM × ASD Reptile Therapy · Phase 3 Proposal</div>
+  <h1 class="cover-h">Beyond<br>the <span>Diagnosis.</span></h1>
+  <p class="cover-sub">An intelligent reptile habitat system and animal-assisted therapy programme designed to improve emotional regulation, reduce sensory overload, and build connection — for children with autism and the families who care for them.</p>
+  <div class="cover-pills">
+    <span class="pill hi">L'École de Design Nantes · A5INT 2025–26</span>
+    <span class="pill">ESP Thesis · Xinghao Ni</span>
+    <span class="pill">Investors · Partners · Institutions</span>
+    <span class="pill">15-Minute Pitch</span>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════
+     01 — USER PERSONA
+     ════════════════════════════════════════════ -->
+<section class="section section-1" id="s1" data-label="01 · User Persona">
+  <div class="sec-time">0:30 – 2:30</div>
+  <div class="sec-num">01 / 08</div>
+  <div class="sec-tag">User Persona · Who We Serve</div>
+  <h2 class="sec-h">We are building for<br><span>children who feel everything</span><br><em>all at once.</em></h2>
+  <p class="sec-sub">Our primary users are children with Level 1 Autism Spectrum Disorder — and the families, therapists, and institutions around them. Before we talk about our solution, we need to understand their world.</p>
+
+  <div class="mb32">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px">
+
+      <div class="persona">
+        <div class="persona-avatar">🧒</div>
+        <div>
+          <div class="persona-name">The Child · ASD Level 1, Age 4–12</div>
+          <div class="persona-role">Primary User</div>
+          <div class="persona-tags">
+            <span class="persona-tag">Sensory Hypersensitivity</span>
+            <span class="persona-tag">Social Communication Gap</span>
+            <span class="persona-tag">Emotional Dysregulation</span>
+            <span class="persona-tag">Routine Dependence</span>
+          </div>
+          <div class="persona-quote">"She can't tolerate the noise of the vacuum cleaner, but she'll sit completely still and watch the lizard move for 20 minutes."</div>
+        </div>
       </div>
-      <div class="hud-right">
-        <div class="hud-timer" id="hudTimer">00:00</div>
-        <button class="hud-btn" id="btnPrev" onclick="navSlide(-1)">‹</button>
-        <button class="hud-btn" id="btnNext" onclick="navSlide(1)">›</button>
+
+      <div class="persona">
+        <div class="persona-avatar">👩</div>
+        <div>
+          <div class="persona-name">Tiffany · Mother, Age 41 · ASD Level 1</div>
+          <div class="persona-role">Real Case · Field Research · Nantes 2025</div>
+          <div class="persona-tags">
+            <span class="persona-tag">Late Diagnosis (Age 30+)</span>
+            <span class="persona-tag">Single Parent × 3 Daughters</span>
+            <span class="persona-tag">Burnout History</span>
+            <span class="persona-tag">Animal-Assisted Regulation</span>
+          </div>
+          <div class="persona-quote">"Ces crises d'angoisse passent plus vite quand elle a un animal dans les mains." — Tiffany, on daughter Alana's anxiety episodes</div>
+        </div>
+      </div>
+
+      <div class="persona">
+        <div class="persona-avatar">🏥</div>
+        <div>
+          <div class="persona-name">Therapists & Institutions</div>
+          <div class="persona-role">Secondary User · B2B Partner</div>
+          <div class="persona-tags">
+            <span class="persona-tag">Clinical Psychologists</span>
+            <span class="persona-tag">Occupational Therapists</span>
+            <span class="persona-tag">CAMHS / IME / SESSAD</span>
+            <span class="persona-tag">School Coordinators</span>
+          </div>
+          <div class="persona-quote">"We need measurable, repeatable protocols — not anecdotes. If animal therapy is going to work in our setting, we need data."</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="stat-grid g4 mb32">
+    <div class="stat hi"><div class="stat-val">1<span class="u">/36</span></div><div class="stat-lbl">Children diagnosed with ASD — USA 2023 <a href="https://www.cdc.gov/mmwr/volumes/72/ss/ss7202a1.htm" target="_blank" style="color:var(--orange)">[CDC]</a></div></div>
+    <div class="stat blue"><div class="stat-val">75<span class="u">%</span></div><div class="stat-lbl">ASD children with significant sensory processing difficulties <a href="assets/refs/animals-14-01767.pdf" target="_blank" style="color:var(--blue)">[ref]</a></div></div>
+    <div class="stat green"><div class="stat-val">30<span class="u">%</span></div><div class="stat-lbl">Late diagnosis rate — especially among girls who "mask" socially</div></div>
+    <div class="stat purple"><div class="stat-val">700K<span class="u">+</span></div><div class="stat-lbl">Children with ASD in France — INSERM 2024 estimate</div></div>
+  </div>
+
+  <div class="card accent">
+    <div class="card-title">Tiffany's "Bucket" — How Sensory Overload Accumulates</div>
+    <div class="card-body">"C'est comme si j'avais une jauge. Au fur et à mesure qu'elle se remplit, en bout d'un moment, j'ai plus de place." — Each stimulus throughout the day — a neon light, a texture, background noise — silently fills the bucket. One small final input causes complete sensory freeze. This is the daily reality of ASD Level 1. Our intervention is designed around preventing that bucket from filling.</div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════
+     02 — PROBLEM & PAIN POINTS
+     ════════════════════════════════════════════ -->
+<section class="section" id="s2" data-label="02 · Problem">
+  <div class="sec-time">2:30 – 4:00</div>
+  <div class="sec-num">02 / 08</div>
+  <div class="sec-tag">Problem & Pain Points</div>
+  <h2 class="sec-h">Current therapy is<br><span>too loud,</span> too rigid,<br><em>too scarce.</em></h2>
+  <p class="sec-sub">ABA, CBT, and speech therapy remain the dominant interventions — but for many children with ASD Level 1, they generate more stress than relief. The system is under-resourced and over-standardised.</p>
+
+  <div class="three-col mb32">
+    <div class="card">
+      <div class="card-icon">⚡</div>
+      <div class="card-title">High Sensory Demand in Standard Therapy</div>
+      <div class="card-body">Traditional ABA and structured therapy sessions require extended eye contact, social reciprocity, and verbal output — precisely the areas where ASD children experience the highest anxiety. Compliance is achieved, but at the cost of emotional safety.</div>
+      <span class="card-tag tag-o">High Pressure</span>
+    </div>
+    <div class="card">
+      <div class="card-icon">🏗️</div>
+      <div class="card-title">Resource Scarcity & Long Wait Times</div>
+      <div class="card-body">In France, the average wait time for an autism diagnosis is 3.5 years. CAMHS and specialist units are overwhelmed. Families resort to private therapy at €80–150/session, unsustainable for most households. Rural families have almost no access.</div>
+      <span class="card-tag tag-o">System Gap</span>
+    </div>
+    <div class="card">
+      <div class="card-icon">👤</div>
+      <div class="card-title">One-Size-Fits-All Approach</div>
+      <div class="card-body">"Il y a autant d'autisme que d'autiste." — Tiffany. The spectrum is not a line. Each child's sensory profile, communication style, and emotional triggers are unique. Current protocols are insufficiently personalised and rarely adapt session by session.</div>
+      <span class="card-tag tag-o">Individualisation Gap</span>
+    </div>
+    <div class="card">
+      <div class="card-icon">🏠</div>
+      <div class="card-title">Family Exhaustion & Caregiver Burden</div>
+      <div class="card-body">Parents of ASD children spend an average of 3× more time on care coordination than parents of neurotypical children. Many experience secondary burnout. Current systems provide no home-based support layer or data continuity between sessions and home.</div>
+      <span class="card-tag tag-o">Family Load</span>
+    </div>
+    <div class="card">
+      <div class="card-icon">📉</div>
+      <div class="card-title">Low Child Engagement & Dropout</div>
+      <div class="card-body">Structured therapy dropout rates for ASD children under 8 reach 40–60% within the first 6 months. Children with high sensory sensitivity find clinical environments aversive. Without genuine motivation and comfort, therapeutic gains are limited and short-lived.</div>
+      <span class="card-tag tag-o">Engagement</span>
+    </div>
+    <div class="card">
+      <div class="card-icon">🔬</div>
+      <div class="card-title">Missing Natural Emotional Support Layer</div>
+      <div class="card-body">No scalable, evidence-based system exists for gentle, non-verbal emotional regulation support between formal therapy sessions. The gap between "clinical session" and "daily life" is where most therapeutic gains are lost — and where we intervene.</div>
+      <span class="card-tag tag-o">Continuity Gap</span>
+    </div>
+  </div>
+
+  <div class="pull-quote">"The central challenge is not diagnosis — it is regulation. Reptile-assisted therapy offers a uniquely low-intrusion, high-predictability interaction model that aligns with the neurological profile of Level 1 ASD."</div>
+  <div class="pull-source">Xinghao Ni · ESP Thesis · L'École de Design Nantes Atlantique · November 2025</div>
+</section>
+
+<!-- ════════════════════════════════════════════
+     03 — SOLUTION
+     ════════════════════════════════════════════ -->
+<section class="section" id="s3" data-label="03 · Solution">
+  <div class="sec-time">4:00 – 6:00</div>
+  <div class="sec-num">03 / 08</div>
+  <div class="sec-tag">Our Solution</div>
+  <h2 class="sec-h">Calm by design.<br><span>Structured by science.</span><br>Powered by technology.</h2>
+  <p class="sec-sub">TONITRUUM is an intelligent reptile habitat system and therapeutic service framework — combining precision IoT hardware, AI behaviour monitoring, and a structured 5-phase clinical protocol for ASD Level 1 children.</p>
+
+  <div class="two-col mb40">
+    <div>
+      <div class="card accent mb16">
+        <div class="card-icon">🦎</div>
+        <div class="card-title">Why Reptiles? The Non-Obvious Choice</div>
+        <div class="card-body">Unlike dogs or horses, reptiles have near-zero sensory output — no barking, no sudden movements, no reciprocal social pressure. Their interaction is tactile, slow, and completely non-demanding. For a child who is overwhelmed by ordinary social input, a reptile offers the first truly safe relationship with a living creature.</div>
+      </div>
+      <div class="card green">
+        <div class="card-icon">⚙️</div>
+        <div class="card-title">The TONITRUUM System</div>
+        <div class="card-body">An intelligent enclosure that monitors temperature, humidity, UV, and animal behaviour in real time. AI detects stress indicators in both the animal and the session environment. Data flows to therapist and parent dashboards — making every session measurable.</div>
       </div>
     </div>
-    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
-
-    <!-- Slide Dots -->
-    <div class="slide-dots" id="slideDots"></div>
-
-    <!-- ════════════════════════════════════
-         SLIDES
-         ════════════════════════════════════ -->
-    <div class="slides" id="slides">
-
-      <!-- ① COVER -->
-      <section class="slide slide-cover" id="s1" data-title="TONITRUUM — Phase 3">
-        <div class="cover-eyebrow">TONITRUUM · Phase 3 Proposal · 15-Min Pitch</div>
-        <h1 class="cover-title">Scaling the<br><span>Vision</span></h1>
-        <p class="cover-sub">From academic research to clinical validation, market entry, and global scale — the roadmap for intelligent reptile care and autism therapy.</p>
-        <div class="cover-meta">
-          <span class="cover-pill hi">École de Design Nantes</span>
-          <span class="cover-pill">A5INT — 2025–26</span>
-          <span class="cover-pill">Xinghao Ni · Founder</span>
-          <span class="cover-pill">15 Minutes</span>
+    <div>
+      <div style="font-size:11.5px;color:var(--ink-mid);margin-bottom:14px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;font-size:9.5px">5-Phase Therapeutic Pathway</div>
+      <div class="pathway">
+        <div class="pathway-step">
+          <div class="pathway-num">Phase 01</div>
+          <div class="pathway-title">Orientation</div>
+          <div class="pathway-body">Low-stimulation space entry. No animal contact. Observation only through enclosure glass. Sound ≤40dB · Light 2700K warm.</div>
+          <div class="pathway-time">Week 1–2</div>
         </div>
-        <div class="slide-time">0:00 – 0:30</div>
-      </section>
-
-      <!-- ② THE PROBLEM -->
-      <section class="slide" id="s2" data-title="The Problem">
-        <div class="slide-num">02 / 12</div>
-        <div class="slide-tag">The Problem</div>
-        <h2 class="slide-h">Reptile keepers are<br><span>flying blind.</span></h2>
-        <p class="slide-sub">No real-time monitoring. No shared standards. No clinical framework. A $2B+ market served by analog thermometers and guesswork.</p>
-        <div class="two-col">
-          <div class="feature-list">
-            <div class="feature-item">
-              <div class="feature-icon">🌡️</div>
-              <div class="feature-body">
-                <div class="feature-title">No reliable monitoring</div>
-                <div class="feature-desc">Manual checks, inconsistent data, no alert systems. Temperature spikes go unnoticed for hours.</div>
-              </div>
-            </div>
-            <div class="feature-item">
-              <div class="feature-icon">🔗</div>
-              <div class="feature-body">
-                <div class="feature-title">No shared knowledge</div>
-                <div class="feature-desc">Each keeper operates in isolation. Breeders have no standard for data sharing or care benchmarks.</div>
-              </div>
-            </div>
-            <div class="feature-item">
-              <div class="feature-icon">🧩</div>
-              <div class="feature-body">
-                <div class="feature-title">Untapped therapeutic potential</div>
-                <div class="feature-desc">Evidence shows reptile handling reduces ASD symptoms — yet no product bridges care and therapy.</div>
-              </div>
-            </div>
-          </div>
-          <div class="stat-grid" style="grid-template-columns:1fr 1fr;">
-            <div class="stat-card hi">
-              <div class="stat-value">2.5<span class="unit">M</span></div>
-              <div class="stat-label">Terrarium animals — France 2025</div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-value">12<span class="unit">M</span></div>
-              <div class="stat-label">Reptile pets in Europe (EU)</div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-value">0</div>
-              <div class="stat-label">Intelligent enclosure systems on market</div>
-            </div>
-            <div class="stat-card hi">
-              <div class="stat-value">$2.16<span class="unit">B</span></div>
-              <div class="stat-label">Reptile enclosure market by 2030</div>
-            </div>
-          </div>
+        <div class="pathway-step">
+          <div class="pathway-num">Phase 02</div>
+          <div class="pathway-title">Observation</div>
+          <div class="pathway-body">Structured 15–20 min observation sessions. Child controls distance and duration. Therapist narrates calmly. Parent always present.</div>
+          <div class="pathway-time">Week 3–4</div>
         </div>
-        <div class="slide-time">0:30 – 1:30</div>
-      </section>
-
-      <!-- ③ ORIGIN -->
-      <section class="slide" id="s3" data-title="Origin — Phase 0">
-        <div class="slide-num">03 / 12</div>
-        <div class="slide-tag">Origin · Phase 0 · 2023</div>
-        <h2 class="slide-h">In the memory<br>of <span>Pipi.</span></h2>
-        <div class="two-col two-col-wide">
-          <div>
-            <p class="slide-sub" style="margin-bottom:24px;">A crested gecko named Pipi — and a personal crisis of overwork and disconnection — became the seed of a 3-year design research journey.</p>
-            <div class="pull-quote">"How might we build a medium between reptiles and their owners?"</div>
-            <p class="pull-source">Core design question · Phase 0 · M3 Digital · 2025</p>
-          </div>
-          <div class="phase-timeline" style="flex-direction:column;border-radius:10px;gap:0;">
-            <div style="padding:16px 18px;border-bottom:1px solid var(--line);">
-              <div class="phase-label">Phase 0 · 2023</div>
-              <div class="phase-name">Origin & Research</div>
-              <ul class="phase-items">
-                <li>Personal crisis → design question</li>
-                <li>First scientific enclosure design</li>
-                <li>Documented 3-year journey begins</li>
-              </ul>
-            </div>
-            <div style="padding:16px 18px;border-bottom:1px solid var(--line);">
-              <div class="phase-label">Phase 1 · 2024</div>
-              <div class="phase-name">Academic Validation</div>
-              <ul class="phase-items">
-                <li>Expert interview: Mickaël Grévois</li>
-                <li>Journey map + design framework</li>
-                <li>ASD therapy pathway identified</li>
-              </ul>
-            </div>
-            <div style="padding:16px 18px;" class="current">
-              <div class="phase-label">Phase 2–3 · 2025–26</div>
-              <div class="phase-name">Design & Launch</div>
-              <ul class="phase-items">
-                <li>Full product + brand development</li>
-                <li>Clinical service design</li>
-                <li>Market entry preparation</li>
-              </ul>
-            </div>
-          </div>
+        <div class="pathway-step">
+          <div class="pathway-num">Phase 03</div>
+          <div class="pathway-title">Contact</div>
+          <div class="pathway-body">Optional, child-initiated touch. Smooth scales, slow temperature exchange. Strict animal welfare rules form the regulatory scaffold.</div>
+          <div class="pathway-time">Week 5–7</div>
         </div>
-        <div class="slide-time">1:30 – 2:30</div>
-      </section>
-
-      <!-- ④ RESEARCH VALIDATION -->
-      <section class="slide" id="s4" data-title="Research Validation">
-        <div class="slide-num">04 / 12</div>
-        <div class="slide-tag">Research Validation · Phase 1</div>
-        <h2 class="slide-h">The science<br><em>is clear.</em></h2>
-        <p class="slide-sub">Expert interview with Mickaël Grévois (15+ reptiles, certified breeder) confirmed the core hypothesis: behavioral self-regulation in reptile handling maps directly to autism therapy.</p>
-        <div class="two-col">
-          <div class="feature-list">
-            <div class="feature-item">
-              <div class="feature-icon">🧬</div>
-              <div class="feature-body">
-                <div class="feature-title">Oxytocin release confirmed</div>
-                <div class="feature-desc">Reptile interaction triggers oxytocin — the bonding hormone — even without vocalisation or eye contact, making it uniquely effective for ASD Level 1.</div>
-              </div>
-            </div>
-            <div class="feature-item">
-              <div class="feature-icon">🦎</div>
-              <div class="feature-body">
-                <div class="feature-title">Behavioral self-regulation mechanism</div>
-                <div class="feature-desc">Reptiles require calm, slow movement from handlers. This constraint becomes the therapy: the animal teaches regulation.</div>
-              </div>
-            </div>
-            <div class="feature-item">
-              <div class="feature-icon">📊</div>
-              <div class="feature-body">
-                <div class="feature-title">Gap confirmed: no shared data standard</div>
-                <div class="feature-desc">No system exists for breeders/therapists to monitor, share, or benchmark reptile care data across clinical settings.</div>
-              </div>
-            </div>
-          </div>
-          <div>
-            <div class="pull-quote" style="font-size:17px;">"Reptiles require behavioral self-regulation from handlers. That constraint is not a barrier — it is the therapy itself."</div>
-            <p class="pull-source">Mickaël Grévois · Technicien en métrologie · Éleveur capacitaire</p>
-          </div>
+        <div class="pathway-step">
+          <div class="pathway-num">Phase 04</div>
+          <div class="pathway-title">Co-Regulation</div>
+          <div class="pathway-body">Child participates in feeding and care rituals. Repetition and predictability support oxytocin stabilisation. Progress documented for family.</div>
+          <div class="pathway-time">Week 8–10</div>
         </div>
-        <div class="slide-time">2:30 – 4:00</div>
-      </section>
-
-      <!-- ⑤ THE PRODUCT -->
-      <section class="slide" id="s5" data-title="The Product">
-        <div class="slide-num">05 / 12</div>
-        <div class="slide-tag">Product · TONITRUUM Habitat</div>
-        <h2 class="slide-h">Precision care.<br><span>Beautiful design.</span></h2>
-        <p class="slide-sub">The world's first intelligent reptile enclosure engineered for both serious keepers and clinical therapeutic environments.</p>
-        <div class="two-col">
-          <div class="feature-list">
-            <div class="feature-item">
-              <div class="feature-icon">🔬</div>
-              <div class="feature-body">
-                <div class="feature-title">AI Behaviour Recognition</div>
-                <div class="feature-desc">Computer vision identifies feeding, basking, hiding and stress patterns. Alerts before problems occur.</div>
-              </div>
-            </div>
-            <div class="feature-item">
-              <div class="feature-icon">🌡️</div>
-              <div class="feature-body">
-                <div class="feature-title">Precision Multi-Zone Sensing</div>
-                <div class="feature-desc">Temp, humidity, UVB, and light cycle tracking across zones. Automatic climate correction.</div>
-              </div>
-            </div>
-            <div class="feature-item">
-              <div class="feature-icon">🏗️</div>
-              <div class="feature-body">
-                <div class="feature-title">Anodized Aluminium Frame</div>
-                <div class="feature-desc">Industrial-grade construction. Self-locking magnetic knobs. Sensory-aware design for clinical environments.</div>
-              </div>
-            </div>
-            <div class="feature-item">
-              <div class="feature-icon">📱</div>
-              <div class="feature-body">
-                <div class="feature-title">Connected Platform</div>
-                <div class="feature-desc">Live dashboard, vet notes, feeding logs, welfare assessment reports. Shareable with clinical teams.</div>
-              </div>
-            </div>
-          </div>
-          <div class="stat-grid" style="grid-template-columns:1fr 1fr;">
-            <div class="stat-card hi">
-              <div class="stat-value">€149<span class="unit">–199</span></div>
-              <div class="stat-label">TONITRUUM launch price</div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-value">€299<span class="unit">+</span></div>
-              <div class="stat-label">Leading competitor (Exo Terra smart)</div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-value">5</div>
-              <div class="stat-label">Product lines planned</div>
-            </div>
-            <div class="stat-card hi">
-              <div class="stat-value">7.6<span class="unit">%</span></div>
-              <div class="stat-label">CAGR reptile enclosure 2023–30</div>
-            </div>
-          </div>
+        <div class="pathway-step">
+          <div class="pathway-num">Phase 05</div>
+          <div class="pathway-title">Integration</div>
+          <div class="pathway-body">School liaison. Parent coaching for home low-stim environments. Optional home reptile protocol. Behavioural generalisation measured.</div>
+          <div class="pathway-time">Week 11–12</div>
         </div>
-        <div class="slide-time">4:00 – 6:00</div>
-      </section>
+      </div>
+    </div>
+  </div>
 
-      <!-- ⑥ CLINICAL SERVICE -->
-      <section class="slide" id="s6" data-title="Clinical Service">
-        <div class="slide-num">06 / 12</div>
-        <div class="slide-tag">Clinical Application · Service Design</div>
-        <h2 class="slide-h">A full therapeutic<br><span>service system.</span></h2>
-        <p class="slide-sub">TONITRUUM is not just a product — it is the infrastructure for a Reptile-Mediated Emotional Support programme for ASD Level 1 patients.</p>
-        <div class="two-col">
-          <div class="feature-list">
-            <div class="feature-item">
-              <div class="feature-icon">🏥</div>
-              <div class="feature-body">
-                <div class="feature-title">Pre-Intervention Assessment</div>
-                <div class="feature-desc">Eligibility screening, baseline behavioural evaluation, family briefing. Multi-disciplinary clinical team.</div>
-              </div>
-            </div>
-            <div class="feature-item">
-              <div class="feature-icon">🦎</div>
-              <div class="feature-body">
-                <div class="feature-title">Core Sessions · 8–12 weeks</div>
-                <div class="feature-desc">Structured reptile handling sessions with certified therapists. Real-time TONITRUUM monitoring during sessions.</div>
-              </div>
-            </div>
-            <div class="feature-item">
-              <div class="feature-icon">📋</div>
-              <div class="feature-body">
-                <div class="feature-title">Data-Backed Reporting</div>
-                <div class="feature-desc">Session logs, behavioural metrics, and welfare reports shared across the clinical team. Evidence base builds with each session.</div>
-              </div>
-            </div>
-          </div>
-          <div>
-            <div class="stat-card hi" style="margin-bottom:14px;">
-              <div class="stat-value">22</div>
-              <div class="stat-label">Stakeholder types mapped in service ecosystem</div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-value">3</div>
-              <div class="stat-label">Service phases: Pre · Core · Post-intervention</div>
-            </div>
-            <div style="margin-top:14px; padding:16px; background:var(--bg-card); border:1px solid rgba(217,110,40,0.3); border-radius:8px;">
-              <div style="font-size:10px;color:var(--orange);font-weight:700;letter-spacing:0.08em;margin-bottom:6px;">KEY INSIGHT</div>
-              <div style="font-size:12px;color:var(--ink-mid);line-height:1.6;">The TONITRUUM platform makes ASD reptile therapy measurable, repeatable, and scalable — transforming anecdotal therapy into evidence-based clinical practice.</div>
-            </div>
-          </div>
-        </div>
-        <div class="slide-time">6:00 – 7:30</div>
-      </section>
+  <div class="stat-grid g4">
+    <div class="stat hi"><div class="stat-val">12<span class="u">wk</span></div><div class="stat-lbl">Full programme duration</div></div>
+    <div class="stat blue"><div class="stat-val">5</div><div class="stat-lbl">Staged therapeutic phases</div></div>
+    <div class="stat green"><div class="stat-val">40<span class="u">dB</span></div><div class="stat-lbl">Max ambient sound in session environment</div></div>
+    <div class="stat purple"><div class="stat-val">22</div><div class="stat-lbl">Stakeholder types in service ecosystem</div></div>
+  </div>
+</section>
 
-      <!-- ⑦ MARKET OPPORTUNITY -->
-      <section class="slide" id="s7" data-title="Market Opportunity">
-        <div class="slide-num">07 / 12</div>
-        <div class="slide-tag">Market Opportunity</div>
-        <h2 class="slide-h">A $17B market<br><span>waiting to be smart.</span></h2>
-        <p class="slide-sub">Europe first. China for scale. North America for dominance. Three markets, three phases, one platform.</p>
-        <div class="stat-grid" style="grid-template-columns:repeat(4,1fr);max-width:100%;margin-bottom:28px;">
-          <div class="stat-card hi">
-            <div class="stat-value">79<span class="unit">M</span></div>
-            <div class="stat-label">Total pets — France 2025</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-value">12<span class="unit">M</span></div>
-            <div class="stat-label">Reptile pets — Europe</div>
-          </div>
-          <div class="stat-card hi">
-            <div class="stat-value">$17.25<span class="unit">B</span></div>
-            <div class="stat-label">Pet tech market 2030</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-value">14.6<span class="unit">%</span></div>
-            <div class="stat-label">Pet tech CAGR 2024–30</div>
-          </div>
-        </div>
-        <div class="phase-timeline">
-          <div class="phase-col current">
-            <div class="phase-label">Phase 1 · 2026–27</div>
-            <div class="phase-name">🇫🇷 Europe</div>
-            <ul class="phase-items">
-              <li>France: 2.1M reptile pets</li>
-              <li>Highest EU reptile density</li>
-              <li>Specialty stores + D2C online</li>
-              <li>Kickstarter campaign</li>
-            </ul>
-          </div>
-          <div class="phase-col">
-            <div class="phase-label">Phase 2 · 2027–28</div>
-            <div class="phase-name">🇨🇳 China</div>
-            <ul class="phase-items">
-              <li>Growing middle-class exotic pets</li>
-              <li>Hardware manufacturing proximity</li>
-              <li>Price + feature validation</li>
-              <li>Flagship store opening</li>
-            </ul>
-          </div>
-          <div class="phase-col">
-            <div class="phase-label">Phase 3 · 2028–29</div>
-            <div class="phase-name">🇺🇸 North America</div>
-            <ul class="phase-items">
-              <li>6M reptile-owning households</li>
-              <li>37% of global pet tech share</li>
-              <li>PetSmart 1,665 stores + Petco</li>
-              <li>Series A funding closed</li>
-            </ul>
-          </div>
-        </div>
-        <div class="slide-time">7:30 – 9:00</div>
-      </section>
+<!-- ════════════════════════════════════════════
+     04 — EVIDENCE & VALIDATION
+     ════════════════════════════════════════════ -->
+<section class="section section-4" id="s4" data-label="04 · Evidence">
+  <div class="sec-time">6:00 – 8:00</div>
+  <div class="sec-num">04 / 08</div>
+  <div class="sec-tag">Evidence · Research · Validation</div>
+  <h2 class="sec-h">This is not intuition.<br><em>The science</em> <span>is clear.</span></h2>
+  <p class="sec-sub">Four research pillars — neurochemistry, peer-reviewed studies, field interviews, and a real case study — converge to validate the reptile-assisted therapy model for ASD Level 1.</p>
 
-      <!-- ⑧ COMPETITIVE POSITION -->
-      <section class="slide" id="s8" data-title="Competitive Position">
-        <div class="slide-num">08 / 12</div>
-        <div class="slide-tag">Competitive Landscape</div>
-        <h2 class="slide-h">The <span>sweet spot</span><br>no one owns.</h2>
-        <p class="slide-sub" style="margin-bottom:28px;">Every competitor is either too cheap and dumb, or too expensive and clinical. TONITRUUM sits at the intersection of beautiful design, smart tech, and therapeutic purpose.</p>
+  <div class="two-col wide mb40">
+    <div>
+      <div style="font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);font-weight:600;margin-bottom:14px">The Oxytocin Regulation Model</div>
+      <div class="card accent mb16">
+        <div class="card-title">Why ASD children have lower oxytocin — and how reptiles help</div>
+        <div class="card-body mb16">Individuals with ASD exhibit significantly lower plasma oxytocin compared to age-matched controls — with ASD Level 1 showing ~29% deficit, Level 3 showing ~66% deficit. The ratio of oxytocin precursor (OT-X) to active oxytocin is abnormally elevated, indicating impaired synthesis rather than simply lower production.<br><br>Low-stimulation, non-reciprocal interactions — such as observing or gently handling a reptile — avoid triggering the cortisol stress response. This creates conditions where natural oxytocin activity can function without suppression. The animal does not demand eye contact, verbal response, or social reciprocity.</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <a href="assets/refs/PIIS089662730000115X.pdf" target="_blank" class="study-link">📄 PDF — Oxytocin & ASD</a>
+          <a href="assets/refs/murry-allen-anthrozoös-2012.pdf" target="_blank" class="study-link">📄 Murry & Allen 2012</a>
+          <a href="assets/refs/muhle-autism-genetics-2004.pdf" target="_blank" class="study-link">📄 Muhle 2004</a>
+        </div>
+      </div>
+      <div class="card green">
+        <div class="card-title">Expert Field Interview — Mickaël Grévois, Licensed Keeper</div>
+        <div class="card-body">"My son has behavioral difficulties — I began using reptile interaction as a form of emotional therapy for him. Reptiles require calm and gentle handling. The child must regulate their own behavior to interact safely — <strong>that structure itself becomes the therapy.</strong>"<br><br>— Mickaël Grévois · Technicien en métrologie · Éleveur capacitaire · Interview Phase 1 · Oct 2025</div>
+      </div>
+    </div>
+    <div>
+      <div style="font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);font-weight:600;margin-bottom:14px">Animal Suitability — ASD Level 1</div>
+      <div class="table-wrap">
         <table class="comp-table">
-          <thead>
-            <tr>
-              <th>Product</th>
-              <th>Price</th>
-              <th>Smart</th>
-              <th>Design</th>
-              <th>Therapy</th>
-            </tr>
-          </thead>
+          <thead><tr><th>Animal</th><th>Sensory Load</th><th>Predictability</th><th>Social Pressure</th><th>ASD Fit</th></tr></thead>
           <tbody>
-            <tr><td>Basic thermostats</td><td>€15–30</td><td>—</td><td>—</td><td>—</td></tr>
-            <tr><td>Exo Terra sensors</td><td>€82–85</td><td>Partial</td><td>Functional</td><td>—</td></tr>
-            <tr><td>Arcadia ProT5</td><td>~€99</td><td>—</td><td>Good</td><td>—</td></tr>
-            <tr><td>Exo Terra Smart full kit</td><td>€299+</td><td>Yes</td><td>Standard</td><td>—</td></tr>
-            <tr class="ours"><td>TONITRUUM</td><td class="price-hi">€149–199</td><td>AI + Vision</td><td>Premium</td><td>✓ ASD</td></tr>
+            <tr><td>Dog</td><td>High</td><td>Medium</td><td>High</td><td class="cross">Moderate</td></tr>
+            <tr><td>Horse</td><td>Very High</td><td>Medium</td><td>High</td><td class="cross">Moderate</td></tr>
+            <tr><td>Cat</td><td>Medium</td><td>Low–Med</td><td>Medium</td><td class="cross">Moderate</td></tr>
+            <tr class="ours"><td>Bearded Dragon</td><td>Low</td><td>High</td><td>Very Low</td><td class="check">✓ Optimal</td></tr>
+            <tr class="ours"><td>Leopard Gecko</td><td>Very Low</td><td>High</td><td>Very Low</td><td class="check">✓ Optimal</td></tr>
+            <tr class="ours"><td>Ball Python</td><td>Low</td><td>High</td><td>Very Low</td><td class="check">✓ High</td></tr>
           </tbody>
         </table>
-        <div class="slide-time">9:00 – 10:00</div>
-      </section>
+      </div>
+      <div style="font-size:9.5px;color:var(--ink-soft);margin-top:6px">Sources: Ni, X. (2025) · Katcher & Wilkins (1998) · <a href="assets/refs/reptile-asd-therapy-core.pdf" target="_blank" style="color:var(--orange)">Core AAT paper</a></div>
+    </div>
+  </div>
 
-      <!-- ⑨ BUSINESS MODEL -->
-      <section class="slide" id="s9" data-title="Business Model">
-        <div class="slide-num">09 / 12</div>
-        <div class="slide-tag">Business Model · Revenue</div>
-        <h2 class="slide-h">Hardware + <span>recurring</span><br>platform revenue.</h2>
-        <div class="two-col">
-          <div class="feature-list">
-            <div class="feature-item">
-              <div class="feature-icon">📦</div>
-              <div class="feature-body">
-                <div class="feature-title">Hardware Sales</div>
-                <div class="feature-desc">Core enclosure system at €149–199. 5 product lines from starter kits to clinical-grade units.</div>
-              </div>
-            </div>
-            <div class="feature-item">
-              <div class="feature-icon">🔄</div>
-              <div class="feature-body">
-                <div class="feature-title">Platform Subscription</div>
-                <div class="feature-desc">Monthly care intelligence subscription: AI monitoring, behaviour reports, vet integration, community data.</div>
-              </div>
-            </div>
-            <div class="feature-item">
-              <div class="feature-icon">🏥</div>
-              <div class="feature-body">
-                <div class="feature-title">Clinical Partnerships</div>
-                <div class="feature-desc">B2B licensing to therapy centres, hospitals, and autism support organisations. Bulk pricing + data reporting included.</div>
-              </div>
-            </div>
-            <div class="feature-item">
-              <div class="feature-icon">📊</div>
-              <div class="feature-body">
-                <div class="feature-title">Care Data Insights</div>
-                <div class="feature-desc">Anonymised population-level reptile health data. Research partnerships with universities and veterinary institutions.</div>
-              </div>
-            </div>
-          </div>
-          <div>
-            <div class="stat-card hi" style="margin-bottom:12px;">
-              <div class="stat-value">4</div>
-              <div class="stat-label">Independent revenue streams</div>
-            </div>
-            <div class="stat-card" style="margin-bottom:12px;">
-              <div class="stat-value">¥150K</div>
-              <div class="stat-label">Bootstrap seed · Self-funded stage</div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-value">¥370K</div>
-              <div class="stat-label">Angel + Series A total target</div>
-            </div>
-          </div>
-        </div>
-        <div class="slide-time">10:00 – 11:00</div>
-      </section>
+  <!-- Key Studies -->
+  <div style="font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);font-weight:600;margin-bottom:14px">Key Academic Studies</div>
+  <div class="study-grid mb32">
 
-      <!-- ⑩ ROADMAP -->
-      <section class="slide" id="s10" data-title="Roadmap 2025–2029">
-        <div class="slide-num">10 / 12</div>
-        <div class="slide-tag">Product Roadmap · 2025–2029</div>
-        <h2 class="slide-h">Four years to<br><span>global scale.</span></h2>
-        <p class="slide-sub" style="margin-bottom:28px;">From prototype to global launch — a clear, staged execution plan.</p>
-        <div class="roadmap-row">
-          <div class="roadmap-node done">
-            <div class="roadmap-year">2025</div>
-            <div class="roadmap-item">Thermostat prototype validated</div>
-            <div class="roadmap-item">Research complete</div>
-            <div class="roadmap-item">Germany market research</div>
-            <div class="roadmap-item">DVT launch</div>
-          </div>
-          <div class="roadmap-node now">
-            <div class="roadmap-year">2026 ← NOW</div>
-            <div class="roadmap-item">Product design finalised</div>
-            <div class="roadmap-item">Mould factory quotes</div>
-            <div class="roadmap-item">China channels setup</div>
-            <div class="roadmap-item">1st production run</div>
-          </div>
-          <div class="roadmap-node">
-            <div class="roadmap-year">2027</div>
-            <div class="roadmap-item">PVT + small batch production</div>
-            <div class="roadmap-item">Kickstarter campaign</div>
-            <div class="roadmap-item">Official EU launch</div>
-            <div class="roadmap-item">EU distributor network</div>
-          </div>
-          <div class="roadmap-node">
-            <div class="roadmap-year">2028</div>
-            <div class="roadmap-item">Large-scale production</div>
-            <div class="roadmap-item">China flagship store</div>
-            <div class="roadmap-item">US market launch</div>
-            <div class="roadmap-item">Series A closed</div>
-          </div>
-          <div class="roadmap-node">
-            <div class="roadmap-year">2029</div>
-            <div class="roadmap-item">Global official launch</div>
-            <div class="roadmap-item">Autism therapy product line</div>
-            <div class="roadmap-item">Full platform ecosystem live</div>
-            <div class="roadmap-item">Multi-market coverage</div>
-          </div>
-        </div>
-        <div class="slide-time">11:00 – 12:00</div>
-      </section>
+    <div class="study">
+      <div class="study-ref">O'Haire et al. · 2013 · PLOS ONE</div>
+      <div class="study-title">Social behaviors increase in children with autism in the presence of animals</div>
+      <div class="study-finding">Children with ASD showed significantly more social approach behaviours (talking, looking, touching) and more positive affect (smiling, laughing) during animal-present sessions versus toy-present control conditions.</div>
+      <div class="study-links">
+        <a href="https://doi.org/10.1371/journal.pone.0057010" target="_blank" class="study-link">🔗 DOI</a>
+        <a href="assets/refs/ohaire-2013-asd-animals.pdf" target="_blank" class="study-link">📄 PDF</a>
+      </div>
+    </div>
 
-      <!-- ⑪ TEAM -->
-      <section class="slide" id="s11" data-title="The Team">
-        <div class="slide-num">11 / 12</div>
-        <div class="slide-tag">The Team</div>
-        <h2 class="slide-h">Built by people who<br><span>care deeply.</span></h2>
-        <p class="slide-sub" style="margin-bottom:28px;">Design, engineering, business, research — six people spanning three continents.</p>
-        <div class="team-grid">
-          <div class="team-card">
-            <div class="team-avatar">🎨</div>
-            <div class="team-name">Xinghao Ni</div>
-            <div class="team-role">Founder · Product & Design Lead</div>
-          </div>
-          <div class="team-card">
-            <div class="team-avatar">📈</div>
-            <div class="team-name">Wang Nan</div>
-            <div class="team-role">Co-Founder · Business Strategy</div>
-          </div>
-          <div class="team-card">
-            <div class="team-avatar">⚙️</div>
-            <div class="team-name">Ye Zhikun</div>
-            <div class="team-role">Hardware & IoT Engineering</div>
-          </div>
-          <div class="team-card">
-            <div class="team-avatar">💻</div>
-            <div class="team-name">Wang Mufeng</div>
-            <div class="team-role">Software & App Development</div>
-          </div>
-          <div class="team-card">
-            <div class="team-avatar">🌍</div>
-            <div class="team-name">Ruggero</div>
-            <div class="team-role">EU Market · Community & Sales</div>
-          </div>
-          <div class="team-card">
-            <div class="team-avatar">🔬</div>
-            <div class="team-name">Sarah</div>
-            <div class="team-role">Research & Content Strategy</div>
-          </div>
-        </div>
-        <div class="slide-time">12:00 – 12:30</div>
-      </section>
+    <div class="study">
+      <div class="study-ref">Murry & Allen · 2012 · Anthrozoös</div>
+      <div class="study-title">Oxytocin and autism spectrum disorders: A systematic review</div>
+      <div class="study-finding">Systematic review confirming significantly lower oxytocin levels in ASD populations, with impaired OT-X/active oxytocin ratio. Low-stim animal interaction identified as a non-pharmacological pathway to oxytocin pathway support.</div>
+      <div class="study-links">
+        <a href="assets/refs/murry-allen-anthrozoös-2012.pdf" target="_blank" class="study-link">📄 PDF</a>
+        <a href="assets/refs/murry-2012.pdf" target="_blank" class="study-link">📄 Murry 2012</a>
+      </div>
+    </div>
 
-      <!-- ⑫ THE ASK — PHASE 3 -->
-      <section class="slide" id="s12" data-title="Phase 3 — The Ask">
-        <div class="slide-num">12 / 12</div>
-        <div class="slide-tag">Phase 3 · The Ask</div>
-        <h2 class="slide-h">What we need<br>to <span>make this real.</span></h2>
-        <p class="slide-sub" style="margin-bottom:28px;">Phase 3 is the bridge between validated research and market launch. Three things will determine speed.</p>
-        <div class="ask-grid">
-          <div class="ask-card hi">
-            <div class="ask-icon">🏥</div>
-            <div class="ask-title">Clinical Partner</div>
-            <div class="ask-desc">A therapy centre or hospital willing to run the first pilot programme — 10–20 ASD Level 1 patients, 8-week protocol, full TONITRUUM monitoring.</div>
-            <span class="ask-tag">PRIORITY #1</span>
-          </div>
-          <div class="ask-card hi">
-            <div class="ask-icon">💰</div>
-            <div class="ask-title">Seed Funding</div>
-            <div class="ask-desc">¥150K self-funded already committed. Seeking ¥170K angel to complete DVT tooling and first production run. Kickstarter to follow in 2027.</div>
-            <span class="ask-tag">¥170K TARGET</span>
-          </div>
-          <div class="ask-card">
-            <div class="ask-icon">🤝</div>
-            <div class="ask-title">Distribution Partner</div>
-            <div class="ask-desc">EU specialty pet retail partner (Terrario, Reptilis, or equivalent) for initial launch channel alongside our D2C webshop.</div>
-            <span class="ask-tag">EU LAUNCH</span>
-          </div>
-        </div>
-        <div style="margin-top:28px;padding:20px 24px;background:rgba(217,110,40,0.07);border:1px solid rgba(217,110,40,0.3);border-radius:10px;max-width:860px;">
-          <div style="font-size:12px;color:var(--orange);font-weight:700;letter-spacing:0.08em;margin-bottom:8px;">TONITRUUM — PHASE 3 SUMMARY</div>
-          <div style="font-size:13px;color:var(--ink-mid);line-height:1.7;">The reptile care market is unmonitored, disconnected, and ignoring a clinically-validated therapeutic opportunity. TONITRUUM is the first product designed to serve both the keeper and the clinician — beautiful enough for the home, rigorous enough for the hospital. Phase 3 turns 3 years of research into the world's first intelligent, therapeutic reptile habitat system.</div>
-        </div>
-        <div class="slide-time">12:30 – 15:00</div>
-      </section>
+    <div class="study">
+      <div class="study-ref">Marcus · 2013 · Current Pain & Headache Reports</div>
+      <div class="study-title">The science behind animal-assisted therapy</div>
+      <div class="study-finding">Comprehensive review of physiological and psychological mechanisms behind AAT. Confirms cortisol reduction, blood pressure normalisation, and oxytocin stimulation across multiple animal interaction paradigms.</div>
+      <div class="study-links">
+        <a href="assets/refs/marcus2013.pdf" target="_blank" class="study-link">📄 PDF</a>
+      </div>
+    </div>
 
-    </div><!-- /slides -->
-  </div><!-- /main -->
+    <div class="study">
+      <div class="study-ref">Lambert et al. · 2022</div>
+      <div class="study-title">Reptile-assisted emotional and behavioral management in ASD</div>
+      <div class="study-finding">Direct evidence for reptile-specific AAT efficacy in ASD populations. Structured reptile interaction programmes demonstrated measurable improvements in behavioural regulation, emotional expression, and social initiation over 8-week protocols.</div>
+      <div class="study-links">
+        <a href="assets/refs/lambert-2022.pdf" target="_blank" class="study-link">📄 PDF</a>
+        <a href="assets/refs/reptile-asd-therapy-core.pdf" target="_blank" class="study-link">📄 Core Study</a>
+      </div>
+    </div>
+
+    <div class="study">
+      <div class="study-ref">Warwick et al. · 2014 & 2017</div>
+      <div class="study-title">Reptile welfare and stress indicators in captive settings</div>
+      <div class="study-finding">Key welfare research establishing that reptiles can participate in structured human interaction without compromised welfare when environmental conditions are controlled — directly informing TONITRUUM enclosure design specifications.</div>
+      <div class="study-links">
+        <a href="assets/refs/warwick-2014.pdf" target="_blank" class="study-link">📄 2014</a>
+        <a href="assets/refs/warwick2017.pdf" target="_blank" class="study-link">📄 2017</a>
+      </div>
+    </div>
+
+    <div class="study">
+      <div class="study-ref">Beck & Clark · 2014 · Anthrozoös</div>
+      <div class="study-title">Animal-assisted therapy and emotional arousal regulation</div>
+      <div class="study-finding">Establishes the neurological pathway from animal interaction to reduced emotional arousal. Provides theoretical framework for the co-regulation model used in the TONITRUUM Phase 04 service protocol.</div>
+      <div class="study-links">
+        <a href="assets/refs/beck2014.pdf" target="_blank" class="study-link">📄 PDF</a>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Case Study -->
+  <div class="card accent">
+    <div style="display:flex;align-items:flex-start;gap:20px;flex-wrap:wrap">
+      <div style="flex:1;min-width:260px">
+        <div class="card-title" style="font-size:15px;margin-bottom:4px">Case Study — Tiffany · Nantes · 2025</div>
+        <div style="font-size:10px;color:var(--orange);margin-bottom:10px;letter-spacing:.05em">ASD Level 1 · Mother · Gymnastics Coach · Age 41 · 3 Daughters</div>
+        <div class="card-body">Tiffany received her ASD diagnosis after age 30, following a burnout triggered by her youngest daughter's birth. Misdiagnosed initially with postpartum depression, she spent years without understanding the neurological basis of her hypersensitivity, cognitive rigidity, and social masking.<br><br>Her middle daughter Alana shows strongly similar patterns — elevator phobia, recess anxiety, and noise hypersensitivity. Tiffany observed that Alana's anxiety crises pass significantly faster when she holds their pet rat or hamster. Tiffany herself previously kept a snake, describing the sensation of its movement as profoundly calming: <em>"C'est tellement fluide et lent quand ça rampe. Je ne sais pas, ça m'apaisait beaucoup."</em></div>
+      </div>
+      <div style="flex:1;min-width:220px">
+        <div style="font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);font-weight:600;margin-bottom:10px">Tiffany's Key Observations</div>
+        <div class="card" style="background:var(--bg);margin-bottom:8px;padding:10px 14px">
+          <div style="font-size:11px;color:var(--ink);font-style:italic">"Ces crises d'angoisse passent plus vite quand elle a un animal dans les mains."</div>
+          <div style="font-size:9.5px;color:var(--ink-soft);margin-top:4px">On daughter Alana's anxiety episodes</div>
+        </div>
+        <div class="card" style="background:var(--bg);margin-bottom:8px;padding:10px 14px">
+          <div style="font-size:11px;color:var(--ink);font-style:italic">"J'ai eu un serpent, ça m'a aidé beaucoup aussi."</div>
+          <div style="font-size:9.5px;color:var(--ink-soft);margin-top:4px">On personal reptile-assisted emotional regulation</div>
+        </div>
+        <div class="card" style="background:var(--bg);padding:10px 14px">
+          <div style="font-size:11px;color:var(--ink);font-style:italic">"Il y a autant d'autisme que d'autiste."</div>
+          <div style="font-size:9.5px;color:var(--ink-soft);margin-top:4px">On the need for personalised intervention</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════
+     05 — PRODUCT & SYSTEM
+     ════════════════════════════════════════════ -->
+<section class="section" id="s5" data-label="05 · Product">
+  <div class="sec-time">8:00 – 10:00</div>
+  <div class="sec-num">05 / 08</div>
+  <div class="sec-tag">Product & System Design</div>
+  <h2 class="sec-h">Precision hardware.<br><span>Clinical intelligence.</span><br>Beautiful enough for the home.</h2>
+  <p class="sec-sub">TONITRUUM is two things in one: a premium intelligent habitat for serious reptile keepers, and a clinical-grade therapeutic platform for ASD programmes. Both use the same core system.</p>
+
+  <div class="two-col mb40">
+    <div>
+      <div style="font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);font-weight:600;margin-bottom:14px">Hardware — TONITRUUM Enclosure System</div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div class="card"><div class="card-icon" style="font-size:16px">🔬</div><div class="card-title">Multi-Zone Precision Sensing</div><div class="card-body">Temperature (basking + cool zone), humidity (±1% accuracy), UVB index, light cycle timing. All monitored in real time. Automatic microclimate adjustment.</div></div>
+        <div class="card"><div class="card-icon" style="font-size:16px">👁️</div><div class="card-title">AI Behaviour Recognition</div><div class="card-body">Computer vision identifies feeding, basking, hiding, and stress postures. Alerts therapist dashboard when animal stress indicators are detected during a therapy session.</div></div>
+        <div class="card"><div class="card-icon" style="font-size:16px">🏗️</div><div class="card-title">Anodized Aluminium Frame · Sensory-Aware</div><div class="card-body">Self-locking magnetic knobs eliminate sharp mechanical sounds. Matte surfaces reduce reflection. Designed for clinical environments where sensory unpredictability is unacceptable.</div></div>
+        <div class="card"><div class="card-icon" style="font-size:16px">🌡️</div><div class="card-title">Animal Welfare Monitoring</div><div class="card-body">Continuous welfare status based on Warwick (2014) stress indicators. System alerts therapist if enclosure conditions fall outside welfare thresholds during sessions.</div><div><a href="assets/refs/warwick-2014.pdf" target="_blank" class="card-tag tag-o" style="text-decoration:none">📄 Warwick 2014</a></div></div>
+      </div>
+    </div>
+    <div>
+      <div style="font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);font-weight:600;margin-bottom:14px">Software — Three User Dashboards</div>
+      <div class="card accent mb16">
+        <div class="card-title">👩‍⚕️ Therapist Dashboard</div>
+        <div class="card-body">Live session monitoring · Animal stress alerts · Session notes & outcome tracking · Behavioural score progress over 12-week programme · Report generation for clinical records · Referral pathway management</div>
+      </div>
+      <div class="card blue mb16">
+        <div class="card-title">👨‍👩‍👧 Parent Dashboard</div>
+        <div class="card-body">Session summaries after each visit · Home regulation tips based on session data · Homework activities for between-session continuity · Progress timeline visible to family · Direct message to therapist</div>
+      </div>
+      <div class="card green">
+        <div class="card-title">🧒 Child Interface (Age 4–10)</div>
+        <div class="card-body">Simplified visual interface showing "how my reptile is doing today" · Simple mood check-in before session · Care activity prompts (feeding, misting) as structured ritual · Reward system with low-stimulation visual feedback</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="stat-grid g4">
+    <div class="stat hi"><div class="stat-val">€149<span class="u">–199</span></div><div class="stat-lbl">Launch retail price (consumer line)</div></div>
+    <div class="stat blue"><div class="stat-val">€299<span class="u">+</span></div><div class="stat-lbl">Closest competitor (Exo Terra Smart Kit)</div></div>
+    <div class="stat green"><div class="stat-val">5</div><div class="stat-lbl">Product lines (starter to clinical-grade)</div></div>
+    <div class="stat purple"><div class="stat-val">3</div><div class="stat-lbl">Distinct user dashboards (therapist, parent, child)</div></div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════
+     06 — USER FEEDBACK & VALIDATION
+     ════════════════════════════════════════════ -->
+<section class="section" id="s6" data-label="06 · Feedback">
+  <div class="sec-time">10:00 – 11:30</div>
+  <div class="sec-num">06 / 08</div>
+  <div class="sec-tag">User Feedback · Field Validation</div>
+  <h2 class="sec-h">Real people.<br><span>Real responses.</span><br><em>Real signal.</em></h2>
+  <p class="sec-sub">Four field interviews, a 40-person public survey (32 valid responses), and a live case study across 5 countries — conducted September–November 2025 as part of the ESP thesis research phase.</p>
+
+  <div class="two-col wide mb40">
+    <div>
+      <div style="font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);font-weight:600;margin-bottom:14px">Interview Synthesis — 4 Fieldwork Interviews · Nantes 2025</div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div class="card">
+          <div class="card-title">Mickaël Grévois · Licensed Keeper · 2h Interview</div>
+          <div class="card-body"><strong>What confirmed:</strong> Reptile interaction already being used informally for his son's behavioural difficulties. Confirmed therapeutic mechanism (behavioral self-regulation as structural constraint). Identified critical data gap — no shared standard across breeders/therapists.</div>
+          <span class="card-tag tag-o">Therapeutic Validation ✓</span>
+        </div>
+        <div class="card">
+          <div class="card-title">Tiffany · ASD Parent & Self · 45min Interview</div>
+          <div class="card-body"><strong>What confirmed:</strong> Real-world evidence that small animal contact reduces anxiety episode duration. Personal experience with reptile as emotional regulation tool. Articulated need for non-clinical, home-compatible support layer.</div>
+          <span class="card-tag tag-g">Case Study Evidence ✓</span>
+        </div>
+        <div class="card">
+          <div class="card-title">Ayna · Caregiver · Aquatic Turtle Keeper</div>
+          <div class="card-body"><strong>What confirmed:</strong> Early animal co-habitation builds empathy and responsibility in children without explicit instruction. Turtles as gateway to understanding care, routine, and life needs — directly applicable to therapy protocol design.</div>
+          <span class="card-tag tag-b">Care Design Insight ✓</span>
+        </div>
+        <div class="card">
+          <div class="card-title">LIOPE PETSHOP · Reptile Trade Professional · 20min</div>
+          <div class="card-body"><strong>What confirmed:</strong> Market demand for intelligence layer in reptile care is real but unaddressed. Retailers receive constant customer questions that basic hardware cannot answer. Platform product would be welcomed by specialist retail sector.</div>
+          <span class="card-tag tag-p">Market Demand Signal ✓</span>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div style="font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);font-weight:600;margin-bottom:14px">Public Survey · 40 Responses · 32 Valid · Sept 2025</div>
+      <div class="stat-grid g2 mb16">
+        <div class="stat hi"><div class="stat-val">81<span class="u">%</span></div><div class="stat-lbl">Had early nature/animal experience in childhood</div></div>
+        <div class="stat"><div class="stat-val">63<span class="u">%</span></div><div class="stat-lbl">Positive perception of reptiles (cute, interesting, calm)</div></div>
+        <div class="stat blue"><div class="stat-val">45<span class="u">%</span></div><div class="stat-lbl">Already owned reptiles at time of survey</div></div>
+        <div class="stat green"><div class="stat-val">5</div><div class="stat-lbl">Countries covered: FR · CN · AU · MX · IR</div></div>
+      </div>
+      <div class="card accent mb16">
+        <div class="card-title">Key Barrier Identified: Public Fear & Misconception</div>
+        <div class="card-body">37% of respondents had negative initial perceptions (disgust, fear, danger). However, 100% of those who had prior hands-on experience with reptiles reversed this perception. This confirms that the primary barrier is not the animal itself — it is structured, safe first contact. Our therapeutic introduction protocol directly addresses this.</div>
+      </div>
+      <div class="card">
+        <div class="card-title">Strongest Validated Feature Requests</div>
+        <div class="card-body">
+          <div style="margin-bottom:5px">1. <strong>Real-time environment alerts</strong> — "I had no idea my animal was stressed"</div>
+          <div style="margin-bottom:5px">2. <strong>Expert guidance integration</strong> — "Forums are too fragmented"</div>
+          <div style="margin-bottom:5px">3. <strong>Session logging & progress reports</strong> — for clinical partners</div>
+          <div>4. <strong>Shared data across caregivers</strong> — therapist ↔ parent continuity</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════
+     07 — BUSINESS MODEL
+     ════════════════════════════════════════════ -->
+<section class="section" id="s7" data-label="07 · Business Model">
+  <div class="sec-time">11:30 – 13:00</div>
+  <div class="sec-num">07 / 08</div>
+  <div class="sec-tag">Business Model · Revenue</div>
+  <h2 class="sec-h">Hardware + subscription<br>+ clinical <span>partnerships.</span><br>Four revenue streams.</h2>
+
+  <div class="two-col mb40">
+    <div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div class="card accent">
+          <div class="card-icon">📦</div>
+          <div class="card-title">Stream 1 — Hardware Sales</div>
+          <div class="card-body">TONITRUUM enclosure system at €149–199 (consumer) and €350+ (clinical-grade). 5 product lines from starter kits to full clinical units with integrated AI camera and welfare monitoring.</div>
+          <span class="card-tag tag-o">B2C + B2B</span>
+        </div>
+        <div class="card blue">
+          <div class="card-icon">🔄</div>
+          <div class="card-title">Stream 2 — Platform Subscription</div>
+          <div class="card-body">Monthly SaaS subscription for the care intelligence layer: AI monitoring, behaviour alerts, vet integration, session reports, parent portal. €9–29/month consumer. €99–299/month clinical.</div>
+          <span class="card-tag tag-b">Recurring Revenue</span>
+        </div>
+        <div class="card green">
+          <div class="card-icon">🏥</div>
+          <div class="card-title">Stream 3 — Clinical Licensing</div>
+          <div class="card-body">Programme licensing fees for therapy centres, IME/SESSAD, hospitals, and school inclusion units. Includes protocol training, hardware bundle discount, data reporting suite, and annual renewal. €2,000–8,000/institution/year.</div>
+          <span class="card-tag tag-g">B2B · High Margin</span>
+        </div>
+        <div class="card purple">
+          <div class="card-icon">📊</div>
+          <div class="card-title">Stream 4 — Research Data Partnerships</div>
+          <div class="card-body">Anonymised, aggregated session and welfare data licensed to university research programmes, pharmaceutical companies studying oxytocin pathways, and policy bodies mapping ASD intervention effectiveness.</div>
+          <span class="card-tag tag-p">Long-term · Strategic</span>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div style="font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);font-weight:600;margin-bottom:14px">Market Opportunity</div>
+      <div class="stat-grid g2 mb16">
+        <div class="stat hi"><div class="stat-val">$17.25<span class="u">B</span></div><div class="stat-lbl">Pet tech market size 2030</div></div>
+        <div class="stat"><div class="stat-val">14.6<span class="u">%</span></div><div class="stat-lbl">Pet tech CAGR 2024–2030</div></div>
+        <div class="stat blue"><div class="stat-val">$2.16<span class="u">B</span></div><div class="stat-lbl">Reptile enclosure market 2030</div></div>
+        <div class="stat green"><div class="stat-val">7.6<span class="u">%</span></div><div class="stat-lbl">Reptile enclosure CAGR 2023–30</div></div>
+      </div>
+      <div style="font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);font-weight:600;margin-bottom:10px">Geographic Strategy</div>
+      <div class="phase-strip">
+        <div class="phase-col now">
+          <div class="phase-lbl">Phase 1 · 2026–27</div>
+          <div class="phase-name">🇫🇷 Europe</div>
+          <ul class="phase-list"><li>2.1M reptile pets in France</li><li>Kickstarter launch</li><li>First clinical pilots</li><li>D2C + specialty retail</li></ul>
+        </div>
+        <div class="phase-col">
+          <div class="phase-lbl">Phase 2 · 2027–28</div>
+          <div class="phase-name">🇨🇳 China</div>
+          <ul class="phase-list"><li>17M exotic pet owners</li><li>Manufacturing proximity</li><li>Price validation</li><li>Flagship store</li></ul>
+        </div>
+        <div class="phase-col">
+          <div class="phase-lbl">Phase 3 · 2028–29</div>
+          <div class="phase-name">🇺🇸 N. America</div>
+          <ul class="phase-list"><li>6M reptile households</li><li>37% global pet tech</li><li>PetSmart + Petco</li><li>Series A closed</li></ul>
+        </div>
+      </div>
+      <div style="margin-top:14px;padding:14px 16px;background:rgba(217,110,40,.07);border:1px solid rgba(217,110,40,.25);border-radius:8px">
+        <div style="font-size:9.5px;color:var(--orange);font-weight:700;letter-spacing:.08em;margin-bottom:6px">FUNDING ROADMAP</div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center">
+          <div><div style="font-size:16px;font-weight:700;color:var(--ink)">¥150K</div><div style="font-size:9px;color:var(--ink-mid)">Bootstrap · Self</div></div>
+          <div><div style="font-size:16px;font-weight:700;color:var(--orange)">¥170K</div><div style="font-size:9px;color:var(--ink-mid)">Angel · Target</div></div>
+          <div><div style="font-size:16px;font-weight:700;color:var(--blue)">¥200K</div><div style="font-size:9px;color:var(--ink-mid)">Series A · 2028</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════
+     08 — SCALE & ROADMAP
+     ════════════════════════════════════════════ -->
+<section class="section" id="s8" data-label="08 · Roadmap">
+  <div class="sec-time">13:00 – 15:00</div>
+  <div class="sec-num">08 / 08</div>
+  <div class="sec-tag">Roadmap · Scale · Phase 3 Ask</div>
+  <h2 class="sec-h">Four years to<br><span>global scale.</span><br>Three things we need now.</h2>
+  <p class="sec-sub">From validated prototype to clinical launch to global ASD therapy product line — a clear, staged execution plan with defined milestones.</p>
+
+  <div class="roadmap mb40">
+    <div class="rm-node done">
+      <div class="rm-year">2025 ✓</div>
+      <div class="rm-item">Thermostat prototype validated</div>
+      <div class="rm-item">ESP thesis submitted</div>
+      <div class="rm-item">4 field interviews completed</div>
+      <div class="rm-item">40-person survey done</div>
+      <div class="rm-item">Germany market research</div>
+    </div>
+    <div class="rm-node now">
+      <div class="rm-year">2026 ← NOW</div>
+      <div class="rm-item">DVT launch (ID+mech design)</div>
+      <div class="rm-item">Product design finalised</div>
+      <div class="rm-item">First clinical pilot setup</div>
+      <div class="rm-item">Mould factory quotes</div>
+      <div class="rm-item">China channel setup</div>
+    </div>
+    <div class="rm-node">
+      <div class="rm-year">2027</div>
+      <div class="rm-item">PVT + small batch production</div>
+      <div class="rm-item">Kickstarter campaign</div>
+      <div class="rm-item">Official EU launch</div>
+      <div class="rm-item">EU distributor network</div>
+      <div class="rm-item">First clinical licensing deal</div>
+    </div>
+    <div class="rm-node">
+      <div class="rm-year">2028</div>
+      <div class="rm-item">Large-scale production</div>
+      <div class="rm-item">China flagship store</div>
+      <div class="rm-item">US market launch</div>
+      <div class="rm-item">Series A closed</div>
+      <div class="rm-item">ASD product line expanded</div>
+    </div>
+    <div class="rm-node">
+      <div class="rm-year">2029</div>
+      <div class="rm-item">Global official launch</div>
+      <div class="rm-item">Autism therapy line released</div>
+      <div class="rm-item">Full platform ecosystem</div>
+      <div class="rm-item">Multi-market coverage</div>
+      <div class="rm-item">Research partnership live</div>
+    </div>
+  </div>
+
+  <!-- THE ASK -->
+  <div style="font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);font-weight:600;margin-bottom:14px">Phase 3 — What We Need Now</div>
+  <div class="three-col mb40">
+    <div class="card" style="border-color:rgba(217,110,40,.4);border-width:2px">
+      <div class="card-icon">🏥</div>
+      <div class="card-title">Clinical Partner · Priority #1</div>
+      <div class="card-body">A therapy centre, IME, SESSAD, or hospital willing to run the first structured pilot — 10–20 ASD Level 1 children, 8–12 week protocol, full TONITRUUM monitoring, co-published outcome data.</div>
+      <span class="card-tag tag-o">Seeking Now</span>
+    </div>
+    <div class="card" style="border-color:rgba(217,110,40,.4);border-width:2px">
+      <div class="card-icon">💰</div>
+      <div class="card-title">Seed Funding · ¥170K Target</div>
+      <div class="card-body">¥150K self-funded already committed. Seeking ¥170K angel investment to complete DVT tooling, first production run of 200 units, and clinical pilot hardware. Kickstarter to follow in 2027.</div>
+      <span class="card-tag tag-o">¥170K Ask</span>
+    </div>
+    <div class="card" style="border-color:rgba(107,158,184,.4);border-width:2px">
+      <div class="card-icon">🤝</div>
+      <div class="card-title">EU Distribution Partner</div>
+      <div class="card-body">EU specialty pet retail partner (Terrario, Reptilis, Maxi Zoo Exotique) for initial launch channel alongside D2C webshop. Looking for 3–5 flagship stockists in France and Germany for the 2027 launch.</div>
+      <span class="card-tag tag-b">EU Launch</span>
+    </div>
+  </div>
+
+  <!-- Closing Statement -->
+  <div style="padding:28px 32px;background:rgba(217,110,40,.07);border:1px solid rgba(217,110,40,.3);border-radius:12px;max-width:860px">
+    <div style="font-size:11px;color:var(--orange);font-weight:700;letter-spacing:.1em;margin-bottom:12px">TONITRUUM · CLOSING STATEMENT</div>
+    <div style="font-size:14px;color:var(--ink);line-height:1.75">The reptile care market is analogue, isolated, and missing a $2B+ intelligence layer. The ASD therapy sector is overwhelmed, under-resourced, and searching for gentler, more natural pathways to emotional regulation. TONITRUUM is the only product in the world designed to serve both.<br><br>We have the research. We have the design. We have the case. <span style="color:var(--orange);font-weight:700">We are ready to build.</span></div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════
+     REFERENCES
+     ════════════════════════════════════════════ -->
+<section class="section" id="s-refs" data-label="References">
+  <div class="sec-tag">Full Reference List · Academic Sources</div>
+  <h2 class="sec-h" style="font-size:28px;margin-bottom:8px">References &amp; Literature</h2>
+  <p class="sec-sub" style="margin-bottom:28px;font-size:12px">All papers are available via PDF download or external DOI link. Local PDF files are hosted at <code style="font-family:var(--mono);font-size:10px;color:var(--orange)">/assets/refs/</code></p>
+
+  <div class="ref-grid">
+
+    <div class="ref-item">
+      <div class="ref-num">01</div>
+      <div class="ref-body">
+        <div class="ref-citation">O'Haire, M. E., McKenzie, S. J., McCune, S., & Slaughter, V. (2013). Social behaviors increase in children with autism in the presence of animals. <em>PLOS ONE, 8(2).</em></div>
+        <div class="ref-links">
+          <a href="https://doi.org/10.1371/journal.pone.0057010" target="_blank" class="ref-link">🔗 DOI</a>
+          <a href="assets/refs/ohaire-2013-asd-animals.pdf" target="_blank" class="ref-link">📄 PDF</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="ref-item">
+      <div class="ref-num">02</div>
+      <div class="ref-body">
+        <div class="ref-citation">Murry, B. L., & Allen, K. (2012). Oxytocin and autism spectrum disorders: A systematic review. <em>Anthrozoös.</em></div>
+        <div class="ref-links">
+          <a href="assets/refs/murry-allen-anthrozoös-2012.pdf" target="_blank" class="ref-link">📄 PDF</a>
+          <a href="assets/refs/murry-2012.pdf" target="_blank" class="ref-link">📄 Murry 2012</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="ref-item">
+      <div class="ref-num">03</div>
+      <div class="ref-body">
+        <div class="ref-citation">Lambert, C. et al. (2022). Reptile-Assisted Emotional and Behavioral Management in Individuals with Autism Spectrum Disorder. <em>Animals Journal.</em></div>
+        <div class="ref-links">
+          <a href="assets/refs/lambert-2022.pdf" target="_blank" class="ref-link">📄 PDF</a>
+          <a href="assets/refs/reptile-asd-therapy-core.pdf" target="_blank" class="ref-link">📄 Core Study</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="ref-item">
+      <div class="ref-num">04</div>
+      <div class="ref-body">
+        <div class="ref-citation">Marcus, D. A. (2013). The science behind animal-assisted therapy. <em>Current Pain and Headache Reports, 17(4), 322.</em></div>
+        <div class="ref-links">
+          <a href="assets/refs/marcus2013.pdf" target="_blank" class="ref-link">📄 PDF</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="ref-item">
+      <div class="ref-num">05</div>
+      <div class="ref-body">
+        <div class="ref-citation">Beck, A. M., & Clark, C. C. (2014). Animal-assisted therapy and the regulation of emotional arousal. <em>Anthrozoös, 24(3), 223–238.</em></div>
+        <div class="ref-links">
+          <a href="assets/refs/beck2014.pdf" target="_blank" class="ref-link">📄 PDF</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="ref-item">
+      <div class="ref-num">06</div>
+      <div class="ref-body">
+        <div class="ref-citation">Warwick, C. et al. (2014). Assessing reptile welfare using behavioural criteria. <em>In Practice, 36(3), 136–140.</em></div>
+        <div class="ref-links">
+          <a href="assets/refs/warwick-2014.pdf" target="_blank" class="ref-link">📄 PDF</a>
+          <a href="assets/refs/warwick2017.pdf" target="_blank" class="ref-link">📄 Warwick 2017</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="ref-item">
+      <div class="ref-num">07</div>
+      <div class="ref-body">
+        <div class="ref-citation">Muhle, R., Trentacoste, S. V., & Rapin, I. (2004). The genetics of autism. <em>Pediatrics, 113(5), e472–e486.</em></div>
+        <div class="ref-links">
+          <a href="https://doi.org/10.1542/peds.113.5.e472" target="_blank" class="ref-link">🔗 DOI</a>
+          <a href="assets/refs/muhle-autism-genetics-2004.pdf" target="_blank" class="ref-link">📄 PDF</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="ref-item">
+      <div class="ref-num">08</div>
+      <div class="ref-body">
+        <div class="ref-citation">CDC ADDM Network (2023). Prevalence and characteristics of autism spectrum disorder among children. <em>MMWR Surveillance Summaries, 72(2).</em></div>
+        <div class="ref-links">
+          <a href="https://www.cdc.gov/mmwr/volumes/72/ss/ss7202a1.htm" target="_blank" class="ref-link">🔗 CDC Online</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="ref-item">
+      <div class="ref-num">09</div>
+      <div class="ref-body">
+        <div class="ref-citation">Murry, B. L. (2018). Animal-assisted intervention outcomes in ASD populations: Longitudinal analysis. <em>Journal of Autism Research.</em></div>
+        <div class="ref-links">
+          <a href="assets/refs/murry2018.pdf" target="_blank" class="ref-link">📄 PDF</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="ref-item">
+      <div class="ref-num">10</div>
+      <div class="ref-body">
+        <div class="ref-citation">Geist, T. S. (2011). Conceptual framework for animal assisted intervention. <em>Child & Adolescent Social Work Journal, 28(3), 243–256.</em></div>
+        <div class="ref-links">
+          <a href="assets/refs/geist2011.pdf" target="_blank" class="ref-link">📄 PDF</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="ref-item">
+      <div class="ref-num">11</div>
+      <div class="ref-body">
+        <div class="ref-citation">Bowlby, J. & Ainsworth, M. (1969/1978). Attachment theory and its applications to animal-assisted therapy. <em>Classic Attachment Literature.</em></div>
+        <div class="ref-links">
+          <a href="assets/refs/bowlby-ainsworth-attachment.pdf" target="_blank" class="ref-link">📄 PDF</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="ref-item">
+      <div class="ref-num">12</div>
+      <div class="ref-body">
+        <div class="ref-citation">Draper, R. J. et al. (2017). Oxytocin and low-stimulation animal interaction in neurodivergent populations. <em>Frontiers in Psychology.</em></div>
+        <div class="ref-links">
+          <a href="assets/refs/draper-2017.pdf" target="_blank" class="ref-link">📄 PDF</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="ref-item">
+      <div class="ref-num">13</div>
+      <div class="ref-body">
+        <div class="ref-citation">Animals (MDPI) — Vol. 11, Article 02010. Reptile behaviour and human interaction outcomes. <em>Animals, 11(7).</em></div>
+        <div class="ref-links">
+          <a href="https://www.mdpi.com/2076-2615/11/7/2010" target="_blank" class="ref-link">🔗 MDPI</a>
+          <a href="assets/refs/animals-11-02010.pdf" target="_blank" class="ref-link">📄 PDF</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="ref-item">
+      <div class="ref-num">14</div>
+      <div class="ref-body">
+        <div class="ref-citation">Animals (MDPI) — Vol. 11, Article 02964. Welfare indicators in captive reptiles. <em>Animals, 11(10).</em></div>
+        <div class="ref-links">
+          <a href="https://www.mdpi.com/2076-2615/11/10/2964" target="_blank" class="ref-link">🔗 MDPI</a>
+          <a href="assets/refs/animals-11-02964-v3.pdf" target="_blank" class="ref-link">📄 PDF</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="ref-item">
+      <div class="ref-num">15</div>
+      <div class="ref-body">
+        <div class="ref-citation">Animals (MDPI) — Vol. 14, Article 01767. AAT with non-traditional species: Outcomes. <em>Animals, 14(12).</em></div>
+        <div class="ref-links">
+          <a href="https://www.mdpi.com/2076-2615/14/12/1767" target="_blank" class="ref-link">🔗 MDPI</a>
+          <a href="assets/refs/animals-14-01767.pdf" target="_blank" class="ref-link">📄 PDF</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="ref-item">
+      <div class="ref-num">16</div>
+      <div class="ref-body">
+        <div class="ref-citation">Animals (MDPI) — Vol. 14, Article 01872. Reptile-human bonding in structured settings. <em>Animals, 14(13).</em></div>
+        <div class="ref-links">
+          <a href="https://www.mdpi.com/2076-2615/14/13/1872" target="_blank" class="ref-link">🔗 MDPI</a>
+          <a href="assets/refs/animals-14-01872-v2.pdf" target="_blank" class="ref-link">📄 PDF</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="ref-item">
+      <div class="ref-num">17</div>
+      <div class="ref-body">
+        <div class="ref-citation">Jepson, L. (2015). Reptile care and exotic animal welfare: A clinical perspective. <em>Exotic Animal Practice.</em></div>
+        <div class="ref-links">
+          <a href="assets/refs/jepson-2015.pdf" target="_blank" class="ref-link">📄 PDF</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="ref-item">
+      <div class="ref-num">18</div>
+      <div class="ref-body">
+        <div class="ref-citation">Serpell, J. A. (1996). Evidence for long-term effects of pet ownership on human health. <em>In: Companion Animals in Human Health.</em></div>
+        <div class="ref-links">
+          <a href="assets/refs/serpell1996.pdf" target="_blank" class="ref-link">📄 PDF</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="ref-item">
+      <div class="ref-num">19</div>
+      <div class="ref-body">
+        <div class="ref-citation">Burghardt, G. M. (2013). Environmental enrichment and cognitive complexity in reptiles and amphibians. <em>Behavioural Processes, 109.</em></div>
+        <div class="ref-links">
+          <a href="assets/refs/burghardt-2013.pdf" target="_blank" class="ref-link">📄 PDF</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="ref-item">
+      <div class="ref-num">20</div>
+      <div class="ref-body">
+        <div class="ref-citation">Ni, X. (2025). The introduction to reptile-assisted therapy for Level 1 ASD. <em>ESP Thesis · L'École de Design Nantes Atlantique.</em></div>
+        <div class="ref-links">
+          <a href="research.html" class="ref-link">🔗 Research Page</a>
+          <a href="assets/refs/reptile-asd-therapy-core.pdf" target="_blank" class="ref-link">📄 Core Paper</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div style="margin-top:24px;padding:14px 18px;background:var(--bg-card);border:1px solid var(--line);border-radius:8px;font-size:10.5px;color:var(--ink-mid)">
+    All local PDFs are served from <code style="font-family:var(--mono);color:var(--orange)">/assets/refs/</code> — click 📄 to open in browser or download. External links (🔗) open DOI or journal pages in a new tab. Full bibliography also available in: <a href="research.html" style="color:var(--orange)">research.html</a>
+  </div>
+</section>
+
+</div><!-- /main -->
 </div><!-- /page-wrap -->
 
 <script>
 /* ── Clock ── */
-(function() {
-  function tick() {
-    const d = new Date();
-    const hh = String(d.getHours()).padStart(2,'0');
-    const mm = String(d.getMinutes()).padStart(2,'0');
-    const ss = String(d.getSeconds()).padStart(2,'0');
-    const el = document.getElementById('sidebarTime');
-    if (el) el.textContent = hh+':'+mm+':'+ss;
+(function(){
+  function tick(){
+    const d=new Date();
+    const t=String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')+':'+String(d.getSeconds()).padStart(2,'0');
+    const el=document.getElementById('sidebarTime');if(el)el.textContent=t;
   }
-  tick(); setInterval(tick, 1000);
+  tick();setInterval(tick,1000);
 })();
 
-/* ── Presentation Engine ── */
-(function() {
-  const slideEls   = Array.from(document.querySelectorAll('.slides .slide'));
-  const total      = slideEls.length;
-  let   cur        = 0;
-  let   timerStart = null;
-  let   timerInterval;
+/* ── Section Nav & Progress ── */
+(function(){
+  const sections=Array.from(document.querySelectorAll('section[id]'));
+  const nav=document.getElementById('secNav');
+  const progress=document.getElementById('progressFill');
+  const hudSection=document.getElementById('hudSection');
+  let currentIdx=0;
 
-  document.getElementById('hudTotal').textContent = String(total).padStart(2,'0');
-
-  // Build dots
-  const dotsEl = document.getElementById('slideDots');
-  slideEls.forEach((_, i) => {
-    const d = document.createElement('div');
-    d.className = 'slide-dot' + (i === 0 ? ' active' : '');
-    d.title = 'Slide ' + (i+1);
-    d.onclick = () => goTo(i);
-    dotsEl.appendChild(d);
+  sections.forEach((s,i)=>{
+    const dot=document.createElement('div');
+    dot.className='sec-dot'+(i===0?' active':'');
+    dot.dataset.label=s.dataset.label||s.id;
+    dot.title=dot.dataset.label;
+    dot.onclick=()=>s.scrollIntoView({behavior:'smooth',block:'start'});
+    nav.appendChild(dot);
   });
 
-  function goTo(idx) {
-    if (idx < 0 || idx >= total) return;
-    cur = idx;
-    // Smooth scroll
-    slideEls[cur].scrollIntoView({ behavior: 'smooth', block: 'start' });
-    update();
-    // Start timer on first advance
-    if (!timerStart) startTimer();
+  const dots=Array.from(nav.querySelectorAll('.sec-dot'));
+
+  function update(idx){
+    currentIdx=idx;
+    dots.forEach((d,i)=>d.classList.toggle('active',i===idx));
+    const pct=((idx)/(sections.length-1)*100);
+    progress.style.width=Math.min(100,pct)+'%';
+    if(hudSection)hudSection.textContent=sections[idx].dataset.label||'';
   }
 
-  function update() {
-    // HUD
-    document.getElementById('hudCurrent').textContent = String(cur+1).padStart(2,'0');
-    document.getElementById('hudSlideTitle').textContent = slideEls[cur].dataset.title || '';
-    // Progress
-    document.getElementById('progressFill').style.width = ((cur+1)/total*100) + '%';
-    // Dots
-    document.querySelectorAll('.slide-dot').forEach((d,i) => d.classList.toggle('active', i===cur));
-    // Buttons
-    document.getElementById('btnPrev').disabled = cur === 0;
-    document.getElementById('btnNext').disabled = cur === total - 1;
-  }
-
-  window.navSlide = function(dir) { goTo(cur + dir); };
-
-  // Timer
-  function startTimer() {
-    timerStart = Date.now();
-    timerInterval = setInterval(() => {
-      const elapsed = Math.floor((Date.now() - timerStart) / 1000);
-      const mm = String(Math.floor(elapsed/60)).padStart(2,'0');
-      const ss = String(elapsed%60).padStart(2,'0');
-      document.getElementById('hudTimer').textContent = mm+':'+ss;
-      // Turn red after 14 min
-      if (elapsed >= 840) document.getElementById('hudTimer').style.color = '#b84a3a';
-      else if (elapsed >= 720) document.getElementById('hudTimer').style.color = '#e8884a';
-    }, 1000);
-  }
-
-  // Keyboard navigation
-  document.addEventListener('keydown', e => {
-    if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') {
-      e.preventDefault(); navSlide(1);
-    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
-      e.preventDefault(); navSlide(-1);
-    }
-  });
-
-  // Intersection observer to track current visible slide
-  const obs = new IntersectionObserver(entries => {
-    entries.forEach(e => {
-      if (e.isIntersecting && e.intersectionRatio > 0.5) {
-        const idx = slideEls.indexOf(e.target);
-        if (idx !== -1 && idx !== cur) {
-          cur = idx;
-          update();
-        }
+  const obs=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting&&e.intersectionRatio>0.3){
+        const idx=sections.indexOf(e.target);
+        if(idx!==-1)update(idx);
       }
     });
-  }, { threshold: 0.5 });
-  slideEls.forEach(s => obs.observe(s));
+  },{threshold:0.3});
+  sections.forEach(s=>obs.observe(s));
 
-  update();
+  window.scrollToSection=function(dir){
+    const next=Math.max(0,Math.min(sections.length-1,currentIdx+dir));
+    sections[next].scrollIntoView({behavior:'smooth',block:'start'});
+  };
+
+  document.addEventListener('keydown',e=>{
+    if(e.key==='ArrowDown'||e.key==='ArrowRight'){e.preventDefault();window.scrollToSection(1);}
+    else if(e.key==='ArrowUp'||e.key==='ArrowLeft'){e.preventDefault();window.scrollToSection(-1);}
+  });
 })();
+
+/* ── Presentation Timer ── */
+let timerInterval=null,timerStart=null,running=false;
+window.toggleTimer=function(){
+  const el=document.getElementById('hudTimer');
+  if(!running){
+    timerStart=Date.now();running=true;
+    timerInterval=setInterval(()=>{
+      const s=Math.floor((Date.now()-timerStart)/1000);
+      const mm=String(Math.floor(s/60)).padStart(2,'0');
+      const ss=String(s%60).padStart(2,'0');
+      el.textContent=mm+':'+ss;
+      if(s>=840)el.style.color='#b84a3a';
+      else if(s>=720)el.style.color='var(--orange-lt)';
+    },1000);
+  } else {
+    clearInterval(timerInterval);running=false;
+    timerStart=null;
+    document.getElementById('hudTimer').textContent='▶ Start';
+    document.getElementById('hudTimer').style.color='var(--orange)';
+  }
+};
 </script>
 </body>
 </html>
