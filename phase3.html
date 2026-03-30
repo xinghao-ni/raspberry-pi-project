@@ -1,0 +1,1069 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phase 3 — TONITRUUM Pitch</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg:        #0f0f0e;
+  --bg-mid:    #141312;
+  --bg-card:   #1a1918;
+  --ink:       #ede9e4;
+  --ink-mid:   #8a8784;
+  --ink-soft:  #5a5855;
+  --orange:    #d96e28;
+  --orange-lt: #e8884a;
+  --blue:      #6b9eb8;
+  --green:     #4a8c68;
+  --purple:    #7a6ab0;
+  --line:      rgba(255,255,255,0.07);
+  --line-lt:   rgba(255,255,255,0.13);
+  --ff:        -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+  --ff-mono:   'SF Mono', 'Fira Code', monospace;
+  --ease:      cubic-bezier(0.25,0.46,0.45,0.94);
+}
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--ff);
+  background: var(--bg);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+}
+a { text-decoration: none; color: inherit; }
+
+/* ── Sidebar (shared pattern) ── */
+.sidebar {
+  width: 220px; background: var(--bg-mid);
+  border-right: 1px solid var(--line);
+  display: flex; flex-direction: column;
+  position: fixed; top: 0; left: 0; height: 100vh; z-index: 300;
+}
+.sidebar-logo {
+  display: flex; align-items: center; justify-content: center;
+  padding: 24px 12px 20px; border-bottom: 1px solid var(--line);
+}
+.nav-list { list-style: none; padding: 8px; flex: 1; overflow-y: auto; }
+.nav-section {
+  font-size: 9px; font-weight: 600; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--ink-mid);
+  opacity: 0.45; padding: 12px 12px 4px;
+  pointer-events: none; user-select: none;
+}
+.nav-section:first-child { padding-top: 4px; }
+.nav-icon { width: 16px; text-align: center; font-size: 13px; opacity: 0.7; flex-shrink: 0; }
+.nav-item { margin-bottom: 1px; }
+.nav-item a {
+  display: flex; align-items: center; gap: 9px;
+  padding: 6px 10px 6px 12px; border-radius: 5px;
+  font-size: 11.5px; color: var(--ink-soft); letter-spacing: 0.01em;
+  transition: color 0.2s, background 0.2s;
+}
+.nav-item a:hover { color: var(--ink); background: rgba(255,255,255,0.04); }
+.nav-item.active a {
+  color: var(--ink); background: rgba(255,255,255,0.05);
+  border-left: 2px solid var(--orange); padding-left: 8px;
+}
+.sidebar-footer {
+  padding: 12px 16px; border-top: 1px solid var(--line);
+  font-size: 10px; color: var(--ink-soft); letter-spacing: 0.03em;
+}
+.sys-status { display: flex; align-items: center; margin-bottom: 4px; }
+.status-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: #4a8c68; margin-right: 6px; }
+.sys-time { font-family: var(--ff-mono); font-size: 11px; }
+
+/* ── Main ── */
+.page-wrap { display: flex; min-height: 100vh; }
+.main { margin-left: 220px; flex: 1; }
+
+/* ── Presentation HUD ── */
+.hud {
+  position: fixed; top: 0; left: 220px; right: 0; z-index: 200;
+  height: 52px; background: rgba(15,15,14,0.92); backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--line);
+  display: flex; align-items: center; padding: 0 36px;
+  justify-content: space-between;
+}
+.hud-left { display: flex; align-items: center; gap: 20px; }
+.hud-slide {
+  font-family: var(--ff-mono); font-size: 11px; color: var(--ink-mid);
+}
+.hud-slide strong { color: var(--orange); }
+.hud-title { font-size: 11px; color: var(--ink-mid); letter-spacing: 0.04em; }
+.hud-right { display: flex; align-items: center; gap: 12px; }
+.hud-timer {
+  font-family: var(--ff-mono); font-size: 13px; color: var(--orange);
+  background: rgba(217,110,40,0.1); border: 1px solid rgba(217,110,40,0.25);
+  padding: 3px 10px; border-radius: 4px; letter-spacing: 0.06em;
+}
+.hud-btn {
+  width: 28px; height: 28px; border-radius: 5px;
+  background: rgba(255,255,255,0.04); border: 1px solid var(--line);
+  color: var(--ink-mid); font-size: 12px;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: all 0.15s; font-family: var(--ff);
+}
+.hud-btn:hover { color: var(--ink); border-color: rgba(255,255,255,0.2); }
+.hud-btn:disabled { opacity: 0.3; cursor: default; }
+.progress-bar {
+  position: fixed; top: 52px; left: 220px; right: 0; z-index: 199;
+  height: 2px; background: rgba(255,255,255,0.06);
+}
+.progress-fill {
+  height: 100%; background: var(--orange);
+  transition: width 0.4s var(--ease);
+}
+
+/* ── Slide Dots ── */
+.slide-dots {
+  position: fixed; right: 20px; top: 50%;
+  transform: translateY(-50%); z-index: 200;
+  display: flex; flex-direction: column; gap: 6px;
+}
+.slide-dot {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: rgba(255,255,255,0.2);
+  cursor: pointer; transition: all 0.2s;
+}
+.slide-dot.active { background: var(--orange); transform: scale(1.4); }
+.slide-dot:hover  { background: rgba(255,255,255,0.5); }
+
+/* ── Slides Container ── */
+.slides { padding-top: 54px; }
+
+/* ── Individual Slide ── */
+.slide {
+  min-height: calc(100vh - 54px);
+  padding: 64px 72px;
+  display: flex; flex-direction: column;
+  justify-content: center;
+  border-bottom: 1px solid var(--line);
+  position: relative; overflow: hidden;
+}
+.slide::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  pointer-events: none;
+}
+
+/* Slide 1: Cover */
+.slide-cover {
+  background: radial-gradient(ellipse at 30% 40%, rgba(217,110,40,0.1) 0%, transparent 60%),
+              radial-gradient(ellipse at 70% 70%, rgba(107,158,184,0.06) 0%, transparent 50%);
+  align-items: center; text-align: center;
+}
+.cover-eyebrow {
+  font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--orange); font-weight: 600; margin-bottom: 20px;
+}
+.cover-title {
+  font-size: clamp(48px, 6vw, 80px); font-weight: 700;
+  letter-spacing: -0.03em; line-height: 1.05; margin-bottom: 16px;
+}
+.cover-title span { color: var(--orange); }
+.cover-sub {
+  font-size: 16px; color: var(--ink-mid); max-width: 520px;
+  line-height: 1.6; margin: 0 auto 36px;
+}
+.cover-meta {
+  display: flex; align-items: center; gap: 24px;
+  justify-content: center; flex-wrap: wrap;
+}
+.cover-pill {
+  font-size: 10.5px; padding: 5px 14px; border-radius: 20px;
+  border: 1px solid var(--line); color: var(--ink-mid);
+  letter-spacing: 0.06em;
+}
+.cover-pill.hi { border-color: rgba(217,110,40,0.4); color: var(--orange); }
+
+/* Slide heading pattern */
+.slide-tag {
+  font-size: 9.5px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--orange); font-weight: 600; margin-bottom: 10px;
+  display: flex; align-items: center; gap: 8px;
+}
+.slide-tag::after {
+  content: ''; flex: 1; height: 1px; background: var(--line); max-width: 60px;
+}
+.slide-h {
+  font-size: clamp(32px, 4vw, 52px); font-weight: 700;
+  letter-spacing: -0.02em; line-height: 1.1; margin-bottom: 14px;
+}
+.slide-h span { color: var(--orange); }
+.slide-h em { color: var(--ink-mid); font-style: normal; }
+.slide-sub {
+  font-size: 15px; color: var(--ink-mid); max-width: 600px;
+  line-height: 1.65; margin-bottom: 40px;
+}
+.slide-num {
+  position: absolute; top: 64px; right: 72px;
+  font-family: var(--ff-mono); font-size: 10px; color: var(--ink-soft);
+  letter-spacing: 0.1em;
+}
+.slide-time {
+  position: absolute; bottom: 32px; right: 72px;
+  font-size: 9.5px; color: var(--ink-soft); letter-spacing: 0.08em;
+}
+
+/* ── Stat Grid ── */
+.stat-grid {
+  display: grid; gap: 14px;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  max-width: 900px;
+}
+.stat-card {
+  background: var(--bg-card); border: 1px solid var(--line);
+  border-radius: 10px; padding: 20px;
+}
+.stat-value {
+  font-size: 38px; font-weight: 700; letter-spacing: -0.02em;
+  line-height: 1; margin-bottom: 6px; color: var(--ink);
+}
+.stat-value .unit { font-size: 18px; color: var(--ink-mid); font-weight: 500; }
+.stat-label { font-size: 10px; color: var(--ink-mid); text-transform: uppercase; letter-spacing: 0.07em; line-height: 1.4; }
+.stat-card.hi { border-color: rgba(217,110,40,0.3); }
+.stat-card.hi .stat-value { color: var(--orange); }
+
+/* ── Two-col layout ── */
+.two-col {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: start;
+  max-width: 960px;
+}
+.two-col-wide { grid-template-columns: 1.2fr 1fr; }
+
+/* ── Feature List ── */
+.feature-list { display: flex; flex-direction: column; gap: 14px; }
+.feature-item {
+  display: flex; align-items: flex-start; gap: 14px;
+  padding: 16px; background: var(--bg-card);
+  border: 1px solid var(--line); border-radius: 8px;
+}
+.feature-icon {
+  width: 32px; height: 32px; border-radius: 7px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px; flex-shrink: 0;
+  background: rgba(217,110,40,0.12);
+}
+.feature-body {}
+.feature-title { font-size: 13px; font-weight: 600; color: var(--ink); margin-bottom: 2px; }
+.feature-desc  { font-size: 11px; color: var(--ink-mid); line-height: 1.5; }
+
+/* ── Timeline ── */
+.phase-timeline {
+  display: flex; gap: 0; align-items: stretch;
+  background: var(--bg-card); border: 1px solid var(--line);
+  border-radius: 10px; overflow: hidden;
+  max-width: 860px;
+}
+.phase-col {
+  flex: 1; padding: 20px 18px;
+  border-right: 1px solid var(--line); position: relative;
+}
+.phase-col:last-child { border-right: none; }
+.phase-col.current { background: rgba(217,110,40,0.07); }
+.phase-col.current::before {
+  content: 'CURRENT';
+  position: absolute; top: 8px; right: 10px;
+  font-size: 7.5px; letter-spacing: 0.12em; color: var(--orange);
+  font-weight: 700; background: rgba(217,110,40,0.2);
+  padding: 2px 6px; border-radius: 3px;
+}
+.phase-label {
+  font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--ink-soft); font-weight: 600; margin-bottom: 6px;
+}
+.phase-name { font-size: 14px; font-weight: 700; color: var(--ink); margin-bottom: 8px; }
+.phase-items { list-style: none; }
+.phase-items li {
+  font-size: 10.5px; color: var(--ink-mid); padding: 2px 0;
+  display: flex; align-items: flex-start; gap: 6px;
+}
+.phase-items li::before { content: '—'; color: var(--orange); flex-shrink: 0; }
+
+/* ── Roadmap ── */
+.roadmap-row {
+  display: flex; gap: 10px; align-items: stretch;
+  max-width: 900px; overflow-x: auto;
+  padding-bottom: 4px;
+}
+.roadmap-node {
+  flex: 1; min-width: 100px;
+  background: var(--bg-card); border: 1px solid var(--line);
+  border-radius: 8px; padding: 14px 12px;
+  position: relative;
+}
+.roadmap-node.done { border-color: rgba(217,110,40,0.3); }
+.roadmap-node.now  { border-color: var(--orange); background: rgba(217,110,40,0.08); }
+.roadmap-year {
+  font-family: var(--ff-mono); font-size: 9px; font-weight: 700;
+  color: var(--orange); letter-spacing: 0.08em; margin-bottom: 6px;
+}
+.roadmap-item { font-size: 10px; color: var(--ink-mid); line-height: 1.5; margin-bottom: 3px; }
+.roadmap-item::before { content: '· '; color: var(--orange); }
+
+/* ── Team Grid ── */
+.team-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px; max-width: 900px;
+}
+.team-card {
+  background: var(--bg-card); border: 1px solid var(--line); border-radius: 10px;
+  padding: 16px; text-align: center;
+}
+.team-avatar {
+  width: 44px; height: 44px; border-radius: 50%;
+  background: rgba(217,110,40,0.15); border: 1px solid rgba(217,110,40,0.3);
+  margin: 0 auto 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+}
+.team-name { font-size: 12px; font-weight: 600; color: var(--ink); margin-bottom: 3px; }
+.team-role { font-size: 9.5px; color: var(--ink-mid); line-height: 1.4; }
+
+/* ── Ask Cards ── */
+.ask-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px;
+  max-width: 860px;
+}
+.ask-card {
+  background: var(--bg-card); border: 1px solid var(--line);
+  border-radius: 10px; padding: 22px;
+}
+.ask-card.hi { border-color: rgba(217,110,40,0.4); }
+.ask-icon { font-size: 22px; margin-bottom: 12px; }
+.ask-title { font-size: 14px; font-weight: 700; color: var(--ink); margin-bottom: 8px; }
+.ask-desc { font-size: 11px; color: var(--ink-mid); line-height: 1.6; }
+.ask-tag {
+  display: inline-block; margin-top: 10px;
+  font-size: 9px; padding: 3px 8px; border-radius: 3px;
+  background: rgba(217,110,40,0.15); color: var(--orange);
+  font-weight: 700; letter-spacing: 0.06em;
+}
+
+/* ── Blockquote ── */
+.pull-quote {
+  font-size: clamp(18px, 2.2vw, 26px); font-weight: 500;
+  color: var(--ink); line-height: 1.5; max-width: 680px;
+  border-left: 3px solid var(--orange); padding-left: 24px;
+  margin-bottom: 16px; letter-spacing: -0.01em;
+}
+.pull-source { font-size: 11px; color: var(--ink-soft); letter-spacing: 0.04em; }
+
+/* ── Competitive Table ── */
+.comp-table { width: 100%; max-width: 700px; border-collapse: collapse; }
+.comp-table th {
+  font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--ink-soft); font-weight: 600; padding: 0 12px 10px;
+  text-align: left; border-bottom: 1px solid var(--line);
+}
+.comp-table td {
+  padding: 10px 12px; font-size: 12px; color: var(--ink-mid);
+  border-bottom: 1px solid var(--line);
+}
+.comp-table tr.ours td { color: var(--ink); background: rgba(217,110,40,0.07); }
+.comp-table tr.ours td:first-child { color: var(--orange); font-weight: 700; }
+.price-hi { color: var(--orange); font-weight: 700; font-family: var(--ff-mono); }
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+  .slide { padding: 48px 32px; }
+  .two-col { grid-template-columns: 1fr; }
+  .ask-grid { grid-template-columns: 1fr 1fr; }
+  .slide-num { display: none; }
+}
+@media (max-width: 700px) {
+  .main { margin-left: 0; }
+  .sidebar { display: none; }
+  .hud { left: 0; }
+  .progress-bar { left: 0; }
+  .slide { padding: 48px 24px; }
+  .stat-grid { grid-template-columns: repeat(2, 1fr); }
+}
+</style>
+</head>
+<body>
+<div class="page-wrap">
+
+  <!-- ── Sidebar ── -->
+  <nav class="sidebar">
+    <div class="sidebar-logo">
+      <img src="assets/tonitruum-logo-white.png" alt="TONITRUUM"
+           style="width:100%;height:auto;max-width:180px;opacity:0.85;">
+    </div>
+    <ul class="nav-list">
+      <li class="nav-section">Dashboard</li>
+      <li class="nav-item"><a href="today.html"><span class="nav-icon">◷</span>Today</a></li>
+      <li class="nav-section">Monitor</li>
+      <li class="nav-item"><a href="index.html"><span class="nav-icon">⬡</span>Habitat Monitor</a></li>
+      <li class="nav-section">Clinical</li>
+      <li class="nav-item"><a href="autism.html"><span class="nav-icon">♡</span>Patient Care</a></li>
+      <li class="nav-item"><a href="assessment.html"><span class="nav-icon">≡</span>Assessments</a></li>
+      <li class="nav-item"><a href="parent-form.html"><span class="nav-icon">✎</span>Parent Reports</a></li>
+      <li class="nav-item"><a href="medical.html"><span class="nav-icon">✚</span>Medical Consult</a></li>
+      <li class="nav-section">Strategy</li>
+      <li class="nav-item"><a href="service.html"><span class="nav-icon">◎</span>Service Overview</a></li>
+      <li class="nav-item"><a href="stakeholder.html"><span class="nav-icon">◉</span>Stakeholder Map</a></li>
+      <li class="nav-item"><a href="product.html"><span class="nav-icon">◈</span>Product Design</a></li>
+      <li class="nav-section">Project</li>
+      <li class="nav-item"><a href="phase0.html"><span class="nav-icon">◫</span>Phase 0 Origin</a></li>
+      <li class="nav-item"><a href="phase1.html"><span class="nav-icon">◧</span>Phase 1 Research</a></li>
+      <li class="nav-item"><a href="founder.html"><span class="nav-icon">◐</span>Founder</a></li>
+      <li class="nav-item active"><a href="phase3.html"><span class="nav-icon">◕</span>Phase 3 Pitch</a></li>
+      <li class="nav-item"><a href="research.html"><span class="nav-icon">◇</span>Reptile Therapy</a></li>
+      <li class="nav-item"><a href="market.html"><span class="nav-icon">◆</span>Business Model</a></li>
+      <li class="nav-section">Play</li>
+      <li class="nav-item"><a href="game.html"><span class="nav-icon">◎</span>Cricket Hunter</a></li>
+    </ul>
+    <div class="sidebar-footer">
+      <div class="sys-status"><span class="status-dot"></span>All Systems Online</div>
+      <div class="sys-time" id="sidebarTime"></div>
+    </div>
+  </nav>
+
+  <!-- ── Main ── -->
+  <div class="main">
+
+    <!-- HUD -->
+    <div class="hud">
+      <div class="hud-left">
+        <div class="hud-slide"><strong id="hudCurrent">01</strong> / <span id="hudTotal">12</span></div>
+        <div class="hud-title" id="hudSlideTitle">Cover</div>
+      </div>
+      <div class="hud-right">
+        <div class="hud-timer" id="hudTimer">00:00</div>
+        <button class="hud-btn" id="btnPrev" onclick="navSlide(-1)">‹</button>
+        <button class="hud-btn" id="btnNext" onclick="navSlide(1)">›</button>
+      </div>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+
+    <!-- Slide Dots -->
+    <div class="slide-dots" id="slideDots"></div>
+
+    <!-- ════════════════════════════════════
+         SLIDES
+         ════════════════════════════════════ -->
+    <div class="slides" id="slides">
+
+      <!-- ① COVER -->
+      <section class="slide slide-cover" id="s1" data-title="TONITRUUM — Phase 3">
+        <div class="cover-eyebrow">TONITRUUM · Phase 3 Proposal · 15-Min Pitch</div>
+        <h1 class="cover-title">Scaling the<br><span>Vision</span></h1>
+        <p class="cover-sub">From academic research to clinical validation, market entry, and global scale — the roadmap for intelligent reptile care and autism therapy.</p>
+        <div class="cover-meta">
+          <span class="cover-pill hi">École de Design Nantes</span>
+          <span class="cover-pill">A5INT — 2025–26</span>
+          <span class="cover-pill">Xinghao Ni · Founder</span>
+          <span class="cover-pill">15 Minutes</span>
+        </div>
+        <div class="slide-time">0:00 – 0:30</div>
+      </section>
+
+      <!-- ② THE PROBLEM -->
+      <section class="slide" id="s2" data-title="The Problem">
+        <div class="slide-num">02 / 12</div>
+        <div class="slide-tag">The Problem</div>
+        <h2 class="slide-h">Reptile keepers are<br><span>flying blind.</span></h2>
+        <p class="slide-sub">No real-time monitoring. No shared standards. No clinical framework. A $2B+ market served by analog thermometers and guesswork.</p>
+        <div class="two-col">
+          <div class="feature-list">
+            <div class="feature-item">
+              <div class="feature-icon">🌡️</div>
+              <div class="feature-body">
+                <div class="feature-title">No reliable monitoring</div>
+                <div class="feature-desc">Manual checks, inconsistent data, no alert systems. Temperature spikes go unnoticed for hours.</div>
+              </div>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon">🔗</div>
+              <div class="feature-body">
+                <div class="feature-title">No shared knowledge</div>
+                <div class="feature-desc">Each keeper operates in isolation. Breeders have no standard for data sharing or care benchmarks.</div>
+              </div>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon">🧩</div>
+              <div class="feature-body">
+                <div class="feature-title">Untapped therapeutic potential</div>
+                <div class="feature-desc">Evidence shows reptile handling reduces ASD symptoms — yet no product bridges care and therapy.</div>
+              </div>
+            </div>
+          </div>
+          <div class="stat-grid" style="grid-template-columns:1fr 1fr;">
+            <div class="stat-card hi">
+              <div class="stat-value">2.5<span class="unit">M</span></div>
+              <div class="stat-label">Terrarium animals — France 2025</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value">12<span class="unit">M</span></div>
+              <div class="stat-label">Reptile pets in Europe (EU)</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value">0</div>
+              <div class="stat-label">Intelligent enclosure systems on market</div>
+            </div>
+            <div class="stat-card hi">
+              <div class="stat-value">$2.16<span class="unit">B</span></div>
+              <div class="stat-label">Reptile enclosure market by 2030</div>
+            </div>
+          </div>
+        </div>
+        <div class="slide-time">0:30 – 1:30</div>
+      </section>
+
+      <!-- ③ ORIGIN -->
+      <section class="slide" id="s3" data-title="Origin — Phase 0">
+        <div class="slide-num">03 / 12</div>
+        <div class="slide-tag">Origin · Phase 0 · 2023</div>
+        <h2 class="slide-h">In the memory<br>of <span>Pipi.</span></h2>
+        <div class="two-col two-col-wide">
+          <div>
+            <p class="slide-sub" style="margin-bottom:24px;">A crested gecko named Pipi — and a personal crisis of overwork and disconnection — became the seed of a 3-year design research journey.</p>
+            <div class="pull-quote">"How might we build a medium between reptiles and their owners?"</div>
+            <p class="pull-source">Core design question · Phase 0 · M3 Digital · 2025</p>
+          </div>
+          <div class="phase-timeline" style="flex-direction:column;border-radius:10px;gap:0;">
+            <div style="padding:16px 18px;border-bottom:1px solid var(--line);">
+              <div class="phase-label">Phase 0 · 2023</div>
+              <div class="phase-name">Origin & Research</div>
+              <ul class="phase-items">
+                <li>Personal crisis → design question</li>
+                <li>First scientific enclosure design</li>
+                <li>Documented 3-year journey begins</li>
+              </ul>
+            </div>
+            <div style="padding:16px 18px;border-bottom:1px solid var(--line);">
+              <div class="phase-label">Phase 1 · 2024</div>
+              <div class="phase-name">Academic Validation</div>
+              <ul class="phase-items">
+                <li>Expert interview: Mickaël Grévois</li>
+                <li>Journey map + design framework</li>
+                <li>ASD therapy pathway identified</li>
+              </ul>
+            </div>
+            <div style="padding:16px 18px;" class="current">
+              <div class="phase-label">Phase 2–3 · 2025–26</div>
+              <div class="phase-name">Design & Launch</div>
+              <ul class="phase-items">
+                <li>Full product + brand development</li>
+                <li>Clinical service design</li>
+                <li>Market entry preparation</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="slide-time">1:30 – 2:30</div>
+      </section>
+
+      <!-- ④ RESEARCH VALIDATION -->
+      <section class="slide" id="s4" data-title="Research Validation">
+        <div class="slide-num">04 / 12</div>
+        <div class="slide-tag">Research Validation · Phase 1</div>
+        <h2 class="slide-h">The science<br><em>is clear.</em></h2>
+        <p class="slide-sub">Expert interview with Mickaël Grévois (15+ reptiles, certified breeder) confirmed the core hypothesis: behavioral self-regulation in reptile handling maps directly to autism therapy.</p>
+        <div class="two-col">
+          <div class="feature-list">
+            <div class="feature-item">
+              <div class="feature-icon">🧬</div>
+              <div class="feature-body">
+                <div class="feature-title">Oxytocin release confirmed</div>
+                <div class="feature-desc">Reptile interaction triggers oxytocin — the bonding hormone — even without vocalisation or eye contact, making it uniquely effective for ASD Level 1.</div>
+              </div>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon">🦎</div>
+              <div class="feature-body">
+                <div class="feature-title">Behavioral self-regulation mechanism</div>
+                <div class="feature-desc">Reptiles require calm, slow movement from handlers. This constraint becomes the therapy: the animal teaches regulation.</div>
+              </div>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon">📊</div>
+              <div class="feature-body">
+                <div class="feature-title">Gap confirmed: no shared data standard</div>
+                <div class="feature-desc">No system exists for breeders/therapists to monitor, share, or benchmark reptile care data across clinical settings.</div>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div class="pull-quote" style="font-size:17px;">"Reptiles require behavioral self-regulation from handlers. That constraint is not a barrier — it is the therapy itself."</div>
+            <p class="pull-source">Mickaël Grévois · Technicien en métrologie · Éleveur capacitaire</p>
+          </div>
+        </div>
+        <div class="slide-time">2:30 – 4:00</div>
+      </section>
+
+      <!-- ⑤ THE PRODUCT -->
+      <section class="slide" id="s5" data-title="The Product">
+        <div class="slide-num">05 / 12</div>
+        <div class="slide-tag">Product · TONITRUUM Habitat</div>
+        <h2 class="slide-h">Precision care.<br><span>Beautiful design.</span></h2>
+        <p class="slide-sub">The world's first intelligent reptile enclosure engineered for both serious keepers and clinical therapeutic environments.</p>
+        <div class="two-col">
+          <div class="feature-list">
+            <div class="feature-item">
+              <div class="feature-icon">🔬</div>
+              <div class="feature-body">
+                <div class="feature-title">AI Behaviour Recognition</div>
+                <div class="feature-desc">Computer vision identifies feeding, basking, hiding and stress patterns. Alerts before problems occur.</div>
+              </div>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon">🌡️</div>
+              <div class="feature-body">
+                <div class="feature-title">Precision Multi-Zone Sensing</div>
+                <div class="feature-desc">Temp, humidity, UVB, and light cycle tracking across zones. Automatic climate correction.</div>
+              </div>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon">🏗️</div>
+              <div class="feature-body">
+                <div class="feature-title">Anodized Aluminium Frame</div>
+                <div class="feature-desc">Industrial-grade construction. Self-locking magnetic knobs. Sensory-aware design for clinical environments.</div>
+              </div>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon">📱</div>
+              <div class="feature-body">
+                <div class="feature-title">Connected Platform</div>
+                <div class="feature-desc">Live dashboard, vet notes, feeding logs, welfare assessment reports. Shareable with clinical teams.</div>
+              </div>
+            </div>
+          </div>
+          <div class="stat-grid" style="grid-template-columns:1fr 1fr;">
+            <div class="stat-card hi">
+              <div class="stat-value">€149<span class="unit">–199</span></div>
+              <div class="stat-label">TONITRUUM launch price</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value">€299<span class="unit">+</span></div>
+              <div class="stat-label">Leading competitor (Exo Terra smart)</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value">5</div>
+              <div class="stat-label">Product lines planned</div>
+            </div>
+            <div class="stat-card hi">
+              <div class="stat-value">7.6<span class="unit">%</span></div>
+              <div class="stat-label">CAGR reptile enclosure 2023–30</div>
+            </div>
+          </div>
+        </div>
+        <div class="slide-time">4:00 – 6:00</div>
+      </section>
+
+      <!-- ⑥ CLINICAL SERVICE -->
+      <section class="slide" id="s6" data-title="Clinical Service">
+        <div class="slide-num">06 / 12</div>
+        <div class="slide-tag">Clinical Application · Service Design</div>
+        <h2 class="slide-h">A full therapeutic<br><span>service system.</span></h2>
+        <p class="slide-sub">TONITRUUM is not just a product — it is the infrastructure for a Reptile-Mediated Emotional Support programme for ASD Level 1 patients.</p>
+        <div class="two-col">
+          <div class="feature-list">
+            <div class="feature-item">
+              <div class="feature-icon">🏥</div>
+              <div class="feature-body">
+                <div class="feature-title">Pre-Intervention Assessment</div>
+                <div class="feature-desc">Eligibility screening, baseline behavioural evaluation, family briefing. Multi-disciplinary clinical team.</div>
+              </div>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon">🦎</div>
+              <div class="feature-body">
+                <div class="feature-title">Core Sessions · 8–12 weeks</div>
+                <div class="feature-desc">Structured reptile handling sessions with certified therapists. Real-time TONITRUUM monitoring during sessions.</div>
+              </div>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon">📋</div>
+              <div class="feature-body">
+                <div class="feature-title">Data-Backed Reporting</div>
+                <div class="feature-desc">Session logs, behavioural metrics, and welfare reports shared across the clinical team. Evidence base builds with each session.</div>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div class="stat-card hi" style="margin-bottom:14px;">
+              <div class="stat-value">22</div>
+              <div class="stat-label">Stakeholder types mapped in service ecosystem</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value">3</div>
+              <div class="stat-label">Service phases: Pre · Core · Post-intervention</div>
+            </div>
+            <div style="margin-top:14px; padding:16px; background:var(--bg-card); border:1px solid rgba(217,110,40,0.3); border-radius:8px;">
+              <div style="font-size:10px;color:var(--orange);font-weight:700;letter-spacing:0.08em;margin-bottom:6px;">KEY INSIGHT</div>
+              <div style="font-size:12px;color:var(--ink-mid);line-height:1.6;">The TONITRUUM platform makes ASD reptile therapy measurable, repeatable, and scalable — transforming anecdotal therapy into evidence-based clinical practice.</div>
+            </div>
+          </div>
+        </div>
+        <div class="slide-time">6:00 – 7:30</div>
+      </section>
+
+      <!-- ⑦ MARKET OPPORTUNITY -->
+      <section class="slide" id="s7" data-title="Market Opportunity">
+        <div class="slide-num">07 / 12</div>
+        <div class="slide-tag">Market Opportunity</div>
+        <h2 class="slide-h">A $17B market<br><span>waiting to be smart.</span></h2>
+        <p class="slide-sub">Europe first. China for scale. North America for dominance. Three markets, three phases, one platform.</p>
+        <div class="stat-grid" style="grid-template-columns:repeat(4,1fr);max-width:100%;margin-bottom:28px;">
+          <div class="stat-card hi">
+            <div class="stat-value">79<span class="unit">M</span></div>
+            <div class="stat-label">Total pets — France 2025</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">12<span class="unit">M</span></div>
+            <div class="stat-label">Reptile pets — Europe</div>
+          </div>
+          <div class="stat-card hi">
+            <div class="stat-value">$17.25<span class="unit">B</span></div>
+            <div class="stat-label">Pet tech market 2030</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">14.6<span class="unit">%</span></div>
+            <div class="stat-label">Pet tech CAGR 2024–30</div>
+          </div>
+        </div>
+        <div class="phase-timeline">
+          <div class="phase-col current">
+            <div class="phase-label">Phase 1 · 2026–27</div>
+            <div class="phase-name">🇫🇷 Europe</div>
+            <ul class="phase-items">
+              <li>France: 2.1M reptile pets</li>
+              <li>Highest EU reptile density</li>
+              <li>Specialty stores + D2C online</li>
+              <li>Kickstarter campaign</li>
+            </ul>
+          </div>
+          <div class="phase-col">
+            <div class="phase-label">Phase 2 · 2027–28</div>
+            <div class="phase-name">🇨🇳 China</div>
+            <ul class="phase-items">
+              <li>Growing middle-class exotic pets</li>
+              <li>Hardware manufacturing proximity</li>
+              <li>Price + feature validation</li>
+              <li>Flagship store opening</li>
+            </ul>
+          </div>
+          <div class="phase-col">
+            <div class="phase-label">Phase 3 · 2028–29</div>
+            <div class="phase-name">🇺🇸 North America</div>
+            <ul class="phase-items">
+              <li>6M reptile-owning households</li>
+              <li>37% of global pet tech share</li>
+              <li>PetSmart 1,665 stores + Petco</li>
+              <li>Series A funding closed</li>
+            </ul>
+          </div>
+        </div>
+        <div class="slide-time">7:30 – 9:00</div>
+      </section>
+
+      <!-- ⑧ COMPETITIVE POSITION -->
+      <section class="slide" id="s8" data-title="Competitive Position">
+        <div class="slide-num">08 / 12</div>
+        <div class="slide-tag">Competitive Landscape</div>
+        <h2 class="slide-h">The <span>sweet spot</span><br>no one owns.</h2>
+        <p class="slide-sub" style="margin-bottom:28px;">Every competitor is either too cheap and dumb, or too expensive and clinical. TONITRUUM sits at the intersection of beautiful design, smart tech, and therapeutic purpose.</p>
+        <table class="comp-table">
+          <thead>
+            <tr>
+              <th>Product</th>
+              <th>Price</th>
+              <th>Smart</th>
+              <th>Design</th>
+              <th>Therapy</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Basic thermostats</td><td>€15–30</td><td>—</td><td>—</td><td>—</td></tr>
+            <tr><td>Exo Terra sensors</td><td>€82–85</td><td>Partial</td><td>Functional</td><td>—</td></tr>
+            <tr><td>Arcadia ProT5</td><td>~€99</td><td>—</td><td>Good</td><td>—</td></tr>
+            <tr><td>Exo Terra Smart full kit</td><td>€299+</td><td>Yes</td><td>Standard</td><td>—</td></tr>
+            <tr class="ours"><td>TONITRUUM</td><td class="price-hi">€149–199</td><td>AI + Vision</td><td>Premium</td><td>✓ ASD</td></tr>
+          </tbody>
+        </table>
+        <div class="slide-time">9:00 – 10:00</div>
+      </section>
+
+      <!-- ⑨ BUSINESS MODEL -->
+      <section class="slide" id="s9" data-title="Business Model">
+        <div class="slide-num">09 / 12</div>
+        <div class="slide-tag">Business Model · Revenue</div>
+        <h2 class="slide-h">Hardware + <span>recurring</span><br>platform revenue.</h2>
+        <div class="two-col">
+          <div class="feature-list">
+            <div class="feature-item">
+              <div class="feature-icon">📦</div>
+              <div class="feature-body">
+                <div class="feature-title">Hardware Sales</div>
+                <div class="feature-desc">Core enclosure system at €149–199. 5 product lines from starter kits to clinical-grade units.</div>
+              </div>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon">🔄</div>
+              <div class="feature-body">
+                <div class="feature-title">Platform Subscription</div>
+                <div class="feature-desc">Monthly care intelligence subscription: AI monitoring, behaviour reports, vet integration, community data.</div>
+              </div>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon">🏥</div>
+              <div class="feature-body">
+                <div class="feature-title">Clinical Partnerships</div>
+                <div class="feature-desc">B2B licensing to therapy centres, hospitals, and autism support organisations. Bulk pricing + data reporting included.</div>
+              </div>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon">📊</div>
+              <div class="feature-body">
+                <div class="feature-title">Care Data Insights</div>
+                <div class="feature-desc">Anonymised population-level reptile health data. Research partnerships with universities and veterinary institutions.</div>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div class="stat-card hi" style="margin-bottom:12px;">
+              <div class="stat-value">4</div>
+              <div class="stat-label">Independent revenue streams</div>
+            </div>
+            <div class="stat-card" style="margin-bottom:12px;">
+              <div class="stat-value">¥150K</div>
+              <div class="stat-label">Bootstrap seed · Self-funded stage</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value">¥370K</div>
+              <div class="stat-label">Angel + Series A total target</div>
+            </div>
+          </div>
+        </div>
+        <div class="slide-time">10:00 – 11:00</div>
+      </section>
+
+      <!-- ⑩ ROADMAP -->
+      <section class="slide" id="s10" data-title="Roadmap 2025–2029">
+        <div class="slide-num">10 / 12</div>
+        <div class="slide-tag">Product Roadmap · 2025–2029</div>
+        <h2 class="slide-h">Four years to<br><span>global scale.</span></h2>
+        <p class="slide-sub" style="margin-bottom:28px;">From prototype to global launch — a clear, staged execution plan.</p>
+        <div class="roadmap-row">
+          <div class="roadmap-node done">
+            <div class="roadmap-year">2025</div>
+            <div class="roadmap-item">Thermostat prototype validated</div>
+            <div class="roadmap-item">Research complete</div>
+            <div class="roadmap-item">Germany market research</div>
+            <div class="roadmap-item">DVT launch</div>
+          </div>
+          <div class="roadmap-node now">
+            <div class="roadmap-year">2026 ← NOW</div>
+            <div class="roadmap-item">Product design finalised</div>
+            <div class="roadmap-item">Mould factory quotes</div>
+            <div class="roadmap-item">China channels setup</div>
+            <div class="roadmap-item">1st production run</div>
+          </div>
+          <div class="roadmap-node">
+            <div class="roadmap-year">2027</div>
+            <div class="roadmap-item">PVT + small batch production</div>
+            <div class="roadmap-item">Kickstarter campaign</div>
+            <div class="roadmap-item">Official EU launch</div>
+            <div class="roadmap-item">EU distributor network</div>
+          </div>
+          <div class="roadmap-node">
+            <div class="roadmap-year">2028</div>
+            <div class="roadmap-item">Large-scale production</div>
+            <div class="roadmap-item">China flagship store</div>
+            <div class="roadmap-item">US market launch</div>
+            <div class="roadmap-item">Series A closed</div>
+          </div>
+          <div class="roadmap-node">
+            <div class="roadmap-year">2029</div>
+            <div class="roadmap-item">Global official launch</div>
+            <div class="roadmap-item">Autism therapy product line</div>
+            <div class="roadmap-item">Full platform ecosystem live</div>
+            <div class="roadmap-item">Multi-market coverage</div>
+          </div>
+        </div>
+        <div class="slide-time">11:00 – 12:00</div>
+      </section>
+
+      <!-- ⑪ TEAM -->
+      <section class="slide" id="s11" data-title="The Team">
+        <div class="slide-num">11 / 12</div>
+        <div class="slide-tag">The Team</div>
+        <h2 class="slide-h">Built by people who<br><span>care deeply.</span></h2>
+        <p class="slide-sub" style="margin-bottom:28px;">Design, engineering, business, research — six people spanning three continents.</p>
+        <div class="team-grid">
+          <div class="team-card">
+            <div class="team-avatar">🎨</div>
+            <div class="team-name">Xinghao Ni</div>
+            <div class="team-role">Founder · Product & Design Lead</div>
+          </div>
+          <div class="team-card">
+            <div class="team-avatar">📈</div>
+            <div class="team-name">Wang Nan</div>
+            <div class="team-role">Co-Founder · Business Strategy</div>
+          </div>
+          <div class="team-card">
+            <div class="team-avatar">⚙️</div>
+            <div class="team-name">Ye Zhikun</div>
+            <div class="team-role">Hardware & IoT Engineering</div>
+          </div>
+          <div class="team-card">
+            <div class="team-avatar">💻</div>
+            <div class="team-name">Wang Mufeng</div>
+            <div class="team-role">Software & App Development</div>
+          </div>
+          <div class="team-card">
+            <div class="team-avatar">🌍</div>
+            <div class="team-name">Ruggero</div>
+            <div class="team-role">EU Market · Community & Sales</div>
+          </div>
+          <div class="team-card">
+            <div class="team-avatar">🔬</div>
+            <div class="team-name">Sarah</div>
+            <div class="team-role">Research & Content Strategy</div>
+          </div>
+        </div>
+        <div class="slide-time">12:00 – 12:30</div>
+      </section>
+
+      <!-- ⑫ THE ASK — PHASE 3 -->
+      <section class="slide" id="s12" data-title="Phase 3 — The Ask">
+        <div class="slide-num">12 / 12</div>
+        <div class="slide-tag">Phase 3 · The Ask</div>
+        <h2 class="slide-h">What we need<br>to <span>make this real.</span></h2>
+        <p class="slide-sub" style="margin-bottom:28px;">Phase 3 is the bridge between validated research and market launch. Three things will determine speed.</p>
+        <div class="ask-grid">
+          <div class="ask-card hi">
+            <div class="ask-icon">🏥</div>
+            <div class="ask-title">Clinical Partner</div>
+            <div class="ask-desc">A therapy centre or hospital willing to run the first pilot programme — 10–20 ASD Level 1 patients, 8-week protocol, full TONITRUUM monitoring.</div>
+            <span class="ask-tag">PRIORITY #1</span>
+          </div>
+          <div class="ask-card hi">
+            <div class="ask-icon">💰</div>
+            <div class="ask-title">Seed Funding</div>
+            <div class="ask-desc">¥150K self-funded already committed. Seeking ¥170K angel to complete DVT tooling and first production run. Kickstarter to follow in 2027.</div>
+            <span class="ask-tag">¥170K TARGET</span>
+          </div>
+          <div class="ask-card">
+            <div class="ask-icon">🤝</div>
+            <div class="ask-title">Distribution Partner</div>
+            <div class="ask-desc">EU specialty pet retail partner (Terrario, Reptilis, or equivalent) for initial launch channel alongside our D2C webshop.</div>
+            <span class="ask-tag">EU LAUNCH</span>
+          </div>
+        </div>
+        <div style="margin-top:28px;padding:20px 24px;background:rgba(217,110,40,0.07);border:1px solid rgba(217,110,40,0.3);border-radius:10px;max-width:860px;">
+          <div style="font-size:12px;color:var(--orange);font-weight:700;letter-spacing:0.08em;margin-bottom:8px;">TONITRUUM — PHASE 3 SUMMARY</div>
+          <div style="font-size:13px;color:var(--ink-mid);line-height:1.7;">The reptile care market is unmonitored, disconnected, and ignoring a clinically-validated therapeutic opportunity. TONITRUUM is the first product designed to serve both the keeper and the clinician — beautiful enough for the home, rigorous enough for the hospital. Phase 3 turns 3 years of research into the world's first intelligent, therapeutic reptile habitat system.</div>
+        </div>
+        <div class="slide-time">12:30 – 15:00</div>
+      </section>
+
+    </div><!-- /slides -->
+  </div><!-- /main -->
+</div><!-- /page-wrap -->
+
+<script>
+/* ── Clock ── */
+(function() {
+  function tick() {
+    const d = new Date();
+    const hh = String(d.getHours()).padStart(2,'0');
+    const mm = String(d.getMinutes()).padStart(2,'0');
+    const ss = String(d.getSeconds()).padStart(2,'0');
+    const el = document.getElementById('sidebarTime');
+    if (el) el.textContent = hh+':'+mm+':'+ss;
+  }
+  tick(); setInterval(tick, 1000);
+})();
+
+/* ── Presentation Engine ── */
+(function() {
+  const slideEls   = Array.from(document.querySelectorAll('.slides .slide'));
+  const total      = slideEls.length;
+  let   cur        = 0;
+  let   timerStart = null;
+  let   timerInterval;
+
+  document.getElementById('hudTotal').textContent = String(total).padStart(2,'0');
+
+  // Build dots
+  const dotsEl = document.getElementById('slideDots');
+  slideEls.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'slide-dot' + (i === 0 ? ' active' : '');
+    d.title = 'Slide ' + (i+1);
+    d.onclick = () => goTo(i);
+    dotsEl.appendChild(d);
+  });
+
+  function goTo(idx) {
+    if (idx < 0 || idx >= total) return;
+    cur = idx;
+    // Smooth scroll
+    slideEls[cur].scrollIntoView({ behavior: 'smooth', block: 'start' });
+    update();
+    // Start timer on first advance
+    if (!timerStart) startTimer();
+  }
+
+  function update() {
+    // HUD
+    document.getElementById('hudCurrent').textContent = String(cur+1).padStart(2,'0');
+    document.getElementById('hudSlideTitle').textContent = slideEls[cur].dataset.title || '';
+    // Progress
+    document.getElementById('progressFill').style.width = ((cur+1)/total*100) + '%';
+    // Dots
+    document.querySelectorAll('.slide-dot').forEach((d,i) => d.classList.toggle('active', i===cur));
+    // Buttons
+    document.getElementById('btnPrev').disabled = cur === 0;
+    document.getElementById('btnNext').disabled = cur === total - 1;
+  }
+
+  window.navSlide = function(dir) { goTo(cur + dir); };
+
+  // Timer
+  function startTimer() {
+    timerStart = Date.now();
+    timerInterval = setInterval(() => {
+      const elapsed = Math.floor((Date.now() - timerStart) / 1000);
+      const mm = String(Math.floor(elapsed/60)).padStart(2,'0');
+      const ss = String(elapsed%60).padStart(2,'0');
+      document.getElementById('hudTimer').textContent = mm+':'+ss;
+      // Turn red after 14 min
+      if (elapsed >= 840) document.getElementById('hudTimer').style.color = '#b84a3a';
+      else if (elapsed >= 720) document.getElementById('hudTimer').style.color = '#e8884a';
+    }, 1000);
+  }
+
+  // Keyboard navigation
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') {
+      e.preventDefault(); navSlide(1);
+    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+      e.preventDefault(); navSlide(-1);
+    }
+  });
+
+  // Intersection observer to track current visible slide
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting && e.intersectionRatio > 0.5) {
+        const idx = slideEls.indexOf(e.target);
+        if (idx !== -1 && idx !== cur) {
+          cur = idx;
+          update();
+        }
+      }
+    });
+  }, { threshold: 0.5 });
+  slideEls.forEach(s => obs.observe(s));
+
+  update();
+})();
+</script>
+</body>
+</html>
